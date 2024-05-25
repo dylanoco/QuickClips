@@ -28,7 +28,7 @@ auth_cid = os.getenv('APP_CLIENT_ID')
 auth_rurl = os.getenv('APP_REDIRECT_URL')
 
 
-temp_oauth = 'ly1osndu7sulbp22w8c7yu0flkf0mc'
+temp_oauth = os.getenv('TEMP_AUTH')
 
 
 headers = {
