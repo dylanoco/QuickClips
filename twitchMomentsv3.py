@@ -4,9 +4,11 @@ import datetime
 import asyncio
 from twitchio.ext import commands
 from dotenv import load_dotenv
-from winotify import Notification
+from winotify import Notification, audio
 from tkinter import *
 from urllib import request
+
+from win10toast import ToastNotifier
 
 import requests
 import webbrowser
@@ -18,16 +20,10 @@ from urllib.parse import urlparse, parse_qs #need to find out how to get the url
 #might possibly need a server
 #make a button which is pressed when user is authorized
 
-twitch_oautht = os.getenv('TWITCH_OAUTH_TOKEN')
 twitch_name = ""
-twitch_id = os.getenv('TWITCH_USER_ID')
-twitch_ut = os.getenv('TWITCH_USER_TOKEN')
-twitch_auth_url = os.getenv('AUTH_URL')
+twitch_id = ""
 
 auth_cid = os.getenv('APP_CLIENT_ID')
-auth_rurl = os.getenv('APP_REDIRECT_URL')
-
-
 temp_oauth = os.getenv('TEMP_AUTH')
 
 
@@ -67,7 +63,20 @@ def gotoVerify():
         print(f"Failed to get user information: {response.status_code} - {response.text}")
     print("url")
 
+def notyChecker():
 
+    # toaster = ToastNotifier()
+    print("Test")
+    # toaster.show_toast("Clipped !","You have clipped the last 30 seconds to your Twitch !", duration=10)
+    toast = Notification(app_id="enzynclipper", 
+                         title="Clipped !", 
+                         msg="You have clipped the last 30 seconds to your Twitch !")
+    toast.set_audio(audio.Default, loop=False)
+    print("Notification created")
+    toast.show()
+    print("Notification shown")
+
+notyChecker()
 
 
 
@@ -98,7 +107,11 @@ class Bot(commands.Bot):
 def clip_creator():
     gotoVerify()
     print("sjdhbfsd")
-    clipped = Notification("ENZYNClipper", "Clipped !", "You have clipped the last 30 seconds to your Twitch !", duration="short")
+    clipped = Notification(app_id="enzynclipper", 
+                           title="Clipped !", 
+                           msg="You have clipped the last 30 seconds to your Twitch !", 
+                           duration="short")
+    clipped.show()
     global twitch_name, twitch_id, temp_oauth
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
@@ -140,7 +153,7 @@ keyboard_thread.start()
 root = Tk()
 myButton_1 = Button(root, text="Authorize your Twitch Account", command=gotoAuthorize)
 myButton_1.pack()
-myButton_2 = Button(root, text="Verify", command=gotoVerify)
+myButton_2 = Button(root, text="Verify", command=notyChecker)
 myButton_2.pack()
 root.mainloop()
 
