@@ -7,19 +7,16 @@ from dotenv import load_dotenv
 from winotify import Notification, audio
 from tkinter import *
 from urllib import request
-
 from win10toast import ToastNotifier
-
 import requests
 import webbrowser
-#from pynput import keyboard
-
+import threading
+from flask import Flask, request, redirect, session, url_for, render_template
 from urllib.parse import urlparse, parse_qs #need to find out how to get the url to parse it !
-
-#need to find out what else the redirect url is supposed to be, to retrieve the params after its authorized
-#might possibly need a server
-#make a button which is pressed when user is authorized
-
+def run_flask():
+    app.run(port=5000)
+app = Flask(__name__)
+threading.Thread(target=run_flask).start()
 twitch_name = ""
 twitch_id = ""
 
@@ -32,22 +29,59 @@ headers = {
     'Client-Id': auth_cid
 }
 
+@app.route('/')
+def home():
+    print("Home Test")
+    auth_url = f"https://id.twitch.tv/oauth2/authorize?response_type=token&client_id={auth_cid}&redirect_uri=http://localhost:5000/callback&scope=clips%3Aedit&state=c3ab8aa609ea11e793ae92361f002671"
+    return render_template('index.html', auth_url = auth_url)
     
+@app.route('/callback')
+def callback():
+    global auth_cid
+    print("Callback route accessed")
+    code = request.args.get('code')
+    print(f"Authorization code received: {code}")
+    if code:
+        token_url = "https://id.twitch.tv/oauth2/token"
+        data = {
+            "client_id": auth_cid,
+            "code": code,
+            "grant_type": "authorization_code",
+            "redirect_uri": "http://localhost:5000/callback"
+        }
+        print("Sending POST request to exchange code for token")
+        response = requests.post(token_url, data=data)
+        print(f"Response status code: {response.status_code}")
+        print(f"Response content: {response.text}")
+        if response.status_code == 200:
+            print("Token exchange successful")
+            token_info = response.json()
+            session['oauth_token'] = token_info['access_token']
+            return "Authentication successful! Token stored in session."
+        else:
+            print("Failed to exchange token")
+    return "Error during authentication."
+
+def open_browser():
+    global auth_cid
+    webbrowser.open_new("http://localhost:5000/")
+
+
+
+
 load_dotenv()
 url = os.getenv('AUTH_URL')
 def gotoAuthorize():
-    print(url)
-    webbrowser.open(url)
+    open_browser()
+
 def gotoVerify():
     global twitch_name, twitch_id
     
-    # Make a request to the Twitch API to get user information
     response = requests.get('https://api.twitch.tv/helix/users', headers=headers)
 
-    # Check if the request was successful
     if response.status_code == 200:
         user_info = response.json()
-        # The user information is in the 'data' field, which is a list
+
         if user_info['data']:
             user = user_info['data'][0]
             user_id = user['id']
@@ -57,12 +91,12 @@ def gotoVerify():
             username = user['display_name']
             print(f"User ID: {user_id}")
             print(f"Username: {username}")
+            print(user_info)
         else:
             print("No user data found.")
     else:
         print(f"Failed to get user information: {response.status_code} - {response.text}")
     print("url")
-
 def notyChecker():
 
     # toaster = ToastNotifier()
@@ -75,19 +109,7 @@ def notyChecker():
     print("Notification created")
     toast.show()
     print("Notification shown")
-
 notyChecker()
-
-
-
-
-
-
-
-
-
-
-
 
 class Bot(commands.Bot):
 
@@ -127,33 +149,19 @@ def clip_creator():
     clipped.add_actions(label="Link to edit clip", launch= clip_url['edit_url'])
     clipped.show()
     print("done")
-
 def createaClip():
     keyboard.add_hotkey('Ctrl+Alt+L', clip_creator)
     keyboard.wait()
-
-# COMBINATIONS = [
-#     {keyboard.Key.ctrl, keyboard.Key.alt, keyboard.KeyCode(char='h')}
-# ]
-# def on_press(key):
-#     if any([key in COMBO for COMBO in COMBINATIONS]):
-#         current.add(key)
-#         if any(all(k in current for k in COMBO)for COMBO in COMBINATIONS):
-#             clip_creator()
-# def on_release(key):
-#     if any([key in COMBO for COMBO in COMBINATIONS]):
-#         current.remove(key)
-# Create and start the thread for keyboard events
 import threading
-
 keyboard_thread = threading.Thread(target=createaClip)
-keyboard_thread.daemon = True  # Daemonize thread to exit when main thread exits
+keyboard_thread.daemon = True  
 keyboard_thread.start()
+
 
 root = Tk()
 myButton_1 = Button(root, text="Authorize your Twitch Account", command=gotoAuthorize)
 myButton_1.pack()
-myButton_2 = Button(root, text="Verify", command=notyChecker)
+myButton_2 = Button(root, text="Verify", command=gotoVerify)
 myButton_2.pack()
 root.mainloop()
 

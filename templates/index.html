@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask Static Site</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Welcome to Flask Static Site</h1>
+    <p>This is a static HTML page served by Flask.</p>
+    <script>
+        window.onload = function() {
+            const fragment = window.location.hash.substr(1);
+            if (fragment) {
+                const params = new URLSearchParams(fragment);
+                const accessToken = params.get('access_token');
+                if (accessToken) {
+                    fetch(`http://localhost:5000/store_token?access_token=${accessToken}`, {
+                        method: 'GET'
+                    })
+                    .then(response => response.text())
+                    .then(data => console.log(data))
+                    .catch(error => console.error('Error:', error));
+                }
+            }
+        }
+    </script>
+</body>
+</html>
