@@ -13,38 +13,39 @@ import webbrowser
 import threading
 from flask import Flask, request, redirect, session, url_for, render_template
 from urllib.parse import urlparse, parse_qs #need to find out how to get the url to parse it !
+from twitchio.errors import HTTPException
+
 def run_flask():
     app.run(port=5000)
 app = Flask(__name__)
 threading.Thread(target=run_flask).start()
+
+#Variables
+load_dotenv()
+client_secret = os.getenv('TWITCH_CLIENT_SECRET')
+url = os.getenv('AUTH_URL')
+acc_token = ""
+refr_token = ""
 twitch_name = ""
 twitch_id = ""
-
 auth_cid = os.getenv('APP_CLIENT_ID')
-temp_oauth = os.getenv('TEMP_AUTH')
-
-
-headers = {
-    'Authorization': f'Bearer {temp_oauth}',
-    'Client-Id': auth_cid
-}
-
+temp_oauth = ""
+#HTML Routes
 @app.route('/')
 def home():
-    print("Home Test")
-    auth_url = f"https://id.twitch.tv/oauth2/authorize?response_type=token&client_id={auth_cid}&redirect_uri=http://localhost:5000/callback&scope=clips%3Aedit&state=c3ab8aa609ea11e793ae92361f002671"
-    return render_template('index.html', auth_url = auth_url)
+    return render_template('index.html')
     
 @app.route('/callback')
 def callback():
-    global auth_cid
+    global auth_cid, acc_token, refr_token
     print("Callback route accessed")
     code = request.args.get('code')
     print(f"Authorization code received: {code}")
     if code:
         token_url = "https://id.twitch.tv/oauth2/token"
         data = {
-            "client_id": auth_cid,
+            "client_id": "s47rucw584h54boq3v35nwgg8vnxws",
+            "client_secret": client_secret,
             "code": code,
             "grant_type": "authorization_code",
             "redirect_uri": "http://localhost:5000/callback"
@@ -56,26 +57,28 @@ def callback():
         if response.status_code == 200:
             print("Token exchange successful")
             token_info = response.json()
-            session['oauth_token'] = token_info['access_token']
+            acc_token = token_info['access_token']
+            refr_token = token_info['refresh_token']
             return "Authentication successful! Token stored in session."
         else:
             print("Failed to exchange token")
     return "Error during authentication."
 
+#Functions
 def open_browser():
     global auth_cid
     webbrowser.open_new("http://localhost:5000/")
 
-
-
-
-load_dotenv()
-url = os.getenv('AUTH_URL')
 def gotoAuthorize():
     open_browser()
 
-def gotoVerify():
-    global twitch_name, twitch_id
+def grabUserDetails():
+    global twitch_name, twitch_id, acc_token
+    print("acess token " + acc_token)
+    headers = {
+    'Authorization': f'Bearer {acc_token}',
+    'Client-Id': auth_cid
+    }
     
     response = requests.get('https://api.twitch.tv/helix/users', headers=headers)
 
@@ -97,6 +100,7 @@ def gotoVerify():
     else:
         print(f"Failed to get user information: {response.status_code} - {response.text}")
     print("url")
+
 def notyChecker():
 
     # toaster = ToastNotifier()
@@ -109,14 +113,13 @@ def notyChecker():
     print("Notification created")
     toast.show()
     print("Notification shown")
-notyChecker()
 
 class Bot(commands.Bot):
 
     def __init__(self):
-        global twitch_name, temp_oauth
+        global twitch_name,acc_token
 
-        super().__init__(token=temp_oauth, prefix='', initial_channels=[twitch_name])
+        super().__init__(token=acc_token, prefix='', initial_channels=[twitch_name])
     
 
     async def event_ready(self):
@@ -126,46 +129,80 @@ class Bot(commands.Bot):
             
     def create_user(self, user_id: int, user_name: str):
         return super().create_user(user_id, user_name)
+
 def clip_creator():
-    gotoVerify()
-    print("sjdhbfsd")
+    grabUserDetails()
     clipped = Notification(app_id="enzynclipper", 
                            title="Clipped !", 
                            msg="You have clipped the last 30 seconds to your Twitch !", 
                            duration="short")
     clipped.show()
-    global twitch_name, twitch_id, temp_oauth
+    global twitch_name, twitch_id, acc_token
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
-    bot = Bot()
+    try:
+        bot = Bot()
+    except HTTPException as htperr:
+        if htperr.status == 401:
+            refreshAccessToken()
+        if htperr.status == 404:
+            print(htperr.reason)
+            return
     User = bot.create_user(twitch_id,twitch_name)
     print(twitch_id)
     print(twitch_name)
-    print(temp_oauth)
-    clip_url = loop.run_until_complete(User.create_clip(token=temp_oauth))
+    try:
+        clip_url = loop.run_until_complete(User.create_clip(token=acc_token))
+    except HTTPException as htperr:
+        if htperr.status == 401:
+            refreshAccessToken()
+        if htperr.status == 404:
+            print(htperr.reason)
+            return
+            
     with open('url_clips.txt', 'a') as f:
         f.write("Date: " + str(datetime.datetime.today()) + " | Clip Details: " + str(clip_url['edit_url']) + '\n')
         f.close()
-    clipped.add_actions(label="Link to edit clip", launch= clip_url['edit_url'])
+    clipped.add_actions(label="Link to edit clip", launch = clip_url['edit_url'])
     clipped.show()
     print("done")
+
 def createaClip():
     keyboard.add_hotkey('Ctrl+Alt+L', clip_creator)
     keyboard.wait()
-import threading
+
+def refreshAccessToken():
+        global acc_token, refr_token
+        token_url = "https://id.twitch.tv/oauth2/token"
+        data = {
+            "client_id": "s47rucw584h54boq3v35nwgg8vnxws",
+            "client_secret": client_secret,
+            "grant_type": "refresh_token",
+            "refresh_token": refr_token
+        }
+        print("Sending POST request to exchange code for token")
+        response = requests.post(token_url, data=data)
+        print(f"Response status code: {response.status_code}")
+        print(f"Response content: {response.text}")
+        if response.status_code == 200:
+            print("Token exchange successful")
+            token_info = response.json()
+            acc_token = token_info['access_token']
+            refr_token = token_info['refresh_token']
+        else:
+            print("Failed to exchange token")
+
+#Threads & Main
+
 keyboard_thread = threading.Thread(target=createaClip)
 keyboard_thread.daemon = True  
 keyboard_thread.start()
-
-
-root = Tk()
-myButton_1 = Button(root, text="Authorize your Twitch Account", command=gotoAuthorize)
-myButton_1.pack()
-myButton_2 = Button(root, text="Verify", command=gotoVerify)
-myButton_2.pack()
-root.mainloop()
 
 async def main():
     loop = asyncio.new_event_loop()                                                                                                                             
     loop.run_until_complete(main())
 
+root = Tk()
+myButton_1 = Button(root, text="Authorize your Twitch Account", command=gotoAuthorize)
+myButton_1.pack()
+root.mainloop()
