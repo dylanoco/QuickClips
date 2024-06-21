@@ -163,8 +163,6 @@ def clip_creator():
     with open('url_clips.txt', 'a') as f:
         f.write("Date: " + str(datetime.datetime.today()) + " | Clip Details: " + str(clip_url['edit_url']) + '\n')
         f.close()
-    clipped.add_actions(label="Link to edit clip", launch = clip_url['edit_url'])
-    clipped.show()
     print("done")
 
 def createaClip():
