@@ -14,7 +14,9 @@ import threading
 from flask import Flask, request, redirect, session, url_for, render_template
 from urllib.parse import urlparse, parse_qs #need to find out how to get the url to parse it !
 from twitchio.errors import HTTPException
+import dbmethods
 
+dbmethods.initDatabase()
 def run_flask():
     app.run(port=5000)
 app = Flask(__name__)
@@ -59,6 +61,8 @@ def callback():
             token_info = response.json()
             acc_token = token_info['access_token']
             refr_token = token_info['refresh_token']
+            expires_in = token_info['expires_in']
+            dbmethods.importTokens(acc_token,refr_token,expires_in)
             return "Authentication successful! Token stored in session."
         else:
             print("Failed to exchange token")
