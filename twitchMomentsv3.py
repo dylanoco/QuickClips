@@ -72,7 +72,7 @@ def callback():
             acc_token = token_info['access_token']
             refr_token = token_info['refresh_token']
             expires_in = token_info['expires_in']
-            dbmethods.importTokens(acc_token,refr_token,expires_in)
+            dbmethods.updateTokens(acc_token,refr_token,expires_in)
             return "Authentication successful! Token stored in session."
         else:
             print("Failed to exchange token")

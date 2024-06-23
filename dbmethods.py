@@ -42,7 +42,7 @@ def initDatabase():
             sqliteConnection.close()
             print("sqlite connection is closed")
 
-def importTokens(auth_t,refr_t,exp_in):
+def insertTokens(auth_t,refr_t,exp_in):
     try:
         sqliteConnection = sqlite3.connect('database/keys.db')
         sqlite_create_table_query = '''INSERT INTO AuthKeys (id,auth_token,refr_token,expires_in) VALUES (?,?,?,?);'''
@@ -62,6 +62,37 @@ def importTokens(auth_t,refr_t,exp_in):
         if sqliteConnection:
             sqliteConnection.close()
             print("sqlite connection is closed")
+
+def updateTokens(auth_t,refr_t,exp_in):
+    userValues = (auth_t,refr_t,exp_in)
+    sqliteConnection = sqlite3.connect('database/keys.db')
+    sqlite_find_row = '''SELECT COUNT(*) from AuthKeys'''
+    cursor = sqliteConnection.cursor()
+    cursor.execute(sqlite_find_row)
+    result = cursor.fetchone()
+    row_count = result[0]
+
+    if(row_count > 0):
+        
+        sqlite_create_table_query = '''UPDATE AuthKeys set auth_token = ?, refr_token = ?, expires_in = ? WHERE id = 1;'''
+        cursor = sqliteConnection.cursor()
+        print("Successfully Connected to SQLite")
+        cursor.execute(sqlite_create_table_query, userValues)
+        sqliteConnection.commit()
+        print("SQLite Update Completed")
+        cursor.close()
+    else:
+        userValues = (1,auth_t,refr_t,exp_in)
+        sqlite_create_table_query = '''INSERT INTO AuthKeys (id,auth_token,refr_token,expires_in) VALUES (?,?,?,?);'''
+        cursor = sqliteConnection.cursor()
+        print("Successfully Connected to SQLite")
+        cursor.execute(sqlite_create_table_query, userValues)
+        sqliteConnection.commit()
+        print("SQLite Insert Completed")
+        cursor.close()
+
+    sqliteConnection.close()
+    print("sqlite connection is closed")
 
 def getRefreshToken():
     try:
