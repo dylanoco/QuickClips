@@ -21,7 +21,6 @@ def run_flask():
     app.run(port=5000)
 app = Flask(__name__)
 threading.Thread(target=run_flask).start()
-
 #Variables
 load_dotenv()
 client_secret = os.getenv('TWITCH_CLIENT_SECRET')
@@ -32,6 +31,17 @@ twitch_name = ""
 twitch_id = ""
 auth_cid = os.getenv('APP_CLIENT_ID')
 temp_oauth = ""
+#Establishing Tokens if they already exist
+try:
+    if(dbmethods.getAccessToken() != None and dbmethods.getRefreshToken() != None ):
+        acc_token = dbmethods.getAccessToken()
+        refr_token = dbmethods.getRefreshToken()
+        print("AT TEST: " + acc_token)
+        print("RT TEST: " + refr_token)
+    else:
+        pass
+except:
+    print("Error: No pre-existing tokens exist in the database. ")
 #HTML Routes
 @app.route('/')
 def home():

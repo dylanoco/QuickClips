@@ -21,7 +21,7 @@ finally:
 def initDatabase():
     try:
         sqliteConnection = sqlite3.connect('database/keys.db')
-        sqlite_create_table_query = '''CREATE TABLE AuthKeys (
+        sqlite_create_table_query = '''CREATE TABLE IF NOT EXISTS AuthKeys (
                                     id INTEGER PRIMARY KEY,
                                     auth_token TEXT NOT NULL,
                                     refr_token text NOT NULL UNIQUE,
@@ -58,6 +58,50 @@ def importTokens(auth_t,refr_t,exp_in):
 
     except sqlite3.Error as error:
         print("Error while creating a sqlite table", error)
+    finally:
+        if sqliteConnection:
+            sqliteConnection.close()
+            print("sqlite connection is closed")
+
+def getRefreshToken():
+    try:
+        sqliteConnection = sqlite3.connect('database/keys.db')
+        sqlite_get_refresh_token = '''SELECT refr_token FROM AuthKeys WHERE id = 1;'''
+
+        cursor = sqliteConnection.cursor()
+        print("Successfully Connected to SQLite")
+        cursor.execute(sqlite_get_refresh_token)
+        refresh_token = cursor.fetchone()
+        print("SQLite Insert Completed")
+
+        cursor.close()
+        return refresh_token[0]
+
+    except sqlite3.Error as error:
+        print("Error while creating a sqlite table", error)
+        return None
+    finally:
+        if sqliteConnection:
+            sqliteConnection.close()
+            print("sqlite connection is closed")
+
+def getAccessToken():
+    try:
+        sqliteConnection = sqlite3.connect('database/keys.db')
+        sqlite_get_auth_token = '''SELECT auth_token FROM AuthKeys WHERE id = 1;'''
+
+        cursor = sqliteConnection.cursor()
+        print("Successfully Connected to SQLite")
+        cursor.execute(sqlite_get_auth_token)
+        auth_token = cursor.fetchone()
+        print("SQLite Insert Completed")
+
+        cursor.close()
+        return auth_token[0]
+
+    except sqlite3.Error as error:
+        print("Error while creating a sqlite table", error)
+        return None
     finally:
         if sqliteConnection:
             sqliteConnection.close()
