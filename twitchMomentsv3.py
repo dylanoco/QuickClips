@@ -36,8 +36,8 @@ try:
     if(dbmethods.getAccessToken() != None and dbmethods.getRefreshToken() != None ):
         acc_token = dbmethods.getAccessToken()
         refr_token = dbmethods.getRefreshToken()
-        print("AT TEST: " + acc_token)
-        print("RT TEST: " + refr_token)
+        # print("AT TEST: " + acc_token)
+        # print("RT TEST: " + refr_token)
     else:
         pass
 except:
@@ -108,11 +108,12 @@ def grabUserDetails():
             username = user['display_name']
             print(f"User ID: {user_id}")
             print(f"Username: {username}")
-            print(user_info)
+            # print(user_info)
         else:
             print("No user data found.")
     else:
         print(f"Failed to get user information: {response.status_code} - {response.text}")
+        refreshAccessToken()
     print("url")
 
 def notyChecker():
@@ -162,9 +163,17 @@ def clip_creator():
         if htperr.status == 404:
             print(htperr.reason)
             return
-    User = bot.create_user(twitch_id,twitch_name)
-    print(twitch_id)
+    
+    # print(twitch_id)
     print(twitch_name)
+    try:
+        User = bot.create_user(twitch_id,twitch_name)
+    except HTTPException as htperr:
+        if htperr.status == 401:
+            refreshAccessToken()
+        if htperr.status == 404:
+            print(htperr.reason)
+            return
     try:
         clip_url = loop.run_until_complete(User.create_clip(token=acc_token))
     except HTTPException as htperr:
