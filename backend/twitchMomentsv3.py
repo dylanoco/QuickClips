@@ -21,6 +21,8 @@ def run_flask():
     app.run(port=5000)
 app = Flask(__name__)
 threading.Thread(target=run_flask).start()
+
+
 #Variables
 load_dotenv()
 client_secret = os.getenv('TWITCH_CLIENT_SECRET')
@@ -31,13 +33,12 @@ twitch_name = ""
 twitch_id = ""
 auth_cid = os.getenv('APP_CLIENT_ID')
 temp_oauth = ""
+
 #Establishing Tokens if they already exist
 try:
     if(dbmethods.getAccessToken() != None and dbmethods.getRefreshToken() != None ):
         acc_token = dbmethods.getAccessToken()
         refr_token = dbmethods.getRefreshToken()
-        # print("AT TEST: " + acc_token)
-        # print("RT TEST: " + refr_token)
     else:
         pass
 except:
@@ -78,6 +79,7 @@ def callback():
             print("Failed to exchange token")
     return "Error during authentication."
 
+
 #Functions
 def open_browser():
     global auth_cid
@@ -114,7 +116,7 @@ def grabUserDetails():
     else:
         print(f"Failed to get user information: {response.status_code} - {response.text}")
         refreshAccessToken()
-    print("url")
+        grabUserDetails()
 
 def notyChecker():
 
@@ -164,8 +166,6 @@ def clip_creator():
             print(htperr.reason)
             return
     
-    # print(twitch_id)
-    print(twitch_name)
     try:
         User = bot.create_user(twitch_id,twitch_name)
     except HTTPException as htperr:
@@ -214,7 +214,6 @@ def refreshAccessToken():
             print("Failed to exchange token")
 
 #Threads & Main
-
 keyboard_thread = threading.Thread(target=createaClip)
 keyboard_thread.daemon = True  
 keyboard_thread.start()
