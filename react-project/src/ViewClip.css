@@ -1,0 +1,8 @@
+div .viewclip-container{
+    min-width: 50vw;
+    min-height: 100vh;
+    background-color: #18181C;
+}
+.viewclip-container header{
+    text-align: center;
+}

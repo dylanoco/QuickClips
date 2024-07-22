@@ -1,0 +1,7 @@
+div .clipscreated-container{
+    display: block;
+    background-color: #18181C;
+    text-align: center  ;
+    min-width: 35vw;
+    min-height: 100vh;
+}

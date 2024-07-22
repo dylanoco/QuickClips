@@ -18,12 +18,17 @@ header {
     color:#646cff;
     font-weight: 500;
 }
+.navbar header {
+  padding-bottom: 50px;
+  font-size: xx-large;
+  color:#646cff;
+  font-weight: 500;
+}
 a {
   font-weight: 600;
   padding-block: 11px;
   color: #ffffff;
   text-decoration: inherit;
-  padding-top: 5px;
 }
 a:hover {
   color: #D03838;
@@ -43,6 +48,7 @@ h1 {
 }
 ul {
     list-style-type: none;
+    padding-left: 0;
 }
 
 li a{
@@ -83,9 +89,10 @@ button:focus-visible {
 
 
 .navbar {
-    background-color: #111114;
-    height: 100vh;
-    width: 40vh;
+  padding-left: 35px;
+  background-color: #111114;
+  min-height: 100vh;
+  min-width: 15vw;
 }
 
 
