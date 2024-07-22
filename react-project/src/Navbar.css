@@ -1,5 +1,5 @@
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: Inter;
   line-height: 1.5;
   font-weight: 400;
 
@@ -12,6 +12,23 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+header {
+    padding-bottom: 50px;
+    font-size: xx-large;
+    color:#646cff;
+    font-weight: 500;
+}
+a {
+  font-weight: 600;
+  padding-block: 11px;
+  color: #ffffff;
+  text-decoration: inherit;
+  padding-top: 5px;
+}
+a:hover {
+  color: #D03838;
+}
+
 body {
   margin: 0;
   display: flex;
@@ -23,6 +40,13 @@ body {
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
+}
+ul {
+    list-style-type: none;
+}
+
+li a{
+    display: block;
 }
 
 button {
@@ -56,3 +80,12 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+
+.navbar {
+    background-color: #111114;
+    height: 100vh;
+    width: 40vh;
+}
+
+

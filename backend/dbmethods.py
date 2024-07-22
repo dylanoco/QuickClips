@@ -1,6 +1,6 @@
 import sqlite3
 try:
-    sqliteConnection = sqlite3.connect('database/keys.db')
+    sqliteConnection = sqlite3.connect('backend/database/keys.db')
     cursor = sqliteConnection.cursor()
     print("Database created and Successfully Connected to SQLite")
 
@@ -20,7 +20,7 @@ finally:
 
 def initDatabase():
     try:
-        sqliteConnection = sqlite3.connect('database/keys.db')
+        sqliteConnection = sqlite3.connect('backend/database/keys.db')
         sqlite_create_table_query = '''CREATE TABLE IF NOT EXISTS AuthKeys (
                                     id INTEGER PRIMARY KEY,
                                     auth_token TEXT NOT NULL,
@@ -44,7 +44,7 @@ def initDatabase():
 
 def insertTokens(auth_t,refr_t,exp_in):
     try:
-        sqliteConnection = sqlite3.connect('database/keys.db')
+        sqliteConnection = sqlite3.connect('backend/database/keys.dbb')
         sqlite_create_table_query = '''INSERT INTO AuthKeys (id,auth_token,refr_token,expires_in) VALUES (?,?,?,?);'''
         userValues = (1,auth_t,refr_t,exp_in)
 
@@ -65,7 +65,7 @@ def insertTokens(auth_t,refr_t,exp_in):
 
 def updateTokens(auth_t,refr_t,exp_in):
     userValues = (auth_t,refr_t,exp_in)
-    sqliteConnection = sqlite3.connect('database/keys.db')
+    sqliteConnection = sqlite3.connect('backend/database/keys.db')
     sqlite_find_row = '''SELECT COUNT(*) from AuthKeys'''
     cursor = sqliteConnection.cursor()
     cursor.execute(sqlite_find_row)
@@ -96,7 +96,7 @@ def updateTokens(auth_t,refr_t,exp_in):
 
 def getRefreshToken():
     try:
-        sqliteConnection = sqlite3.connect('database/keys.db')
+        sqliteConnection = sqlite3.connect('backend/database/keys.db')
         sqlite_get_refresh_token = '''SELECT refr_token FROM AuthKeys WHERE id = 1;'''
 
         cursor = sqliteConnection.cursor()
@@ -118,7 +118,7 @@ def getRefreshToken():
 
 def getAccessToken():
     try:
-        sqliteConnection = sqlite3.connect('database/keys.db')
+        sqliteConnection = sqlite3.connect('backend/database/keys.db')
         sqlite_get_auth_token = '''SELECT auth_token FROM AuthKeys WHERE id = 1;'''
 
         cursor = sqliteConnection.cursor()
