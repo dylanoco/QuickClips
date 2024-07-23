@@ -1,8 +1,19 @@
-div .viewclip-container{
+.viewclip-container{
     min-width: 50vw;
     min-height: 100vh;
     background-color: #18181C;
+    grid-row-gap: 0px;
+    grid-column-gap: 0px;
+    
+    
 }
 .viewclip-container header{
     text-align: center;
+    padding: 0;
+    margin: 0;
+}
+
+.viewclip-container iframe{
+    display: block;
+    margin: auto;
 }

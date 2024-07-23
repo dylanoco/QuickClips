@@ -11,15 +11,17 @@ from win10toast import ToastNotifier
 import requests
 import webbrowser
 import threading
-from flask import Flask, request, redirect, session, url_for, render_template
+from flask import Flask, request, redirect, session, url_for, render_template, jsonify
 from urllib.parse import urlparse, parse_qs #need to find out how to get the url to parse it !
 from twitchio.errors import HTTPException
 import dbmethods
+from flask_cors import CORS
 
 dbmethods.initDatabase()
 def run_flask():
     app.run(port=5000)
 app = Flask(__name__)
+CORS(app)
 threading.Thread(target=run_flask).start()
 
 
@@ -79,11 +81,15 @@ def callback():
             print("Failed to exchange token")
     return "Error during authentication."
 
-
+@app.route('/clips', methods=['GET'])
+def get_clips():
+    clips = dbmethods.get_clips()
+    return jsonify(clips)
 #Functions
 def open_browser():
     global auth_cid
     webbrowser.open_new("http://localhost:5000/")
+
 
 def gotoAuthorize():
     open_browser()
@@ -182,7 +188,8 @@ def clip_creator():
         if htperr.status == 404:
             print(htperr.reason)
             return
-            
+    dbmethods.insertClip(clip_url['id'],clip_url['edit_url'],str(datetime.datetime.today()))
+
     with open('url_clips.txt', 'a') as f:
         f.write("Date: " + str(datetime.datetime.today()) + " | Clip Details: " + str(clip_url['edit_url']) + '\n')
         f.close()

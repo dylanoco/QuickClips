@@ -19,8 +19,9 @@ finally:
 
 
 def initDatabase():
+    sqliteConnection = sqlite3.connect('backend/database/keys.db')
     try:
-        sqliteConnection = sqlite3.connect('backend/database/keys.db')
+        
         sqlite_create_table_query = '''CREATE TABLE IF NOT EXISTS AuthKeys (
                                     id INTEGER PRIMARY KEY,
                                     auth_token TEXT NOT NULL,
@@ -31,12 +32,29 @@ def initDatabase():
         print("Successfully Connected to SQLite")
         cursor.execute(sqlite_create_table_query)
         sqliteConnection.commit()
-        print("SQLite table created")
-
+        print("SQLite table created: Database")
         cursor.close()
 
     except sqlite3.Error as error:
         print("Error while creating a sqlite table", error)
+
+
+
+    try:
+        sqlite_create_table_query_clips = '''CREATE TABLE IF NOT EXISTS Clips (
+                            slug TEXT PRIMARY KEY,
+                            link text NOT NULL UNIQUE,
+                            date datetime);'''
+
+        cursor = sqliteConnection.cursor()
+        cursor.execute(sqlite_create_table_query_clips)
+        sqliteConnection.commit()
+        print("SQLite table created: Clips")
+
+        cursor.close()
+
+    except sqlite3.Error as error:
+        print("Error while creating a sqlite table clips", error)
     finally:
         if sqliteConnection:
             sqliteConnection.close()
@@ -44,7 +62,7 @@ def initDatabase():
 
 def insertTokens(auth_t,refr_t,exp_in):
     try:
-        sqliteConnection = sqlite3.connect('backend/database/keys.dbb')
+        sqliteConnection = sqlite3.connect('backend/database/keys.db')
         sqlite_create_table_query = '''INSERT INTO AuthKeys (id,auth_token,refr_token,expires_in) VALUES (?,?,?,?);'''
         userValues = (1,auth_t,refr_t,exp_in)
 
@@ -117,6 +135,8 @@ def getRefreshToken():
             print("sqlite connection is closed")
 
 def getAccessToken():
+
+
     try:
         sqliteConnection = sqlite3.connect('backend/database/keys.db')
         sqlite_get_auth_token = '''SELECT auth_token FROM AuthKeys WHERE id = 1;'''
@@ -129,6 +149,51 @@ def getAccessToken():
 
         cursor.close()
         return auth_token[0]
+
+    except sqlite3.Error as error:
+        print("Error while creating a sqlite table", error)
+        return None
+    finally:
+        if sqliteConnection:
+            sqliteConnection.close()
+            print("sqlite connection is closed")
+
+def insertClip(slug,link,date):
+
+    try:
+        sqliteConnection = sqlite3.connect('backend/database/keys.db')
+        sqlite_create_table_query = '''INSERT INTO Clips (slug,link,date) VALUES (?,?,?);'''
+        userValues = (slug,link,date)
+
+        cursor = sqliteConnection.cursor()
+        print("Successfully Connected to SQLite")
+        cursor.execute(sqlite_create_table_query, userValues)
+        sqliteConnection.commit()
+        print("SQLite Insert Clip Completed")
+
+        cursor.close()
+
+    except sqlite3.Error as error:
+        print("Error while creating a sqlite table", error)
+    finally:
+        if sqliteConnection:
+            sqliteConnection.close()
+            print("sqlite connection is closed")
+
+def get_clips():
+
+    try:
+        sqliteConnection = sqlite3.connect('backend/database/keys.db')
+        sqlite_get_clips= '''SELECT slug FROM Clips'''
+
+        cursor = sqliteConnection.cursor()
+        print("Successfully Connected to SQLite")
+        cursor.execute(sqlite_get_clips)
+        clips = cursor.fetchall()
+        print("SQLite Getting Clips Completed")
+
+        cursor.close()
+        return clips
 
     except sqlite3.Error as error:
         print("Error while creating a sqlite table", error)

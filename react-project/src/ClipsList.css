@@ -1,0 +1,20 @@
+.clipsList{
+    display: grid;
+    text-align: center;
+}
+button{
+    font-family: Inter;
+    font-weight: 400;
+    justify-self: center;
+    width: min-content;
+    margin: 5px;
+}
+button:hover{
+    background-color: #D03838;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+button:focus {
+  background-color: #D03838;
+}
