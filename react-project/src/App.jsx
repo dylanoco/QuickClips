@@ -4,6 +4,7 @@ import ClipsCreated from './ClipsCreated.jsx'
 import ViewClip from './ViewClip.jsx'
 
 import './App.css'
+import { DataProvider } from './DataContext.jsx'
 
 
 function App() {
@@ -11,8 +12,10 @@ function App() {
   return (
   <div className="container"> 
     <NavBar/> 
-    <ClipsCreated/> 
-    <ViewClip/> 
+    <DataProvider>
+      <ClipsCreated/> 
+      <ViewClip/> 
+    </DataProvider>
   </div>
   )
 }
