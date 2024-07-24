@@ -2,10 +2,14 @@
     min-width: 50vw;
     min-height: 100vh;
     background-color: #18181C;
-    grid-row-gap: 0px;
-    grid-column-gap: 0px;
-    
-    
+}
+
+.buttons-container{
+    display: block;
+    margin: auto;
+    /* border: red;
+    border-style: dashed; */
+    max-width: 30vw;
 }
 .viewclip-container header{
     text-align: center;
@@ -16,4 +20,28 @@
 .viewclip-container iframe{
     display: block;
     margin: auto;
+}
+.vc-buttons{
+    display: inline;
+}
+
+#vc-b-1, #vc-b-2{
+    float: left;
+}
+#vc-b-1{
+    background-color: #D03838;
+}
+
+#vc-b-2{
+    background-color: #D767FF;
+}
+
+
+#vc-b-3{
+    float: right;
+    background-color: #820000;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+
 }

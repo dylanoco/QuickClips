@@ -85,6 +85,12 @@ def callback():
 def get_clips():
     clips = dbmethods.get_clips()
     return jsonify(clips)
+
+@app.route('/removeClip', methods=['POST'])
+def remove_List():
+    slug = request.get_json()
+    dbmethods.remove_clips(slug)
+    return jsonify("Successful")
 #Functions
 def open_browser():
     global auth_cid

@@ -59,6 +59,26 @@ def initDatabase():
         if sqliteConnection:
             sqliteConnection.close()
             print("sqlite connection is closed")
+def remove_clips(slugs):
+    try:
+        print(slugs)
+        sqliteConnection = sqlite3.connect('backend/database/keys.db')
+        sqlite_delete_clip = "DELETE FROM Clips WHERE slug = ?"
+
+        cursor = sqliteConnection.cursor()
+        print("Successfully Connected to SQLite")
+        cursor.execute(sqlite_delete_clip,(slugs,))
+        sqliteConnection.commit()
+        print("SQLite Delete Completed")
+
+        cursor.close()
+
+    except sqlite3.Error as error:
+        print("Error while deleting: ", error)
+    finally:
+        if sqliteConnection:
+            sqliteConnection.close()
+            print("sqlite connection is closed")
 
 def insertTokens(auth_t,refr_t,exp_in):
     try:

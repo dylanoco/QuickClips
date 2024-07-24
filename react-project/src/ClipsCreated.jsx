@@ -6,7 +6,7 @@ function ClipsCreated(){
     //here is where u use json to get data from database using flask api
     const [clips, setClips] = useState([]);
     useEffect(() => {
-      fetch('http://localhost:5000/clips')
+      fetch('http://localhost:5000/clips', ['GET'])
         .then(response => response.json())
         .then(clips => {
             setClips(clips);
