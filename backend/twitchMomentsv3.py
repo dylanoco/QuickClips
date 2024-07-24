@@ -86,6 +86,11 @@ def get_clips():
     clips = dbmethods.get_clips()
     return jsonify(clips)
 
+@app.route('/getLink', methods=['POST'])
+def get_link():
+    slug = request.get_json()
+    link = dbmethods.get_link(slug)
+    return jsonify(link)
 @app.route('/removeClip', methods=['POST'])
 def remove_List():
     slug = request.get_json()

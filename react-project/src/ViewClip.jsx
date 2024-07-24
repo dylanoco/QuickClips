@@ -10,6 +10,8 @@ function ViewClip(){
     const urlParent = "&parent=localhost";
     const url = urlBody.concat(slug, urlParent);
 
+    const [link, setLink] = useState([]);
+
     function removeList(slug){
       console.log("test");
       fetch("http://localhost:5000/removeClip", {
@@ -25,6 +27,22 @@ function ViewClip(){
 
     }
 
+    function openEdit(slug){
+
+      console.log("test");
+      fetch("http://localhost:5000/getLink", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(slug)
+      })
+      .then((response) => response.json())
+      .then((link) =>window.open(link[0], '_blank', 'location=yes'))
+      .then((link) => console.log("Success:", link[0]))
+      .catch((error) => console.error("Error:", error))
+    }
+
 
 
 
@@ -35,7 +53,7 @@ function ViewClip(){
         frameBorder="0" allowFullScreen={true} scrolling="no" height="378" width="620"></iframe>
         <div className='buttons-container'>
           <div className='vc-buttons'>
-            <button id='vc-b-2'>Edit</button>
+            <button onClick = {() => openEdit(slug)}id='vc-b-2'>Edit</button>
             <button onClick = {() => removeList(slug)} id='vc-b-3'>Remove from List</button>
           </div>
         </div>

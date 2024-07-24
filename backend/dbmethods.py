@@ -222,3 +222,27 @@ def get_clips():
         if sqliteConnection:
             sqliteConnection.close()
             print("sqlite connection is closed")
+
+def get_link(slug):
+
+    try:
+        sqliteConnection = sqlite3.connect('backend/database/keys.db')
+        sqlite_get_link= '''SELECT link FROM Clips WHERE slug = ?'''
+
+        cursor = sqliteConnection.cursor()
+        print("Successfully Connected to SQLite")
+        cursor.execute(sqlite_get_link,(slug,))
+        link = cursor.fetchone()
+        print(link)
+        print("SQLite Getting Clips Completed")
+
+        cursor.close()
+        return link
+
+    except sqlite3.Error as error:
+        print("Error while creating a sqlite table", error)
+        return None
+    finally:
+        if sqliteConnection:
+            sqliteConnection.close()
+            print("sqlite connection is closed")
