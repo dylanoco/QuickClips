@@ -6,7 +6,7 @@ function NavBar() {
   return (
     <div className='navbar'>
       <header>Twitch Clips</header>
-      <ul>
+      <ul className='navbar-ul'>
         <li><a>Home</a></li>
         <li><a>View Clips</a></li>
       </ul>

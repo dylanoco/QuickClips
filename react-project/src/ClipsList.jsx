@@ -6,9 +6,17 @@ function ClipsList(props){
 
     const {setSlug} = useContext(DataContext)
 
-    const displayClips = clips.map(clip => <button onClick = {() => setSlug(clip[0])}key={clip[0]}>
-                                            {clip[0]}
-                                            </button>
+    const displayClips = clips.map(clip => 
+    <div className = "cl-div-button" tabindex="1" onClick={() => setSlug(clip[0])}>
+    <div className='dategame-wrap' >
+        <p id="date">{clip[1]}</p>
+        <p id="game">{clip[3]}</p>
+    </div>
+    <div className='time-wrap'>
+        <p id="time">{clip[2]}</p>
+    </div>
+        
+    </div>
 
     );
     return(
@@ -16,3 +24,5 @@ function ClipsList(props){
     )
 }
 export default ClipsList
+
+//CLICKABLE DIV WITH ONCLICK, THEN FORMAT TEXT INSIDE THAT DIV.

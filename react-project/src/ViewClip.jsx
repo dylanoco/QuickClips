@@ -49,13 +49,11 @@ function ViewClip(){
     return(
     <div className="viewclip-container">
         <header>View Clip</header>
-        <iframe src={url}
-        frameBorder="0" allowFullScreen={true} scrolling="no" height="378" width="620"></iframe>
-        <div className='buttons-container'>
-          <div className='vc-buttons'>
-            <button onClick = {() => openEdit(slug)}id='vc-b-2'>Edit</button>
-            <button onClick = {() => removeList(slug)} id='vc-b-3'>Remove from List</button>
-          </div>
+        <div className='vc-controls-container'>
+          <iframe src={url}
+          frameBorder="0" allowFullScreen={true} scrolling="no" height="378" width="620"></iframe>
+          <button onClick = {() => openEdit(slug)}id='vc-b-1'>Edit</button>
+          <button onClick = {() => removeList(slug)} id='vc-b-2'>Remove from List</button>
         </div>
     </div>
     )

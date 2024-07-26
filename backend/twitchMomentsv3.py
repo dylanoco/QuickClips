@@ -25,6 +25,8 @@ CORS(app)
 threading.Thread(target=run_flask).start()
 
 
+
+
 #Variables
 load_dotenv()
 client_secret = os.getenv('TWITCH_CLIENT_SECRET')
@@ -35,6 +37,9 @@ twitch_name = ""
 twitch_id = ""
 auth_cid = os.getenv('APP_CLIENT_ID')
 temp_oauth = ""
+user_id = ""
+
+
 
 #Establishing Tokens if they already exist
 try:
@@ -106,7 +111,7 @@ def gotoAuthorize():
     open_browser()
 
 def grabUserDetails():
-    global twitch_name, twitch_id, acc_token
+    global twitch_name, twitch_id, acc_token, auth_cid
     print("acess token " + acc_token)
     headers = {
     'Authorization': f'Bearer {acc_token}',
@@ -120,7 +125,6 @@ def grabUserDetails():
 
         if user_info['data']:
             user = user_info['data'][0]
-            user_id = user['id']
             twitch_id = user['id']
 
             twitch_name = user['display_name']
@@ -134,6 +138,42 @@ def grabUserDetails():
         print(f"Failed to get user information: {response.status_code} - {response.text}")
         refreshAccessToken()
         grabUserDetails()
+
+
+
+
+def grabGame():
+    global twitch_name, twitch_id, acc_token, auth_cid, user_id
+    print("acess token " + acc_token)
+    headers = {
+    'Authorization': f'Bearer {acc_token}',
+    'Client-Id': auth_cid
+    }
+    url = "https://api.twitch.tv/helix/channels?broadcaster_id=" + twitch_id
+    response = requests.get(url, headers=headers)
+
+    if response.status_code == 200:
+        user_info = response.json()
+
+        if user_info['data']:
+            user = user_info['data'][0]
+            game_name = user['game_name']
+            return game_name
+        else:
+            print("No user data found.")
+            return "Empty 1"
+    else:
+        print(f"Failed to get user information: {response.status_code} - {response.text}")
+        return "Empty 2"
+
+
+
+
+
+
+
+
+
 
 def notyChecker():
 
@@ -165,13 +205,15 @@ class Bot(commands.Bot):
         return super().create_user(user_id, user_name)
 
 def clip_creator():
+    global twitch_name, twitch_id, acc_token, twitch_id
     grabUserDetails()
+    print("uid: "+ twitch_id)
     clipped = Notification(app_id="enzynclipper", 
                            title="Clipped !", 
                            msg="You have clipped the last 30 seconds to your Twitch !", 
                            duration="short")
     clipped.show()
-    global twitch_name, twitch_id, acc_token
+    
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     try:
@@ -199,10 +241,13 @@ def clip_creator():
         if htperr.status == 404:
             print(htperr.reason)
             return
-    dbmethods.insertClip(clip_url['id'],clip_url['edit_url'],str(datetime.datetime.today()))
+    
+    game_name = grabGame()
+    print(game_name)
+    dbmethods.insertClip(clip_url['id'],clip_url['edit_url'],str(  (datetime.datetime.now()).strftime("%x")  ) ,str(  (datetime.datetime.now()).strftime("%X")  ),game_name)
 
     with open('url_clips.txt', 'a') as f:
-        f.write("Date: " + str(datetime.datetime.today()) + " | Clip Details: " + str(clip_url['edit_url']) + '\n')
+        f.write("Date: " + str(  (datetime.datetime.now()).strftime("%x")  ) + "Date: " + str(  (datetime.datetime.now()).strftime("%X")  ) +  " | Clip Details: " + str(clip_url['edit_url']) + '\n')
         f.close()
     print("done")
 

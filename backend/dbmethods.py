@@ -1,6 +1,9 @@
 import sqlite3
+import os
+base_dir = os.path.dirname(os.path.abspath(__file__))
+db_path = os.path.join(base_dir, 'database', 'keys.db')
 try:
-    sqliteConnection = sqlite3.connect('backend/database/keys.db')
+    sqliteConnection = sqlite3.connect(db_path)
     cursor = sqliteConnection.cursor()
     print("Database created and Successfully Connected to SQLite")
 
@@ -19,7 +22,7 @@ finally:
 
 
 def initDatabase():
-    sqliteConnection = sqlite3.connect('backend/database/keys.db')
+    sqliteConnection = sqlite3.connect(db_path)
     try:
         
         sqlite_create_table_query = '''CREATE TABLE IF NOT EXISTS AuthKeys (
@@ -43,8 +46,10 @@ def initDatabase():
     try:
         sqlite_create_table_query_clips = '''CREATE TABLE IF NOT EXISTS Clips (
                             slug TEXT PRIMARY KEY,
-                            link text NOT NULL UNIQUE,
-                            date datetime);'''
+                            link text,
+                            date datetime,
+                            time TEXT,
+                            game TEXT);'''
 
         cursor = sqliteConnection.cursor()
         cursor.execute(sqlite_create_table_query_clips)
@@ -62,7 +67,7 @@ def initDatabase():
 def remove_clips(slugs):
     try:
         print(slugs)
-        sqliteConnection = sqlite3.connect('backend/database/keys.db')
+        sqliteConnection = sqlite3.connect(db_path)
         sqlite_delete_clip = "DELETE FROM Clips WHERE slug = ?"
 
         cursor = sqliteConnection.cursor()
@@ -82,7 +87,7 @@ def remove_clips(slugs):
 
 def insertTokens(auth_t,refr_t,exp_in):
     try:
-        sqliteConnection = sqlite3.connect('backend/database/keys.db')
+        sqliteConnection = sqlite3.connect(db_path)
         sqlite_create_table_query = '''INSERT INTO AuthKeys (id,auth_token,refr_token,expires_in) VALUES (?,?,?,?);'''
         userValues = (1,auth_t,refr_t,exp_in)
 
@@ -103,7 +108,7 @@ def insertTokens(auth_t,refr_t,exp_in):
 
 def updateTokens(auth_t,refr_t,exp_in):
     userValues = (auth_t,refr_t,exp_in)
-    sqliteConnection = sqlite3.connect('backend/database/keys.db')
+    sqliteConnection = sqlite3.connect(db_path)
     sqlite_find_row = '''SELECT COUNT(*) from AuthKeys'''
     cursor = sqliteConnection.cursor()
     cursor.execute(sqlite_find_row)
@@ -134,7 +139,7 @@ def updateTokens(auth_t,refr_t,exp_in):
 
 def getRefreshToken():
     try:
-        sqliteConnection = sqlite3.connect('backend/database/keys.db')
+        sqliteConnection = sqlite3.connect(db_path)
         sqlite_get_refresh_token = '''SELECT refr_token FROM AuthKeys WHERE id = 1;'''
 
         cursor = sqliteConnection.cursor()
@@ -158,7 +163,7 @@ def getAccessToken():
 
 
     try:
-        sqliteConnection = sqlite3.connect('backend/database/keys.db')
+        sqliteConnection = sqlite3.connect(db_path)
         sqlite_get_auth_token = '''SELECT auth_token FROM AuthKeys WHERE id = 1;'''
 
         cursor = sqliteConnection.cursor()
@@ -178,12 +183,12 @@ def getAccessToken():
             sqliteConnection.close()
             print("sqlite connection is closed")
 
-def insertClip(slug,link,date):
+def insertClip(slug,link,date,time,game):
 
     try:
-        sqliteConnection = sqlite3.connect('backend/database/keys.db')
-        sqlite_create_table_query = '''INSERT INTO Clips (slug,link,date) VALUES (?,?,?);'''
-        userValues = (slug,link,date)
+        sqliteConnection = sqlite3.connect(db_path)
+        sqlite_create_table_query = '''INSERT INTO Clips (slug,link,date,time,game) VALUES (?,?,?,?,?);'''
+        userValues = (slug,link,date,time,game)
 
         cursor = sqliteConnection.cursor()
         print("Successfully Connected to SQLite")
@@ -203,8 +208,8 @@ def insertClip(slug,link,date):
 def get_clips():
 
     try:
-        sqliteConnection = sqlite3.connect('backend/database/keys.db')
-        sqlite_get_clips= '''SELECT slug FROM Clips'''
+        sqliteConnection = sqlite3.connect(db_path)
+        sqlite_get_clips= '''SELECT slug, date, time, game FROM Clips'''
 
         cursor = sqliteConnection.cursor()
         print("Successfully Connected to SQLite")
@@ -226,7 +231,7 @@ def get_clips():
 def get_link(slug):
 
     try:
-        sqliteConnection = sqlite3.connect('backend/database/keys.db')
+        sqliteConnection = sqlite3.connect(db_path)
         sqlite_get_link= '''SELECT link FROM Clips WHERE slug = ?'''
 
         cursor = sqliteConnection.cursor()

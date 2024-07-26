@@ -12,6 +12,7 @@ import App from './App.jsx'
 //     methods:["GET"],
 //   })
 // );
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <App />

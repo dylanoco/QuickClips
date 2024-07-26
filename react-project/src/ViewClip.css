@@ -4,13 +4,6 @@
     background-color: #18181C;
 }
 
-.buttons-container{
-    display: block;
-    margin: auto;
-    /* border: red;
-    border-style: dashed; */
-    max-width: 30vw;
-}
 .viewclip-container header{
     text-align: center;
     padding: 0;
@@ -20,28 +13,47 @@
 .viewclip-container iframe{
     display: block;
     margin: auto;
-}
-.vc-buttons{
-    display: inline;
-}
-
-#vc-b-1, #vc-b-2{
-    float: left;
-}
-#vc-b-1{
-    background-color: #D03838;
+    border: #D767FF;
+    border-style: solid;
+    border-radius: 10px;
 }
 
-#vc-b-2{
+@font-face {
+    font-family: mont;
+    src: url("/font/Mont-ExtraLightDEMO.otf") format('opentype');
+}
+@font-face {
+    font-family: mont;
+    src: url("/font/Mont-HeavyDEMO.otf") format('opentype');
+    font-weight: bold;
+}
+header{
+    font-family: mont ;
+    font-weight: bold;
+}
+
+.vc-controls-container{
+    display: block;
+    margin: auto;
+    max-width:620px;
+    
+}
+.vc-controls-container #vc-b-1{
     background-color: #D767FF;
+    font-weight: 600;
+    max-height: 40px;
+    max-width: 80px;
+    float: left;
+
 }
-
-
-#vc-b-3{
-    float: right;
+.vc-controls-container #vc-b-2{
+    font-weight: 600;
+    border-radius: 40px;
     background-color: #820000;
     text-overflow: ellipsis;
     white-space: nowrap;
-
-
+    float: right;
+}
+.vc-controls-container #vc-b-2,#vc-b-1{
+    margin-top: 10px;
 }

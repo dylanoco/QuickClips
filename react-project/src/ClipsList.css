@@ -2,19 +2,70 @@
     display: grid;
     text-align: center;
 }
-button{
-    font-family: Inter;
-    font-weight: 400;
-    justify-self: center;
-    width: min-content;
-    margin: 5px;
-}
-button:hover{
+.cl-div-button:hover{
     background-color: #D03838;
     font-weight: 600;
     transition: all 0.2s;
+    cursor: pointer;
+}
+.cl-div-button:focus {
+  background-color: #D03838;
+  
+}
+.cl-div-button{
+    display: flex;
+    justify-self: center;
+    justify-content: space-evenly;
+    text-align: left;
+    /* border: #D03838;
+    border-style: solid; */
+    border: #D03838;
+    border-radius: 15px;
+    width: 50%;
+    margin-block: 10px;
+    
+    
+}
+.dategame-wrap{
+    font-family: Inter;
+    width: 50%;
+}
+.dategame-wrap #date{
+    width: 50%;
+    font-size: 20px;
+}
+.time-wrap{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    margin: 0;
 }
 
-button:focus {
-  background-color: #D03838;
+.time-wrap:hover,.dategame-wrap:hover{
+    font-weight: bold;
 }
+
+.time-wrap:focus,.dategame-wrap:focus{
+    font-weight: bold;
+}
+.dategame-wrap #game{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap ;
+    font-weight: lighter;
+    font-size: 16px;
+    margin: 0;
+}
+
+.clipsList{
+    margin: 0;
+    padding: 0;
+    overflow:-moz-hidden-unscrollable
+    
+}
+p{
+    margin: 0;
+}
+
+/* use grid for buttons probably */
