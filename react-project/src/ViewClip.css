@@ -20,11 +20,11 @@
 
 @font-face {
     font-family: mont;
-    src: url("/font/Mont-ExtraLightDEMO.otf") format('opentype');
+    src: url("./font/Mont-ExtraLightDEMO.otf") format('opentype');
 }
 @font-face {
     font-family: mont;
-    src: url("/font/Mont-HeavyDEMO.otf") format('opentype');
+    src: url("./font/Mont-HeavyDEMO.otf") format('opentype');
     font-weight: bold;
 }
 header{

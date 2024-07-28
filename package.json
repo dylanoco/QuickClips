@@ -3,20 +3,34 @@
   "version": "1.0.0",
   "main": "main.js",
   "scripts": {
-    "start": "concurrently --kill-others \"npm run start-react\" \"npm run start-flask\" \"npm run start-electron\"",
-    "start-react": "cd react-project && npm run dev",
-    "start-flask": "cd backend && python twitchMomentsv3.py",
+    "start": "concurrently \"npm run start-react\" \"npm run start-electron\"",
+    "start-react": "npx serve -s ./react-project/dist -l 3000",
     "start-electron": "electron .",
-    "build-react": "cd react-project && npm run build",
-    "build": "npm run build-react",
-    "postinstall": "npm run build"
+    "package": "electron-builder"
+  },
+  "build": {
+    "files": [
+      "main.js",
+      "node_modules",
+      {
+        "from": "react-project/dist",
+        "to": "react-project/dist",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ]
   },
   "devDependencies": {
     "concurrently": "^7.6.0",
-    "electron": "^31.3.0"
+    "electron": "^31.3.0",
+    "electron-builder": "^24.13.3",
+    "vite": "^5.3.5"
   },
   "dependencies": {
+    "dependencies": "^0.0.1",
     "electron-log": "^5.1.7",
-    "shell": "^0.9.6"
+    "shell": "^0.9.6",
+    "wait-on": "^7.2.0"
   }
 }

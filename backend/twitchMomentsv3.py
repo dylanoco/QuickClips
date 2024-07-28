@@ -1,4 +1,3 @@
-import keyboard
 import os
 import datetime
 import asyncio
@@ -16,13 +15,25 @@ from urllib.parse import urlparse, parse_qs #need to find out how to get the url
 from twitchio.errors import HTTPException
 import dbmethods
 from flask_cors import CORS
+import logging
+import keyboard
+
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 dbmethods.initDatabase()
 def run_flask():
     app.run(port=5000)
+    
 app = Flask(__name__)
 CORS(app)
-threading.Thread(target=run_flask).start()
+
+
+try:
+    threading.Thread(target=run_flask).start()
+    logger.info("Flask server started successfully.")
+except Exception as e:
+    logger.error(f"Error starting Flask server: {e}")
 
 
 
