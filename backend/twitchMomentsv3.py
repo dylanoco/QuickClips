@@ -1,4 +1,3 @@
-import keyboard
 import os
 import datetime
 import asyncio
@@ -11,18 +10,53 @@ from win10toast import ToastNotifier
 import requests
 import webbrowser
 import threading
-from flask import Flask, request, redirect, session, url_for, render_template, jsonify
+from flask import Flask, request, redirect, session, url_for, render_template, jsonify, send_from_directory
 from urllib.parse import urlparse, parse_qs #need to find out how to get the url to parse it !
 from twitchio.errors import HTTPException
 import dbmethods
 from flask_cors import CORS
+import logging
+import keyboard
+import sys
+
+import logging
+import os
+
+# Print the current working directory
+print(f"Current working directory: {os.getcwd()}")
+
+# Configure the logging
+logging.basicConfig(level=logging.DEBUG,
+                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                    handlers=[
+                        logging.FileHandler("example.log"),
+                        logging.StreamHandler()
+                    ])
+
+logger = logging.getLogger(__name__)
+logger.info("This is an informational message")
 
 dbmethods.initDatabase()
 def run_flask():
     app.run(port=5000)
-app = Flask(__name__)
+    
+if getattr(sys, 'frozen', False):
+    base_dir = os.path.dirname(sys.executable)
+elif __file__:
+    base_dir = os.path.dirname(__file__)
+    
+app = Flask(__name__, static_folder=os.path.join(base_dir,'build'), static_url_path='')
 CORS(app)
-threading.Thread(target=run_flask).start()
+
+
+
+
+
+try:
+    threading.Thread(target=run_flask).start()
+    logger.info("Flask server started successfully.")
+except Exception as e:
+    logger.error(f"Error starting Flask server: {e}")
 
 
 
@@ -51,9 +85,18 @@ try:
 except:
     print("Error: No pre-existing tokens exist in the database. ")
 #HTML Routes
+@app.route('/authorizeFlask1')
+def hello():
+    return send_from_directory(app.static_folder,"auth.html")
+
 @app.route('/')
+def serve():
+    return send_from_directory(app.static_folder, 'index.html')
+
+
+@app.route('/authorizeFlask')
 def home():
-    return render_template('index.html')
+    return render_template('auth.html')
     
 @app.route('/callback')
 def callback():
@@ -102,13 +145,12 @@ def remove_List():
     dbmethods.remove_clips(slug)
     return jsonify("Successful")
 #Functions
-def open_browser():
+def open_auth():
     global auth_cid
-    webbrowser.open_new("http://localhost:5000/")
-
+    webbrowser.open_new("http://localhost:5000/authorizeFlask1")
 
 def gotoAuthorize():
-    open_browser()
+    open_auth()
 
 def grabUserDetails():
     global twitch_name, twitch_id, acc_token, auth_cid
@@ -275,7 +317,6 @@ def refreshAccessToken():
             refr_token = token_info['refresh_token']
         else:
             print("Failed to exchange token")
-
 #Threads & Main
 keyboard_thread = threading.Thread(target=createaClip)
 keyboard_thread.daemon = True  

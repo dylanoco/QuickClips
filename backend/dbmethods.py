@@ -1,8 +1,26 @@
 import sqlite3
 import os
-base_dir = os.path.dirname(os.path.abspath(__file__))
+import sys
+
+
+
+if getattr(sys, 'frozen', False):
+    base_dir = os.path.dirname(sys.executable)
+elif __file__:
+    base_dir = os.path.dirname(__file__)
 db_path = os.path.join(base_dir, 'database', 'keys.db')
+
+
+temp_Path = base_dir + '/database'
+isExist = os.path.exists(temp_Path)
+if not isExist:
+
+
+   os.makedirs(temp_Path)
+   print("The new directory is created!")
+
 try:
+    print(db_path)
     sqliteConnection = sqlite3.connect(db_path)
     cursor = sqliteConnection.cursor()
     print("Database created and Successfully Connected to SQLite")
@@ -19,7 +37,6 @@ finally:
         if sqliteConnection:
             sqliteConnection.close()
             print("sqlite connection is closed")
-
 
 def initDatabase():
     sqliteConnection = sqlite3.connect(db_path)

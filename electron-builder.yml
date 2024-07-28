@@ -1,0 +1,8 @@
+appId: com.yourname.yourapp
+productName: YourAppName
+directories:
+  output: dist_electron
+files:
+  - build/**/*
+  - main.js
+  - node_modules/
