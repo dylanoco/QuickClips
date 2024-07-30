@@ -52,13 +52,28 @@ function startFlaskServer() {
     log.info(`stdout: ${stdout}`);
   });
 }
+function killServer() {
+  exec('taskkill /IM python.exe /F', (error, stdout, stderr) => {
+    if (error) {
+      log.error(`Error executing command: ${error.message}`);
+      return;
+    }
+    if (stderr) {
+      log.error(`stderr: ${stderr}`);
+      return;
+    }
+    log.info(`stdout: ${stdout}`);
+  });
+}
 
 app.whenReady().then(() => {
   startFlaskServer();
   createWindow();
 });
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') app.quit();
+  if (process.platform !== 'darwin') 
+    killServer()
+    app.quit();
 });
 app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) createWindow();

@@ -1,9 +1,11 @@
-import { useState,useEffect } from 'react'
+import { useContext,useState,useEffect } from 'react'
 import './ClipsCreated.css'
 import ClipsList from './ClipsList'
+import { DataContext } from './DataContext';
 
 function ClipsCreated(){
-    const [clips, setClips] = useState([]);
+    const {clips} = useContext(DataContext)
+    const {setClips} = useContext(DataContext)
     useEffect(() => {
       fetch('http://localhost:5000/clips', ['GET'])
         .then(response => response.json())

@@ -1,0 +1,6 @@
+Launch twitchmoments (NOT TWITCHMOMENTSV3)
+An Authorize Button should pop up. Press Authorize. Follow the steps. At the end it should say Authorization has been Successful.
+Ctrl + Alt + L is the Hotkey to create a clip. You should hear a small beep sound.
+Refresh the main client to see your newly created clips.
+
+if the app appears white when you open it, go to View on the top left, and Force Reload. It should appear back as normal.

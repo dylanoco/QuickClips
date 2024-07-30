@@ -5,30 +5,42 @@ import { DataContext } from './DataContext';
 
 function ViewClip(){
 
-    const { slug } = useContext(DataContext);
+    const { slug, setSlug, clips, setClips } = useContext(DataContext);
     const urlBody = "https://clips.twitch.tv/embed?clip=";
     const urlParent = "&parent=localhost";
     const url = urlBody.concat(slug, urlParent);
-
-    const [link, setLink] = useState([]);
-
+    
     function removeList(slug){
-      console.log("test");
+      console.log("Starting fetch request");
       fetch("http://localhost:5000/removeClip", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify(slug)
+        body: JSON.stringify(slug )
       })
-      .then((response) => response.json())
-      .then((data) => console.log("Success:", data))
-      .catch((error) => console.error("Error:", error))
+      .then(response => response.json())
+      .then(data => {
+        console.log("Success:", data);
+        setSlug(slug);
+        fetch('http://localhost:5000/clips', ['GET'])
+        .then(response => response.json())
+        .then(clips => {
+            setClips(clips);
+        },
+        console.log(clips + "ViewClips Render"))
+        .catch(error => console.error('Error fetching data:', error));
+      })
+      .catch(error => {
+        console.error("Error:", error);
+      });
 
-    }
+
+
+
+    };
 
     function openEdit(slug){
-
       console.log("test");
       fetch("http://localhost:5000/getLink", {
         method: "POST",

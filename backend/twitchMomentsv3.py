@@ -18,7 +18,7 @@ from flask_cors import CORS
 import logging
 import keyboard
 import sys
-
+import winsound
 import logging
 import os
 
@@ -38,7 +38,8 @@ logger.info("This is an informational message")
 
 dbmethods.initDatabase()
 def run_flask():
-    app.run(port=5000)
+    from waitress import serve
+    serve(app, host="0.0.0.0", port=5000)
     
 if getattr(sys, 'frozen', False):
     base_dir = os.path.dirname(sys.executable)
@@ -248,6 +249,10 @@ class Bot(commands.Bot):
 
 def clip_creator():
     global twitch_name, twitch_id, acc_token, twitch_id
+  
+    duration = 200  # milliseconds
+    freq = 440  # Hz
+    winsound.Beep(freq, duration)
     grabUserDetails()
     print("uid: "+ twitch_id)
     clipped = Notification(app_id="enzynclipper", 
@@ -292,6 +297,7 @@ def clip_creator():
         f.write("Date: " + str(  (datetime.datetime.now()).strftime("%x")  ) + "Date: " + str(  (datetime.datetime.now()).strftime("%X")  ) +  " | Clip Details: " + str(clip_url['edit_url']) + '\n')
         f.close()
     print("done")
+
 
 def createaClip():
     keyboard.add_hotkey('Ctrl+Alt+L', clip_creator)
