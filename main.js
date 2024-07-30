@@ -36,11 +36,11 @@ function createWindow() {
     log.error('Failed to load content.');
   });
 }
-
+//cd resources/backend && start twitchMomentsv3.exe Deployment Line for Starting the Server
 function startFlaskServer() {
   log.info('Starting Flask server...');
-  log.info();
   exec('cd resources/backend && start twitchMomentsv3.exe', (error, stdout, stderr) => {
+    log.info("Test Server");
     if (error) {
       log.error(`Error executing command: ${error.message}`);
       return;
@@ -53,7 +53,8 @@ function startFlaskServer() {
   });
 }
 function killServer() {
-  exec('taskkill /IM python.exe /F', (error, stdout, stderr) => {
+  log.info("Test Kill Server");
+  exec('taskkill /IM twitchMomentsv3.exe /F', (error, stdout, stderr) => {
     if (error) {
       log.error(`Error executing command: ${error.message}`);
       return;

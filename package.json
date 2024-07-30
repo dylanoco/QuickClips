@@ -9,12 +9,12 @@
     "package": "electron-builder"
   },
   "build": {
-    "extraResources": ["./backend/**"],
     "appId": "com.example.app",
     "files": [
-      "dist/**/*",
       "main.js",
-      "preload.js",
+      "preload.js"
+    ],
+    "extraResources": [
       {
         "from": "backend/build/",
         "to": "backend/build",
@@ -23,6 +23,10 @@
       {
         "from": "backend/twitchMomentsv3.exe",
         "to": "backend/twitchMomentsv3.exe"
+      },
+      {
+        "from": "backend/.env",
+        "to": "backend/.env"
       }
     ]
   },
