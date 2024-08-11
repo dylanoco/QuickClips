@@ -12,7 +12,7 @@ function ViewClip(){
     
     function removeList(slug){
       console.log("Starting fetch request");
-      fetch("http://localhost:5000/removeClip", {
+      fetch("http://localhost:5173/removeClip", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -23,7 +23,7 @@ function ViewClip(){
       .then(data => {
         console.log("Success:", data);
         setSlug(slug);
-        fetch('http://localhost:5000/clips', ['GET'])
+        fetch('http://localhost:5173/clips', ['GET'])
         .then(response => response.json())
         .then(clips => {
             setClips(clips);
@@ -42,7 +42,7 @@ function ViewClip(){
 
     function openEdit(slug){
       console.log("test");
-      fetch("http://localhost:5000/getLink", {
+      fetch("http://localhost:5173/getLink", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -63,7 +63,7 @@ function ViewClip(){
         <header>View Clip</header>
         <div className='vc-controls-container'>
           <iframe src={url}
-          frameBorder="0" allowFullScreen={true} scrolling="no" height="378" width="620"></iframe>
+          frameBorder="0" allowFullScreen={true} scrolling="no" ></iframe>
           <button onClick = {() => openEdit(slug)}id='vc-b-1'>Edit</button>
           <button onClick = {() => removeList(slug)} id='vc-b-2'>Remove from List</button>
         </div>

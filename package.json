@@ -16,7 +16,7 @@
     ],
     "extraResources": [
       {
-        "from": "backend/build/",
+        "from": "react-project/dist/",
         "to": "backend/build",
         "filter": ["**/*"]
       },

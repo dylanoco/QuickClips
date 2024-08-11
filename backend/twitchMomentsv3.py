@@ -4,13 +4,13 @@ import asyncio
 from twitchio.ext import commands
 from dotenv import load_dotenv
 from winotify import Notification, audio
-from tkinter import *
 from urllib import request
 from win10toast import ToastNotifier
 import requests
 import webbrowser
 import threading
 from flask import Flask, request, redirect, session, url_for, render_template, jsonify, send_from_directory
+from flask_socketio import SocketIO, emit
 from urllib.parse import urlparse, parse_qs #need to find out how to get the url to parse it !
 from twitchio.errors import HTTPException
 import dbmethods
@@ -22,8 +22,12 @@ import winsound
 import logging
 import os
 
+import eventlet
+import eventlet.wsgi
+
 # Print the current working directory
 print(f"Current working directory: {os.getcwd()}")
+authHTML = ""
 
 # Configure the logging
 logging.basicConfig(level=logging.DEBUG,
@@ -37,25 +41,34 @@ logger = logging.getLogger(__name__)
 logger.info("This is an informational message")
 
 dbmethods.initDatabase()
-def run_flask():
-    from waitress import serve
-    serve(app, host="0.0.0.0", port=5000)
+
     
 if getattr(sys, 'frozen', False):
     base_dir = os.path.dirname(sys.executable)
+    app = Flask(__name__, static_folder=os.path.join(base_dir,'build'), static_url_path='')
+    socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet')
+    authHTML = "./build/auth.html"
+    print("sys test")
 elif __file__:
     base_dir = os.path.dirname(__file__)
+    app = Flask(__name__)
+    socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet')
+    authHTML = "base.html"
+    print("file test")
     
-app = Flask(__name__, static_folder=os.path.join(base_dir,'build'), static_url_path='')
+
 CORS(app)
 
 
-
+def run_flask():
+    from waitress import serve
+    eventlet.wsgi.server(eventlet.listen(('0.0.0.0', 5000)), app)
+    logger.info("Flask server started successfully.")
 
 
 try:
     threading.Thread(target=run_flask).start()
-    logger.info("Flask server started successfully.")
+    
 except Exception as e:
     logger.error(f"Error starting Flask server: {e}")
 
@@ -69,6 +82,7 @@ url = os.getenv('AUTH_URL')
 acc_token = ""
 refr_token = ""
 twitch_name = ""
+profile_pic_url = ""
 twitch_id = ""
 auth_cid = os.getenv('APP_CLIENT_ID')
 temp_oauth = ""
@@ -97,11 +111,11 @@ def serve():
 
 @app.route('/authorizeFlask')
 def home():
-    return render_template('auth.html')
+    return render_template('base.html')
     
 @app.route('/callback')
 def callback():
-    global auth_cid, acc_token, refr_token
+    global auth_cid, acc_token, refr_token,twitch_name, profile_pic_url
     print("Callback route accessed")
     code = request.args.get('code')
     print(f"Authorization code received: {code}")
@@ -124,11 +138,17 @@ def callback():
             acc_token = token_info['access_token']
             refr_token = token_info['refresh_token']
             expires_in = token_info['expires_in']
-            dbmethods.updateTokens(acc_token,refr_token,expires_in)
-            return "Authentication successful! Token stored in session."
-        else:
-            print("Failed to exchange token")
-    return "Error during authentication."
+            grabUserDetails()
+            dbmethods.updateTokens(acc_token,refr_token, twitch_name, profile_pic_url, expires_in )
+            return redirect("http://localhost:5173")
+    
+    return redirect("http://localhost:5173")
+
+@app.route('/callbackRender')
+def callbackRender():
+    dname, url = dbmethods.getUserDetails()
+    user_profile = {'display_name': dname, 'profile_pic_url': url}
+    return jsonify(user_profile)
 
 @app.route('/clips', methods=['GET'])
 def get_clips():
@@ -145,6 +165,16 @@ def remove_List():
     slug = request.get_json()
     dbmethods.remove_clips(slug)
     return jsonify("Successful")
+
+@socketio.on('connect')
+def handle_connect():
+    emit('response', {'data': 'Connected to server'}, broadcast=True)
+
+@socketio.on('message')
+def handle_message(message):
+    emit('response', {'data': message['data']}, broadcast=True)
+
+
 #Functions
 def open_auth():
     global auth_cid
@@ -154,8 +184,8 @@ def gotoAuthorize():
     open_auth()
 
 def grabUserDetails():
-    global twitch_name, twitch_id, acc_token, auth_cid
-    print("acess token " + acc_token)
+    global twitch_name, twitch_id, acc_token, auth_cid, profile_pic_url
+    print("access token " + acc_token)
     headers = {
     'Authorization': f'Bearer {acc_token}',
     'Client-Id': auth_cid
@@ -172,6 +202,7 @@ def grabUserDetails():
 
             twitch_name = user['display_name']
             username = user['display_name']
+            profile_pic_url = user['profile_image_url']
             print(f"User ID: {user_id}")
             print(f"Username: {username}")
             # print(user_info)
@@ -253,7 +284,6 @@ def clip_creator():
     duration = 200  # milliseconds
     freq = 440  # Hz
     winsound.Beep(freq, duration)
-    grabUserDetails()
     print("uid: "+ twitch_id)
     clipped = Notification(app_id="enzynclipper", 
                            title="Clipped !", 
@@ -331,8 +361,3 @@ keyboard_thread.start()
 async def main():
     loop = asyncio.new_event_loop()                                                                                                                             
     loop.run_until_complete(main())
-
-root = Tk()
-myButton_1 = Button(root, text="Authorize your Twitch Account", command=gotoAuthorize)
-myButton_1.pack()
-root.mainloop()

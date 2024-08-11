@@ -16,6 +16,8 @@
     border: #D767FF;
     border-style: solid;
     border-radius: 10px;
+    height: 378px;  
+    width: 620px;
 }
 
 @font-face {
