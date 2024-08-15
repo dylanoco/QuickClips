@@ -6,13 +6,14 @@ import { DataContext } from './DataContext';
 function ViewClip(){
 
     const { slug, setSlug, clips, setClips } = useContext(DataContext);
+    console.log(slug + "test slug");
     const urlBody = "https://clips.twitch.tv/embed?clip=";
     const urlParent = "&parent=localhost";
     const url = urlBody.concat(slug, urlParent);
     
     function removeList(slug){
       console.log("Starting fetch request");
-      fetch("http://localhost:5173/removeClip", {
+      fetch("http://localhost:5000/removeClip", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -22,8 +23,10 @@ function ViewClip(){
       .then(response => response.json())
       .then(data => {
         console.log("Success:", data);
-        setSlug(slug);
-        fetch('http://localhost:5173/clips', ['GET'])
+        console.log("Before Slug Removed: " + slug)
+        setSlug('');
+        console.log("After Slug Removed: " + slug)
+        fetch('http://localhost:5000/clips', ['GET'])
         .then(response => response.json())
         .then(clips => {
             setClips(clips);
@@ -34,10 +37,6 @@ function ViewClip(){
       .catch(error => {
         console.error("Error:", error);
       });
-
-
-
-
     };
 
     function openEdit(slug){
@@ -59,15 +58,25 @@ function ViewClip(){
 
 
     return(
+    <>
     <div className="viewclip-container">
-        <header>View Clip</header>
-        <div className='vc-controls-container'>
-          <iframe src={url}
-          frameBorder="0" allowFullScreen={true} scrolling="no" ></iframe>
-          <button onClick = {() => openEdit(slug)}id='vc-b-1'>Edit</button>
-          <button onClick = {() => removeList(slug)} id='vc-b-2'>Remove from List</button>
-        </div>
-    </div>
+    {slug == ''? 
+            (
+            <>
+              <h1 >No Clip has been Selected.</h1> 
+            </>
+            ) 
+            : 
+            (
+              <div className='vc-controls-container'>
+                <iframe src={url}
+                frameBorder="0" allowFullScreen={true} scrolling="no" ></iframe>
+                <button onClick = {() => openEdit(slug)}id='vc-b-1'>Edit</button>
+                <button onClick = {() => removeList(slug)} id='vc-b-2'>Remove from List</button>
+              </div>
+            )}
+      </div>
+    </>
     )
 }
 export default ViewClip

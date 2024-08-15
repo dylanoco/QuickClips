@@ -1,6 +1,6 @@
-.clipsList{
+
+.clipsList li{
     display: grid;
-    text-align: center;
 }
 .cl-div-button:hover{
     background-color: #D03838;

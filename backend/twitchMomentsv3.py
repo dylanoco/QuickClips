@@ -223,22 +223,30 @@ def grabGame():
     'Authorization': f'Bearer {acc_token}',
     'Client-Id': auth_cid
     }
-    url = "https://api.twitch.tv/helix/channels?broadcaster_id=" + twitch_id
-    response = requests.get(url, headers=headers)
+    try:
+        url = "https://api.twitch.tv/helix/channels?broadcaster_id=" + twitch_id
+        response = requests.get(url, headers=headers)
 
-    if response.status_code == 200:
-        user_info = response.json()
+        if response.status_code == 200:
+            user_info = response.json()
 
-        if user_info['data']:
-            user = user_info['data'][0]
-            game_name = user['game_name']
-            return game_name
+            if user_info['data']:
+                user = user_info['data'][0]
+                game_name = user['game_name']
+                return game_name
+            else:
+                print("No user data found.")
+                return "Empty 1"
         else:
-            print("No user data found.")
-            return "Empty 1"
-    else:
-        print(f"Failed to get user information: {response.status_code} - {response.text}")
-        return "Empty 2"
+            print(f"Failed to get user information: {response.status_code} - {response.text}")
+            return "Empty 2"
+    except HTTPException as htperr:
+        if htperr.status == 401:
+            refreshAccessToken()
+        if htperr.status == 404:
+            print(htperr.reason)
+            return
+
 
 
 
@@ -293,40 +301,29 @@ def clip_creator():
     
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
+    
     try:
         bot = Bot()
-    except HTTPException as htperr:
-        if htperr.status == 401:
-            refreshAccessToken()
-        if htperr.status == 404:
-            print(htperr.reason)
-            return
-    
-    try:
         User = bot.create_user(twitch_id,twitch_name)
-    except HTTPException as htperr:
-        if htperr.status == 401:
-            refreshAccessToken()
-        if htperr.status == 404:
-            print(htperr.reason)
-            return
-    try:
         clip_url = loop.run_until_complete(User.create_clip(token=acc_token))
+        game_name = grabGame()
+        print(game_name)
+        dbmethods.insertClip(clip_url['id'],clip_url['edit_url'],str(  (datetime.datetime.now()).strftime("%x")  ) ,str(  (datetime.datetime.now()).strftime("%X")  ),game_name)
+
+        with open('url_clips.txt', 'a') as f:
+            f.write("Date: " + str(  (datetime.datetime.now()).strftime("%x")  ) + "Date: " + str(  (datetime.datetime.now()).strftime("%X")  ) +  " | Clip Details: " + str(clip_url['edit_url']) + '\n')
+            f.close()
+        print("done")
     except HTTPException as htperr:
         if htperr.status == 401:
             refreshAccessToken()
         if htperr.status == 404:
             print(htperr.reason)
             return
+    except ValueError as verr:
+        print("Test")
     
-    game_name = grabGame()
-    print(game_name)
-    dbmethods.insertClip(clip_url['id'],clip_url['edit_url'],str(  (datetime.datetime.now()).strftime("%x")  ) ,str(  (datetime.datetime.now()).strftime("%X")  ),game_name)
 
-    with open('url_clips.txt', 'a') as f:
-        f.write("Date: " + str(  (datetime.datetime.now()).strftime("%x")  ) + "Date: " + str(  (datetime.datetime.now()).strftime("%X")  ) +  " | Clip Details: " + str(clip_url['edit_url']) + '\n')
-        f.close()
-    print("done")
 
 
 def createaClip():

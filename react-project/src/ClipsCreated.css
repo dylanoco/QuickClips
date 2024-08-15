@@ -1,11 +1,10 @@
 div .clipscreated-container{
-    display: block;
+    display: table;
     background-color: #18181C;
-    text-align: center  ;
+    vertical-align: middle;
     min-width: 35vw;
     min-height: 100vh;
 }
 header{
     padding: 0%;
-
 }
