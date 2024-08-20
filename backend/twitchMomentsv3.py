@@ -21,11 +21,11 @@ import sys
 import winsound
 import logging
 import os
-
+import time
 import eventlet
 import eventlet.wsgi
-
 # Print the current working directory
+
 print(f"Current working directory: {os.getcwd()}")
 authHTML = ""
 
@@ -46,34 +46,29 @@ dbmethods.initDatabase()
 if getattr(sys, 'frozen', False):
     base_dir = os.path.dirname(sys.executable)
     app = Flask(__name__, static_folder=os.path.join(base_dir,'build'), static_url_path='')
-    socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet')
+    socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet',logger=True, engineio_logger=True)
     authHTML = "./build/auth.html"
     print("sys test")
 elif __file__:
     base_dir = os.path.dirname(__file__)
     app = Flask(__name__)
-    socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet')
+    # socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet',logger=True, engineio_logger=True)
+    socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet', engineio_logger=True)
     authHTML = "base.html"
     print("file test")
-    
-
 CORS(app)
 
 
 def run_flask():
-    from waitress import serve
-    eventlet.wsgi.server(eventlet.listen(('0.0.0.0', 5000)), app)
+    # eventlet.wsgi.server(eventlet.listen(('0.0.0.0', 5000)), app)
+    socketio.run(app, host='0.0.0.0', port=5000)
     logger.info("Flask server started successfully.")
-
+    print("Flask server started successfully.")
 
 try:
     threading.Thread(target=run_flask).start()
-    
 except Exception as e:
     logger.error(f"Error starting Flask server: {e}")
-
-
-
 
 #Variables
 load_dotenv()
@@ -89,7 +84,6 @@ temp_oauth = ""
 user_id = ""
 
 
-
 #Establishing Tokens if they already exist
 try:
     if(dbmethods.getAccessToken() != None and dbmethods.getRefreshToken() != None ):
@@ -99,6 +93,9 @@ try:
         pass
 except:
     print("Error: No pre-existing tokens exist in the database. ")
+
+
+
 #HTML Routes
 @app.route('/authorizeFlask1')
 def hello():
@@ -160,19 +157,31 @@ def get_link():
     slug = request.get_json()
     link = dbmethods.get_link(slug)
     return jsonify(link)
+
 @app.route('/removeClip', methods=['POST'])
 def remove_List():
     slug = request.get_json()
     dbmethods.remove_clips(slug)
     return jsonify("Successful")
 
-@socketio.on('connect')
-def handle_connect():
-    emit('response', {'data': 'Connected to server'}, broadcast=True)
 
-@socketio.on('message')
-def handle_message(message):
-    emit('response', {'data': message['data']}, broadcast=True)
+
+
+
+
+
+# Handle WebSocket events
+def trigger_key():
+    requests.post('http://localhost:5000/trigger-message')
+@app.route('/trigger-message', methods=['POST'])
+def trigger_message():
+    with app.app_context():
+        socketio.emit('server_message', {'data': 'Manual trigger from Flask!'})
+    return "Message sent!", 200
+
+
+
+
 
 
 #Functions
@@ -190,7 +199,6 @@ def grabUserDetails():
     'Authorization': f'Bearer {acc_token}',
     'Client-Id': auth_cid
     }
-    
     response = requests.get('https://api.twitch.tv/helix/users', headers=headers)
 
     if response.status_code == 200:
@@ -212,8 +220,6 @@ def grabUserDetails():
         print(f"Failed to get user information: {response.status_code} - {response.text}")
         refreshAccessToken()
         grabUserDetails()
-
-
 
 
 def grabGame():
@@ -247,16 +253,6 @@ def grabGame():
             print(htperr.reason)
             return
 
-
-
-
-
-
-
-
-
-
-
 def notyChecker():
 
     # toaster = ToastNotifier()
@@ -271,24 +267,17 @@ def notyChecker():
     print("Notification shown")
 
 class Bot(commands.Bot):
-
     def __init__(self):
         global twitch_name,acc_token
-
         super().__init__(token=acc_token, prefix='', initial_channels=[twitch_name])
-    
-
     async def event_ready(self):
         print(f'Logged in as | {self.nick}')
-        print(f'User id is | {self.user_id}')
-        
-            
+        print(f'User id is | {self.user_id}')  
     def create_user(self, user_id: int, user_name: str):
         return super().create_user(user_id, user_name)
-
-def clip_creator():
+    
+def  clip_creator():
     global twitch_name, twitch_id, acc_token, twitch_id
-  
     duration = 200  # milliseconds
     freq = 440  # Hz
     winsound.Beep(freq, duration)
@@ -298,7 +287,6 @@ def clip_creator():
                            msg="You have clipped the last 30 seconds to your Twitch !", 
                            duration="short")
     clipped.show()
-    
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     
@@ -309,11 +297,6 @@ def clip_creator():
         game_name = grabGame()
         print(game_name)
         dbmethods.insertClip(clip_url['id'],clip_url['edit_url'],str(  (datetime.datetime.now()).strftime("%x")  ) ,str(  (datetime.datetime.now()).strftime("%X")  ),game_name)
-
-        with open('url_clips.txt', 'a') as f:
-            f.write("Date: " + str(  (datetime.datetime.now()).strftime("%x")  ) + "Date: " + str(  (datetime.datetime.now()).strftime("%X")  ) +  " | Clip Details: " + str(clip_url['edit_url']) + '\n')
-            f.close()
-        print("done")
     except HTTPException as htperr:
         if htperr.status == 401:
             refreshAccessToken()
@@ -321,11 +304,11 @@ def clip_creator():
             print(htperr.reason)
             return
     except ValueError as verr:
-        print("Test")
+        print("Value Error")
+    print("Sending over the Refresh Clips Signal")
+    trigger_key()
+    print("Sent the refresh clips signal.")
     
-
-
-
 def createaClip():
     keyboard.add_hotkey('Ctrl+Alt+L', clip_creator)
     keyboard.wait()
@@ -356,5 +339,6 @@ keyboard_thread.daemon = True
 keyboard_thread.start()
 
 async def main():
+    eventlet.monkey_patch()
     loop = asyncio.new_event_loop()                                                                                                                             
     loop.run_until_complete(main())

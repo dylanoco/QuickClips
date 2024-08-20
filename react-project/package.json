@@ -1,6 +1,7 @@
 {
   "name": "react-project",
   "private": true,
+  "proxy": "ws://localhost:5000",
   "version": "0.0.0",
   "type": "module",
   "scripts": {

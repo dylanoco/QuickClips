@@ -54,7 +54,7 @@ function startFlaskServer() {
   //   log.info(`stdout: ${stdout}`);
   // });
 
-  const flaskProcess = spawn('python', ['twitchMomentsv3.py'], {
+  const flaskProcess = spawn('python', ['-u', 'twitchMomentsv3.py'], {
     cwd: 'backend',  // Set the working directory
     env: process.env
   });
