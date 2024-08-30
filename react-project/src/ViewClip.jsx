@@ -10,6 +10,8 @@ function ViewClip(){
     const urlBody = "https://clips.twitch.tv/embed?clip=";
     const urlParent = "&parent=localhost";
     const url = urlBody.concat(slug, urlParent);
+
+  
     
     function removeList(slug){
       console.log("Starting fetch request");

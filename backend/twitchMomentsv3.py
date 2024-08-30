@@ -24,7 +24,9 @@ import os
 import time
 import eventlet
 import eventlet.wsgi
+import json
 # Print the current working directory
+#AUTH KEY NOT BEING VERIFIED PROPERLY WHEN LAUNCHING ELECTRON. TEST AUTHKEY, IF IT NEEDS CHANGING THEN RUN REFRESHTOKEN FUNCTION
 
 print(f"Current working directory: {os.getcwd()}")
 authHTML = ""
@@ -82,6 +84,7 @@ twitch_id = ""
 auth_cid = os.getenv('APP_CLIENT_ID')
 temp_oauth = ""
 user_id = ""
+hotkey = 'Ctrl+Alt+L'
 
 
 #Establishing Tokens if they already exist
@@ -179,8 +182,14 @@ def trigger_message():
         socketio.emit('server_message', {'data': 'Manual trigger from Flask!'})
     return "Message sent!", 200
 
-
-
+@socketio.on('hotkey-asign')
+def recieve_hotkey(json):
+    global hotkey
+    keyboard.remove_hotkey(hotkey)
+    hotkey = json
+    print(hotkey)
+    keyboard.add_hotkey(hotkey, clip_creator)
+    return "Success !"
 
 
 
@@ -278,6 +287,7 @@ class Bot(commands.Bot):
     
 def  clip_creator():
     global twitch_name, twitch_id, acc_token, twitch_id
+    print(hotkey)
     duration = 200  # milliseconds
     freq = 440  # Hz
     winsound.Beep(freq, duration)
@@ -310,7 +320,7 @@ def  clip_creator():
     print("Sent the refresh clips signal.")
     
 def createaClip():
-    keyboard.add_hotkey('Ctrl+Alt+L', clip_creator)
+    keyboard.add_hotkey(hotkey, clip_creator)
     keyboard.wait()
 
 def refreshAccessToken():
