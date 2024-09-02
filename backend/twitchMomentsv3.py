@@ -25,7 +25,6 @@ import time
 import eventlet
 import eventlet.wsgi
 import json
-# Print the current working directory
 #AUTH KEY NOT BEING VERIFIED PROPERLY WHEN LAUNCHING ELECTRON. TEST AUTHKEY, IF IT NEEDS CHANGING THEN RUN REFRESHTOKEN FUNCTION
 
 print(f"Current working directory: {os.getcwd()}")
@@ -139,7 +138,7 @@ def callback():
             refr_token = token_info['refresh_token']
             expires_in = token_info['expires_in']
             grabUserDetails()
-            dbmethods.updateTokens(acc_token,refr_token, twitch_name, profile_pic_url, expires_in )
+            dbmethods.updateTokens(acc_token,refr_token, twitch_name, profile_pic_url, expires_in,hotkey )
             return redirect("http://localhost:5173")
     
     return redirect("http://localhost:5173")
@@ -263,10 +262,6 @@ def grabGame():
             return
 
 def notyChecker():
-
-    # toaster = ToastNotifier()
-    print("Test")
-    # toaster.show_toast("Clipped !","You have clipped the last 30 seconds to your Twitch !", duration=10)
     toast = Notification(app_id="enzynclipper", 
                          title="Clipped !", 
                          msg="You have clipped the last 30 seconds to your Twitch !")

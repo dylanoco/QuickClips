@@ -14,11 +14,8 @@ db_path = os.path.join(base_dir, 'database', 'keys.db')
 temp_Path = base_dir + '/database'
 isExist = os.path.exists(temp_Path)
 if not isExist:
-
-
    os.makedirs(temp_Path)
    print("The new directory is created!")
-
 try:
     print(db_path)
     sqliteConnection = sqlite3.connect(db_path)
@@ -48,7 +45,8 @@ def initDatabase():
                                     refr_token text NOT NULL UNIQUE,
                                     display_name TEXT NOT NULL,
                                     profile_pic_url TEXT NOT NULL,
-                                    expires_in datetime);'''
+                                    expires_in datetime,
+                                    hotkey TEXT );'''
 
         cursor = sqliteConnection.cursor()
         print("Successfully Connected to SQLite")
@@ -104,11 +102,11 @@ def remove_clips(slugs):
             sqliteConnection.close()
             print("sqlite connection is closed")
 
-def insertTokens(auth_t,refr_t,d_name,prof_pic_url,exp_in):
+def insertTokens(auth_t,refr_t,d_name,prof_pic_url,exp_in,hk):
     try:
         sqliteConnection = sqlite3.connect(db_path)
-        sqlite_create_table_query = '''INSERT INTO AuthKeys (id,auth_token,refr_token,display_name, profile_pic_url,expires_in) VALUES (?,?,?,?,?,?);'''
-        userValues = (1,auth_t,refr_t,d_name,prof_pic_url,exp_in)
+        sqlite_create_table_query = '''INSERT INTO AuthKeys (id,auth_token,refr_token,display_name,profile_pic_url,expires_in,hotkey) VALUES (?,?,?,?,?,?);'''
+        userValues = (1,auth_t,refr_t,d_name,prof_pic_url,exp_in,hk)
 
         cursor = sqliteConnection.cursor()
         print("Successfully Connected to SQLite")
@@ -125,8 +123,8 @@ def insertTokens(auth_t,refr_t,d_name,prof_pic_url,exp_in):
             sqliteConnection.close()
             print("sqlite connection is closed")
 
-def updateTokens(auth_t,refr_t,d_name,prof_pic_url,exp_in):
-    userValues = (auth_t,refr_t,d_name,prof_pic_url,exp_in)
+def updateTokens(auth_t,refr_t,d_name,prof_pic_url,exp_in,hk):
+    userValues = (auth_t,refr_t,d_name,prof_pic_url,exp_in,hk)
     sqliteConnection = sqlite3.connect(db_path)
     sqlite_find_row = '''SELECT COUNT(*) from AuthKeys'''
     cursor = sqliteConnection.cursor()
@@ -136,7 +134,7 @@ def updateTokens(auth_t,refr_t,d_name,prof_pic_url,exp_in):
 
     if(row_count > 0):
         
-        sqlite_create_table_query = '''UPDATE AuthKeys set auth_token = ?, refr_token = ?, display_name = ?, profile_pic_url = ?,expires_in = ? WHERE id = 1;'''
+        sqlite_create_table_query = '''UPDATE AuthKeys set auth_token = ?, refr_token = ?, display_name = ?, profile_pic_url = ?,expires_in = ?, hotkey = ? WHERE id = 1;'''
         cursor = sqliteConnection.cursor()
         print("Successfully Connected to SQLite")
         cursor.execute(sqlite_create_table_query, userValues)
@@ -144,14 +142,7 @@ def updateTokens(auth_t,refr_t,d_name,prof_pic_url,exp_in):
         print("SQLite Update Completed")
         cursor.close()
     else:
-        userValues = (1,auth_t,refr_t,d_name,prof_pic_url,exp_in)
-        sqlite_create_table_query = '''INSERT INTO AuthKeys (id,auth_token,refr_token,display_name,profile_pic_url,expires_in) VALUES (?,?,?,?,?,?);'''
-        cursor = sqliteConnection.cursor()
-        print("Successfully Connected to SQLite")
-        cursor.execute(sqlite_create_table_query, userValues)
-        sqliteConnection.commit()
-        print("SQLite Insert Completed")
-        cursor.close()
+        insertTokens(userValues)
 
     sqliteConnection.close()
     print("sqlite connection is closed")

@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import './Navbar.css';
 import { io } from 'socket.io-client';
-// import socket from './socket'; // Import your Socket.IO client instance
 
 
 function NavBar() {
@@ -10,8 +9,8 @@ function NavBar() {
   const [response, setResponse] = useState('');
 
   const [pressedKeys, setPressedKeys] = useState(new Set());
-  const [isRecording, setIsRecording] = useState(false); // Track if we are recording keys
-  const [shortcuts, setShortcuts] = useState(); // Store recorded shortcuts
+  const [isRecording, setIsRecording] = useState(false); 
+  const [shortcuts, setShortcuts] = useState(); 
 
 
 
@@ -19,25 +18,23 @@ function NavBar() {
     const socket = io('http://localhost:5000')
     const detectKeyDown = (event) => {
       if (isRecording) {
-        const key = event.key.toLowerCase(); // Normalize key to lowercase
+        const key = event.key.toLowerCase(); 
         setPressedKeys((prevKeys) => new Set(prevKeys).add(key));
-        // Add the pressed key to the set
       }
     };
 
     const detectKeyUp = (event) => {
       if (isRecording) {
-        const key = event.key.toLowerCase(); // Normalize key to lowercase
+        const key = event.key.toLowerCase(); 
         setPressedKeys((prevKeys) => {
-          const newKeys = new Set(prevKeys); // Create a new set from the previous keys
+          const newKeys = new Set(prevKeys); 
           console.log(isRecording)
-          // Check if all keys have been released
-          saveShortcut(prevKeys); // Save the current shortcut
+          saveShortcut(prevKeys); 
           console.log("Test Stop Recording")
-          stopRecording(); // Stop recording after saving
+          stopRecording(); 
           document.removeEventListener('keyup', detectKeyUp, true);
-          newKeys.clear; // Remove the released key#
-          return newKeys; // Return the updated keys
+          newKeys.clear; 
+          return newKeys;
         });
       }
     };
@@ -90,19 +87,15 @@ function NavBar() {
       console.log('Fetching user profile...');
       try {
         const response = await fetch('http://localhost:5000/callbackRender');
-        // console.log('Response status:', response.status);
         if (!response.ok) {
           throw new Error('Network response was not ok: ' + response.statusText);
         }
         
         const contentType = response.headers.get('Content-Type');
-        // console.log('Response content type:', contentType);
         if (!contentType || !contentType.includes('application/json')) {
           throw new Error('Expected JSON but received: ' + contentType);
         }
-        
         const data = await response.json();
-        // console.log('Response data:', data);
         setProfile(data);
         setAuthStatus('Authenticated');
       } catch (error) {
@@ -115,12 +108,11 @@ function NavBar() {
     };
     sendMessage();
     fetchUserProfile();
-      // Handle connection
   }, []);
 
   const startRecording = () => {
     setIsRecording(true);
-    setPressedKeys(new Set()); // Reset the pressed keys
+    setPressedKeys(new Set());
   };
   return (
     <div className='navbar'>
