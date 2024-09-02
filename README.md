@@ -11,10 +11,10 @@ This will be released to a few streamers to get feedback on:
 - Any more features they'd like added to the application.
 
 ## Running the Application
-The application will be packaged using PyInstaller.
+The application will be packaged using Electron.
 
 Flask will host the React Files, and also will make the API Calls. 
 
-Python will be used to manage the SQL Database.
+MySQL will be used for the database.
 
-With PyInstaller, the user should be able to run the executable to install the program. Then clicking the Application should run it, allowing them to authenticate and create clips.
+With Electron, the user should be able to run the executable to install the program. Then clicking the Application should run it, allowing them to authenticate and create clips.
