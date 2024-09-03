@@ -39,11 +39,11 @@ logging.basicConfig(level=logging.DEBUG,
                     ])
 
 logger = logging.getLogger(__name__)
-logger.info("This is an informational message")
 
+# Initializing the Database
 dbmethods.initDatabase()
 
-    
+# To check whether if the app is being launched with the executable or normally through .py script (Deployment vs Development)  
 if getattr(sys, 'frozen', False):
     base_dir = os.path.dirname(sys.executable)
     app = Flask(__name__, static_folder=os.path.join(base_dir,'build'), static_url_path='')
@@ -53,15 +53,13 @@ if getattr(sys, 'frozen', False):
 elif __file__:
     base_dir = os.path.dirname(__file__)
     app = Flask(__name__)
-    # socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet',logger=True, engineio_logger=True)
     socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet', engineio_logger=True)
     authHTML = "base.html"
     print("file test")
 CORS(app)
 
-
+# Run the flask server on port 5000
 def run_flask():
-    # eventlet.wsgi.server(eventlet.listen(('0.0.0.0', 5000)), app)
     socketio.run(app, host='0.0.0.0', port=5000)
     logger.info("Flask server started successfully.")
     print("Flask server started successfully.")
@@ -81,7 +79,6 @@ twitch_name = ""
 profile_pic_url = ""
 twitch_id = ""
 auth_cid = os.getenv('APP_CLIENT_ID')
-temp_oauth = ""
 user_id = ""
 hotkey = 'Ctrl+Alt+L'
 
@@ -91,6 +88,7 @@ try:
     if(dbmethods.getAccessToken() != None and dbmethods.getRefreshToken() != None ):
         acc_token = dbmethods.getAccessToken()
         refr_token = dbmethods.getRefreshToken()
+        hotkey = dbmethods.getHotkey()
     else:
         pass
 except:
@@ -99,19 +97,18 @@ except:
 
 
 #HTML Routes
+
+# Differ from Deployment vs. Development
 @app.route('/authorizeFlask1')
 def hello():
     return send_from_directory(app.static_folder,"auth.html")
-
 @app.route('/')
 def serve():
     return send_from_directory(app.static_folder, 'index.html')
-
-
 @app.route('/authorizeFlask')
 def home():
     return render_template('base.html')
-    
+# Callback route from when collecting tokens from Twitch API
 @app.route('/callback')
 def callback():
     global auth_cid, acc_token, refr_token,twitch_name, profile_pic_url
@@ -138,28 +135,34 @@ def callback():
             refr_token = token_info['refresh_token']
             expires_in = token_info['expires_in']
             grabUserDetails()
-            dbmethods.updateTokens(acc_token,refr_token, twitch_name, profile_pic_url, expires_in,hotkey )
+            dbmethods.updateTokens(acc_token,refr_token, twitch_name, profile_pic_url, expires_in,hotkey)
             return redirect("http://localhost:5173")
     
     return redirect("http://localhost:5173")
 
+# Route used to get the Profile Picture and Dispaly Name. Requests made from Client.
 @app.route('/callbackRender')
 def callbackRender():
+    global hotkey
     dname, url = dbmethods.getUserDetails()
-    user_profile = {'display_name': dname, 'profile_pic_url': url}
+    print(dname + url)
+    user_profile = {'display_name': dname, 'profile_pic_url': url, 'hotkey': hotkey}
     return jsonify(user_profile)
 
+# Request from Client, to send over clips from Database
 @app.route('/clips', methods=['GET'])
 def get_clips():
     clips = dbmethods.get_clips()
     return jsonify(clips)
 
+#Request from Client, to get the clips of the link from Database.
 @app.route('/getLink', methods=['POST'])
 def get_link():
     slug = request.get_json()
     link = dbmethods.get_link(slug)
     return jsonify(link)
 
+# Request from Client to remove clip from database.
 @app.route('/removeClip', methods=['POST'])
 def remove_List():
     slug = request.get_json()
@@ -169,10 +172,9 @@ def remove_List():
 
 
 
-
-
-
 # Handle WebSocket events
+
+#trigger_key Is to post a message to the client to re-render the app. Usually for when a clip has been made.
 def trigger_key():
     requests.post('http://localhost:5000/trigger-message')
 @app.route('/trigger-message', methods=['POST'])
@@ -180,26 +182,26 @@ def trigger_message():
     with app.app_context():
         socketio.emit('server_message', {'data': 'Manual trigger from Flask!'})
     return "Message sent!", 200
-
-@socketio.on('hotkey-asign')
+# Hotkey assign for when the user wants to change the hotkey
+@socketio.on('hotkey-assign')
 def recieve_hotkey(json):
+    print("Recieved Hotkey: " + json)
+    hotkey_assign(json)
+
+
+
+# Functions
+
+# Hotkey assign function to be used to assign a different hotkey.
+def hotkey_assign(hk):
     global hotkey
     keyboard.remove_hotkey(hotkey)
-    hotkey = json
+    hotkey = hk
     print(hotkey)
-    keyboard.add_hotkey(hotkey, clip_creator)
-    return "Success !"
+    keyboard.add_hotkey(hk, clip_creator)
+    #Change Hotkey in Database Code Here.
 
-
-
-#Functions
-def open_auth():
-    global auth_cid
-    webbrowser.open_new("http://localhost:5000/authorizeFlask1")
-
-def gotoAuthorize():
-    open_auth()
-
+# Used to get basic user information from Twitch API.
 def grabUserDetails():
     global twitch_name, twitch_id, acc_token, auth_cid, profile_pic_url
     print("access token " + acc_token)
@@ -217,11 +219,9 @@ def grabUserDetails():
             twitch_id = user['id']
 
             twitch_name = user['display_name']
-            username = user['display_name']
             profile_pic_url = user['profile_image_url']
             print(f"User ID: {user_id}")
-            print(f"Username: {username}")
-            # print(user_info)
+            print(f"Username: {twitch_name}")
         else:
             print("No user data found.")
     else:
@@ -229,7 +229,7 @@ def grabUserDetails():
         refreshAccessToken()
         grabUserDetails()
 
-
+# To grab the game being played from the user at the time of creating the clip
 def grabGame():
     global twitch_name, twitch_id, acc_token, auth_cid, user_id
     print("acess token " + acc_token)
@@ -261,15 +261,8 @@ def grabGame():
             print(htperr.reason)
             return
 
-def notyChecker():
-    toast = Notification(app_id="enzynclipper", 
-                         title="Clipped !", 
-                         msg="You have clipped the last 30 seconds to your Twitch !")
-    toast.set_audio(audio.Default, loop=False)
-    print("Notification created")
-    toast.show()
-    print("Notification shown")
 
+# Initializes the 'Bot' to create clips, etc.
 class Bot(commands.Bot):
     def __init__(self):
         global twitch_name,acc_token
@@ -279,14 +272,15 @@ class Bot(commands.Bot):
         print(f'User id is | {self.user_id}')  
     def create_user(self, user_id: int, user_name: str):
         return super().create_user(user_id, user_name)
-    
-def  clip_creator():
+# The Main function to create clips
+def clip_creator():
     global twitch_name, twitch_id, acc_token, twitch_id
     print(hotkey)
+    #Temp way of notifying a clip has been made.
     duration = 200  # milliseconds
     freq = 440  # Hz
     winsound.Beep(freq, duration)
-    print("uid: "+ twitch_id)
+    print("User ID: "+ twitch_id)
     clipped = Notification(app_id="enzynclipper", 
                            title="Clipped !", 
                            msg="You have clipped the last 30 seconds to your Twitch !", 
@@ -313,11 +307,13 @@ def  clip_creator():
     print("Sending over the Refresh Clips Signal")
     trigger_key()
     print("Sent the refresh clips signal.")
-    
+
+# Function used to wait for a hotkeypress to create a clip.
 def createaClip():
     keyboard.add_hotkey(hotkey, clip_creator)
     keyboard.wait()
 
+# Necessary for creating a new access token incase it expires.
 def refreshAccessToken():
         global acc_token, refr_token
         token_url = "https://id.twitch.tv/oauth2/token"

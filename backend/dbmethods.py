@@ -105,7 +105,7 @@ def remove_clips(slugs):
 def insertTokens(auth_t,refr_t,d_name,prof_pic_url,exp_in,hk):
     try:
         sqliteConnection = sqlite3.connect(db_path)
-        sqlite_create_table_query = '''INSERT INTO AuthKeys (id,auth_token,refr_token,display_name,profile_pic_url,expires_in,hotkey) VALUES (?,?,?,?,?,?);'''
+        sqlite_create_table_query = '''INSERT INTO AuthKeys (id,auth_token,refr_token,display_name,profile_pic_url,expires_in,hotkey) VALUES (?,?,?,?,?,?,?);'''
         userValues = (1,auth_t,refr_t,d_name,prof_pic_url,exp_in,hk)
 
         cursor = sqliteConnection.cursor()
@@ -125,6 +125,7 @@ def insertTokens(auth_t,refr_t,d_name,prof_pic_url,exp_in,hk):
 
 def updateTokens(auth_t,refr_t,d_name,prof_pic_url,exp_in,hk):
     userValues = (auth_t,refr_t,d_name,prof_pic_url,exp_in,hk)
+    print(userValues)
     sqliteConnection = sqlite3.connect(db_path)
     sqlite_find_row = '''SELECT COUNT(*) from AuthKeys'''
     cursor = sqliteConnection.cursor()
@@ -133,7 +134,6 @@ def updateTokens(auth_t,refr_t,d_name,prof_pic_url,exp_in,hk):
     row_count = result[0]
 
     if(row_count > 0):
-        
         sqlite_create_table_query = '''UPDATE AuthKeys set auth_token = ?, refr_token = ?, display_name = ?, profile_pic_url = ?,expires_in = ?, hotkey = ? WHERE id = 1;'''
         cursor = sqliteConnection.cursor()
         print("Successfully Connected to SQLite")
@@ -142,7 +142,8 @@ def updateTokens(auth_t,refr_t,d_name,prof_pic_url,exp_in,hk):
         print("SQLite Update Completed")
         cursor.close()
     else:
-        insertTokens(userValues)
+        print("INSERT INSERT INSERT INSERT INSERT INSERT INSERT ")
+        insertTokens(auth_t,refr_t,d_name,prof_pic_url,exp_in,hk)
 
     sqliteConnection.close()
     print("sqlite connection is closed")
@@ -170,8 +171,6 @@ def getRefreshToken():
             print("sqlite connection is closed")
 
 def getAccessToken():
-
-
     try:
         sqliteConnection = sqlite3.connect(db_path)
         sqlite_get_auth_token = '''SELECT auth_token FROM AuthKeys WHERE id = 1;'''
@@ -186,7 +185,29 @@ def getAccessToken():
         return auth_token[0]
 
     except sqlite3.Error as error:
-        print("Error while creating a sqlite table", error)
+        print("Error while getting access token: ", error)
+        return None
+    finally:
+        if sqliteConnection:
+            sqliteConnection.close()
+            print("sqlite connection is closed")
+
+def getHotkey():
+    try:
+        sqliteConnection = sqlite3.connect(db_path)
+        sqlite_get_auth_token = '''SELECT hotkey FROM AuthKeys WHERE id = 1;'''
+
+        cursor = sqliteConnection.cursor()
+        print("Successfully Connected to SQLite")
+        cursor.execute(sqlite_get_auth_token)
+        hotkey = cursor.fetchone()
+        print("SQLite Insert Completed")
+
+        cursor.close()
+        return hotkey[0]
+
+    except sqlite3.Error as error:
+        print("Error while getting hotkey: ", error)
         return None
     finally:
         if sqliteConnection:
@@ -209,7 +230,7 @@ def insertClip(slug,link,date,time,game):
         cursor.close()
 
     except sqlite3.Error as error:
-        print("Error while creating a sqlite table", error)
+        print("Error while inserting a clip: ", error)
     finally:
         if sqliteConnection:
             sqliteConnection.close()
@@ -231,7 +252,7 @@ def get_clips():
         return clips
 
     except sqlite3.Error as error:
-        print("Error while creating a sqlite table", error)
+        print("Error while getting clips: ", error)
         return None
     finally:
         if sqliteConnection:
@@ -255,7 +276,7 @@ def get_link(slug):
         return link
 
     except sqlite3.Error as error:
-        print("Error while creating a sqlite table", error)
+        print("Error while getting link(s): ", error)
         return None
     finally:
         if sqliteConnection:
@@ -278,7 +299,7 @@ def getUserDetails():
         return link
 
     except sqlite3.Error as error:
-        print("Error while getting user details", error)
+        print("Error while getting user details: ", error)
         return None
     finally:
         if sqliteConnection:

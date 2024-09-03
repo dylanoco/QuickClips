@@ -51,7 +51,7 @@ function NavBar() {
         setShortcuts((prevShortcuts) => shortcutString);
         console.log(keys.size + "");
         console.log('Shortcut saved:', shortcutString);
-        socket.emit('hotkey-asign', shortcutString);
+        socket.emit('hotkey-assign', shortcutString);
         console.log('Shortcut saved 2 :', shortcuts);
       }
     };
@@ -97,6 +97,7 @@ function NavBar() {
         }
         const data = await response.json();
         setProfile(data);
+        console.log(profile.hotkey);
         setAuthStatus('Authenticated');
       } catch (error) {
         console.error('Failed to fetch profile:', error);
@@ -124,9 +125,7 @@ function NavBar() {
               <img id='profile-pic-url' src={profile.profile_pic_url}></img>
               <h1 id='display-name-1'>{profile.display_name}</h1>
               <button onClick={startRecording}>Hotkey Listen</button>
-              <ul>
-                {shortcuts}
-              </ul>
+              <p>{profile.hotkey}</p>
             </>
             ) 
             : 
