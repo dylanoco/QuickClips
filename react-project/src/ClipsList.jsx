@@ -1,11 +1,12 @@
 import { useContext, useEffect } from 'react';
 import './ClipsList.css'
 import { DataContext } from './DataContext';
-function ClipsList(props){
+
+//ClipsList which formats the clips and displays them.
+function ClipsList(props){ //Props will be the clips from ClipsCreated.jsx
     const clips = props.clips;
-
-
     const {setSlug} = useContext(DataContext)
+    //displayClips puts each clip into a list, mapping their details and formatting them
     const displayClips = clips.map(clip => 
     <li key = {clip[0]}><div className = "cl-div-button" tabIndex="1"  onClick={() => setSlug(clip[0])}>
         <div className='dategame-wrap' >
@@ -17,7 +18,6 @@ function ClipsList(props){
         </div>
     </div></li>
     );
-
     useEffect(() =>
     {
         displayClips
@@ -31,5 +31,3 @@ function ClipsList(props){
     ) 
 }
 export default ClipsList
-
-//CLICKABLE DIV WITH ONCLICK, THEN FORMAT TEXT INSIDE THAT DIV.

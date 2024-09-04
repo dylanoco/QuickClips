@@ -2,8 +2,6 @@ import sqlite3
 import os
 import sys
 
-
-
 if getattr(sys, 'frozen', False):
     base_dir = os.path.dirname(sys.executable)
 elif __file__:
@@ -34,7 +32,7 @@ finally:
         if sqliteConnection:
             sqliteConnection.close()
             print("sqlite connection is closed")
-
+#Initializing the Database
 def initDatabase():
     sqliteConnection = sqlite3.connect(db_path)
     try:
@@ -52,7 +50,7 @@ def initDatabase():
         print("Successfully Connected to SQLite")
         cursor.execute(sqlite_create_table_query)
         sqliteConnection.commit()
-        print("SQLite table created: Database")
+        print("SQLite table created: AuthKeys")
         cursor.close()
 
     except sqlite3.Error as error:
@@ -76,11 +74,12 @@ def initDatabase():
         cursor.close()
 
     except sqlite3.Error as error:
-        print("Error while creating a sqlite table clips", error)
+        print("Error while creating a sqlite table", error)
     finally:
         if sqliteConnection:
             sqliteConnection.close()
             print("sqlite connection is closed")
+#Removing Clips from Database
 def remove_clips(slugs):
     try:
         print(slugs)
@@ -101,7 +100,7 @@ def remove_clips(slugs):
         if sqliteConnection:
             sqliteConnection.close()
             print("sqlite connection is closed")
-
+#Inserting Tokens if Token does not exist
 def insertTokens(auth_t,refr_t,d_name,prof_pic_url,exp_in,hk):
     try:
         sqliteConnection = sqlite3.connect(db_path)
@@ -113,7 +112,6 @@ def insertTokens(auth_t,refr_t,d_name,prof_pic_url,exp_in,hk):
         cursor.execute(sqlite_create_table_query, userValues)
         sqliteConnection.commit()
         print("SQLite Insert Completed")
-
         cursor.close()
 
     except sqlite3.Error as error:
@@ -122,7 +120,7 @@ def insertTokens(auth_t,refr_t,d_name,prof_pic_url,exp_in,hk):
         if sqliteConnection:
             sqliteConnection.close()
             print("sqlite connection is closed")
-
+#Updating Tokens
 def updateTokens(auth_t,refr_t,d_name,prof_pic_url,exp_in,hk):
     userValues = (auth_t,refr_t,d_name,prof_pic_url,exp_in,hk)
     print(userValues)
@@ -142,80 +140,12 @@ def updateTokens(auth_t,refr_t,d_name,prof_pic_url,exp_in,hk):
         print("SQLite Update Completed")
         cursor.close()
     else:
-        print("INSERT INSERT INSERT INSERT INSERT INSERT INSERT ")
         insertTokens(auth_t,refr_t,d_name,prof_pic_url,exp_in,hk)
 
     sqliteConnection.close()
     print("sqlite connection is closed")
-
-def getRefreshToken():
-    try:
-        sqliteConnection = sqlite3.connect(db_path)
-        sqlite_get_refresh_token = '''SELECT refr_token FROM AuthKeys WHERE id = 1;'''
-
-        cursor = sqliteConnection.cursor()
-        print("Successfully Connected to SQLite")
-        cursor.execute(sqlite_get_refresh_token)
-        refresh_token = cursor.fetchone()
-        print("SQLite Insert Completed")
-
-        cursor.close()
-        return refresh_token[0]
-
-    except sqlite3.Error as error:
-        print("Error while creating a sqlite table", error)
-        return None
-    finally:
-        if sqliteConnection:
-            sqliteConnection.close()
-            print("sqlite connection is closed")
-
-def getAccessToken():
-    try:
-        sqliteConnection = sqlite3.connect(db_path)
-        sqlite_get_auth_token = '''SELECT auth_token FROM AuthKeys WHERE id = 1;'''
-
-        cursor = sqliteConnection.cursor()
-        print("Successfully Connected to SQLite")
-        cursor.execute(sqlite_get_auth_token)
-        auth_token = cursor.fetchone()
-        print("SQLite Insert Completed")
-
-        cursor.close()
-        return auth_token[0]
-
-    except sqlite3.Error as error:
-        print("Error while getting access token: ", error)
-        return None
-    finally:
-        if sqliteConnection:
-            sqliteConnection.close()
-            print("sqlite connection is closed")
-
-def getHotkey():
-    try:
-        sqliteConnection = sqlite3.connect(db_path)
-        sqlite_get_auth_token = '''SELECT hotkey FROM AuthKeys WHERE id = 1;'''
-
-        cursor = sqliteConnection.cursor()
-        print("Successfully Connected to SQLite")
-        cursor.execute(sqlite_get_auth_token)
-        hotkey = cursor.fetchone()
-        print("SQLite Insert Completed")
-
-        cursor.close()
-        return hotkey[0]
-
-    except sqlite3.Error as error:
-        print("Error while getting hotkey: ", error)
-        return None
-    finally:
-        if sqliteConnection:
-            sqliteConnection.close()
-            print("sqlite connection is closed")
-
+#Insert Recently Created Clips
 def insertClip(slug,link,date,time,game):
-
     try:
         sqliteConnection = sqlite3.connect(db_path)
         sqlite_create_table_query = '''INSERT INTO Clips (slug,link,date,time,game) VALUES (?,?,?,?,?);'''
@@ -235,7 +165,8 @@ def insertClip(slug,link,date,time,game):
         if sqliteConnection:
             sqliteConnection.close()
             print("sqlite connection is closed")
-
+#Getter Functions
+#Getting Clips
 def get_clips():
 
     try:
@@ -258,7 +189,7 @@ def get_clips():
         if sqliteConnection:
             sqliteConnection.close()
             print("sqlite connection is closed")
-
+#Getting the Link of the Clip(s)
 def get_link(slug):
 
     try:
@@ -282,7 +213,7 @@ def get_link(slug):
         if sqliteConnection:
             sqliteConnection.close()
             print("sqlite connection is closed")
-
+#Getting User Details (Profile Picture, Display Name)
 def getUserDetails():
     try:
         sqliteConnection = sqlite3.connect(db_path)
@@ -300,6 +231,72 @@ def getUserDetails():
 
     except sqlite3.Error as error:
         print("Error while getting user details: ", error)
+        return None
+    finally:
+        if sqliteConnection:
+            sqliteConnection.close()
+            print("sqlite connection is closed")
+#Grabbing Refresh Token from Database
+def getRefreshToken():
+    try:
+        sqliteConnection = sqlite3.connect(db_path)
+        sqlite_get_refresh_token = '''SELECT refr_token FROM AuthKeys WHERE id = 1;'''
+
+        cursor = sqliteConnection.cursor()
+        print("Successfully Connected to SQLite")
+        cursor.execute(sqlite_get_refresh_token)
+        refresh_token = cursor.fetchone()
+        print("SQLite Insert Completed")
+
+        cursor.close()
+        return refresh_token[0]
+
+    except sqlite3.Error as error:
+        print("Error while creating a sqlite table", error)
+        return None
+    finally:
+        if sqliteConnection:
+            sqliteConnection.close()
+            print("sqlite connection is closed")
+#Grabbing Access Token from Database
+def getAccessToken():
+    try:
+        sqliteConnection = sqlite3.connect(db_path)
+        sqlite_get_auth_token = '''SELECT auth_token FROM AuthKeys WHERE id = 1;'''
+
+        cursor = sqliteConnection.cursor()
+        print("Successfully Connected to SQLite")
+        cursor.execute(sqlite_get_auth_token)
+        auth_token = cursor.fetchone()
+        print("SQLite Insert Completed")
+
+        cursor.close()
+        return auth_token[0]
+
+    except sqlite3.Error as error:
+        print("Error while getting access token: ", error)
+        return None
+    finally:
+        if sqliteConnection:
+            sqliteConnection.close()
+            print("sqlite connection is closed")
+#Grabbing Hotkey from Database
+def getHotkey():
+    try:
+        sqliteConnection = sqlite3.connect(db_path)
+        sqlite_get_auth_token = '''SELECT hotkey FROM AuthKeys WHERE id = 1;'''
+
+        cursor = sqliteConnection.cursor()
+        print("Successfully Connected to SQLite")
+        cursor.execute(sqlite_get_auth_token)
+        hotkey = cursor.fetchone()
+        print("SQLite Insert Completed")
+
+        cursor.close()
+        return hotkey[0]
+
+    except sqlite3.Error as error:
+        print("Error while getting hotkey: ", error)
         return None
     finally:
         if sqliteConnection:

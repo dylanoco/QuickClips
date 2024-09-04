@@ -6,7 +6,7 @@ import { io } from 'socket.io-client';
 function NavBar() {
   const [profile, setProfile] = useState('');
   const [authStatus, setAuthStatus] = useState('Checking authentication...');
-  const [response, setResponse] = useState('');
+  // const [response, setResponse] = useState('');
 
   const [pressedKeys, setPressedKeys] = useState(new Set());
   const [isRecording, setIsRecording] = useState(false); 
@@ -15,7 +15,7 @@ function NavBar() {
 
 
   useEffect(() => {
-    const socket = io('http://localhost:5000')
+    // const socket = io('http://localhost:5000')
     const detectKeyDown = (event) => {
       if (isRecording) {
         const key = event.key.toLowerCase(); 
@@ -71,18 +71,6 @@ function NavBar() {
     socket.on('connect', () => {
       console.log('Connected to server');
     });
-    // Handle incoming messages
-    socket.on('response', (data) => {
-      setResponse(data.data);
-    });
-    socket.on('server_message', (data) => {
-      setResponse(data.data);
-      console.log(data.data);
-    });
-    socket.on('refresh-clips', (data) => {
-      setResponse(data.data);
-      console.log(data.data);
-    });
     const fetchUserProfile = async () => {
       console.log('Fetching user profile...');
       try {
@@ -104,10 +92,6 @@ function NavBar() {
         setAuthStatus('Error fetching profile');
       }
     };
-    const sendMessage = () => {
-      socket.emit('refresh-clips', 'Hello from React!');
-    };
-    sendMessage();
     fetchUserProfile();
   }, []);
 

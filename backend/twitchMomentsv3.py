@@ -180,7 +180,7 @@ def trigger_key():
 @app.route('/trigger-message', methods=['POST'])
 def trigger_message():
     with app.app_context():
-        socketio.emit('server_message', {'data': 'Manual trigger from Flask!'})
+        socketio.emit('refresh-clips', {'data': 'Manual trigger from Flask!'})
     return "Message sent!", 200
 # Hotkey assign for when the user wants to change the hotkey
 @socketio.on('hotkey-assign')

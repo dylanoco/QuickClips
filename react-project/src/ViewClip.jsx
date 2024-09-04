@@ -2,25 +2,23 @@ import { useEffect, useState, useContext } from 'react'
 import './ViewClip.css'
 import ClipsList from './ClipsList'
 import { DataContext } from './DataContext';
-
+//Displays the Selected Clip to Preview, Edit or Delete from the Datbase.
 function ViewClip(){
 
-    const { slug, setSlug, clips, setClips } = useContext(DataContext);
-    console.log(slug + "test slug");
+    const { slug, setSlug, clips, setClips } = useContext(DataContext); //The Shared useStates provided by DataContext
+    //Parts of the URL Segmented for when shifting through Clips
     const urlBody = "https://clips.twitch.tv/embed?clip=";
     const urlParent = "&parent=localhost";
     const url = urlBody.concat(slug, urlParent);
-
-  
     
     function removeList(slug){
-      console.log("Starting fetch request");
+      console.log("Starting fetch request"); // POST's the Slug from Client to Database to get deleted
       fetch("http://localhost:5000/removeClip", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify(slug )
+        body: JSON.stringify(slug)
       })
       .then(response => response.json())
       .then(data => {
@@ -41,7 +39,7 @@ function ViewClip(){
       });
     };
 
-    function openEdit(slug){
+    function openEdit(slug){ //Gets the link of the slug thats selected from the Database, then opens the link
       console.log("test");
       fetch("http://localhost:5173/getLink", {
         method: "POST",
