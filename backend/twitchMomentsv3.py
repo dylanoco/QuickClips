@@ -26,7 +26,18 @@ import eventlet
 import eventlet.wsgi
 import json
 #AUTH KEY NOT BEING VERIFIED PROPERLY WHEN LAUNCHING ELECTRON. TEST AUTHKEY, IF IT NEEDS CHANGING THEN RUN REFRESHTOKEN FUNCTION
-
+#Variables
+load_dotenv()
+client_secret = os.getenv('TWITCH_CLIENT_SECRET')
+url = os.getenv('AUTH_URL')
+acc_token = ""
+refr_token = ""
+twitch_name = ""
+profile_pic_url = ""
+twitch_id = ""
+auth_cid = os.getenv('APP_CLIENT_ID')
+hotkey = 'Ctrl+Alt+L'
+expires_in = ""
 print(f"Current working directory: {os.getcwd()}")
 authHTML = ""
 
@@ -43,6 +54,7 @@ logger = logging.getLogger(__name__)
 # Initializing the Database
 dbmethods.initDatabase()
 
+
 # To check whether if the app is being launched with the executable or normally through .py script (Deployment vs Development)  
 if getattr(sys, 'frozen', False):
     base_dir = os.path.dirname(sys.executable)
@@ -56,6 +68,46 @@ elif __file__:
     socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet', engineio_logger=True)
     authHTML = "base.html"
     print("file test")
+
+# Used to get basic user information from Twitch API.
+def grabUserDetails():
+    print("GRABBING. DETAILS")
+    global twitch_name, twitch_id, acc_token, auth_cid, profile_pic_url
+    print("access token " + acc_token)
+    headers = {
+    'Authorization': f'Bearer {acc_token}',
+    'Client-Id': auth_cid
+    }
+    response = requests.get('https://api.twitch.tv/helix/users', headers=headers)
+
+    if response.status_code == 200:
+        user_info = response.json()
+
+        if user_info['data']:
+            user = user_info['data'][0]
+            twitch_id = user['id']
+            twitch_name = user['display_name']
+            profile_pic_url = user['profile_image_url']
+            print(f"User ID: {twitch_id}")
+            print(f"Username: {twitch_name}")
+        else:
+            print("No user data found.")
+    else:
+        print(f"Failed to get user information: {response.status_code} - {response.text}")
+        refreshAccessToken()
+        grabUserDetails()
+    return print("UserID: " + twitch_id)
+
+#Establishing Tokens if they already exist
+if(dbmethods.getAccessToken() != None and dbmethods.getRefreshToken() != None ):
+    acc_token = dbmethods.getAccessToken()
+    refr_token = dbmethods.getRefreshToken()
+    hotkey = dbmethods.getHotkey()
+    grabUserDetails()
+    print("TRY EXCEPT SUCCEEDED. ACC_TOKEN,REFR_TOKEN,HOTKEY" + acc_token + refr_token + hotkey)
+else:
+    print("Try Except Failed.")
+
 CORS(app)
 
 # Run the flask server on port 5000
@@ -68,19 +120,6 @@ try:
     threading.Thread(target=run_flask).start()
 except Exception as e:
     logger.error(f"Error starting Flask server: {e}")
-
-#Variables
-load_dotenv()
-client_secret = os.getenv('TWITCH_CLIENT_SECRET')
-url = os.getenv('AUTH_URL')
-acc_token = ""
-refr_token = ""
-twitch_name = ""
-profile_pic_url = ""
-twitch_id = ""
-auth_cid = os.getenv('APP_CLIENT_ID')
-hotkey = 'Ctrl+Alt+L'
-expires_in = ""
 
 
 
@@ -193,37 +232,12 @@ def hotkey_assign(hk):
     keyboard.add_hotkey(hk, clip_creator)
     #Change Hotkey in Database Code Here.
 
-# Used to get basic user information from Twitch API.
-def grabUserDetails():
-    global twitch_name, twitch_id, acc_token, auth_cid, profile_pic_url
-    print("access token " + acc_token)
-    headers = {
-    'Authorization': f'Bearer {acc_token}',
-    'Client-Id': auth_cid
-    }
-    response = requests.get('https://api.twitch.tv/helix/users', headers=headers)
 
-    if response.status_code == 200:
-        user_info = response.json()
-
-        if user_info['data']:
-            user = user_info['data'][0]
-            twitch_id = user['id']
-            twitch_name = user['display_name']
-            profile_pic_url = user['profile_image_url']
-            print(f"User ID: {twitch_id}")
-            print(f"Username: {twitch_name}")
-        else:
-            print("No user data found.")
-    else:
-        print(f"Failed to get user information: {response.status_code} - {response.text}")
-        refreshAccessToken()
-        grabUserDetails()
 
 # To grab the game being played from the user at the time of creating the clip
 def grabGame():
     global twitch_name, twitch_id, acc_token, auth_cid
-    print("acess token " + acc_token)
+    print("access token " + acc_token)
     headers = {
     'Authorization': f'Bearer {acc_token}',
     'Client-Id': auth_cid
@@ -295,6 +309,8 @@ def clip_creator():
             return
     except ValueError as verr:
         print("Value Error")
+        print("UserID: " + twitch_id)
+        print(verr)
     print("Sending over the Refresh Clips Signal")
     trigger_key()
     print("Sent the refresh clips signal.")
@@ -332,18 +348,8 @@ keyboard_thread = threading.Thread(target=createaClip)
 keyboard_thread.daemon = True  
 keyboard_thread.start()
 
+keyboard_thread.join()
 
-#Establishing Tokens if they already exist
-try:
-    if(dbmethods.getAccessToken() != None and dbmethods.getRefreshToken() != None ):
-        acc_token = dbmethods.getAccessToken()
-        refr_token = dbmethods.getRefreshToken()
-        hotkey = dbmethods.getHotkey()
-        grabUserDetails()
-    else:
-        pass
-except:
-    print("Error: No pre-existing tokens exist in the database. ")
 
 
 async def main():
