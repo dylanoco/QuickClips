@@ -79,20 +79,9 @@ twitch_name = ""
 profile_pic_url = ""
 twitch_id = ""
 auth_cid = os.getenv('APP_CLIENT_ID')
-user_id = ""
 hotkey = 'Ctrl+Alt+L'
+expires_in = ""
 
-
-#Establishing Tokens if they already exist
-try:
-    if(dbmethods.getAccessToken() != None and dbmethods.getRefreshToken() != None ):
-        acc_token = dbmethods.getAccessToken()
-        refr_token = dbmethods.getRefreshToken()
-        hotkey = dbmethods.getHotkey()
-    else:
-        pass
-except:
-    print("Error: No pre-existing tokens exist in the database. ")
 
 
 
@@ -143,7 +132,10 @@ def callback():
 # Route used to get the Profile Picture and Dispaly Name. Requests made from Client.
 @app.route('/callbackRender')
 def callbackRender():
-    global hotkey
+    global hotkey, expires_in
+    # refreshAccessToken()
+    # grabUserDetails()
+    # dbmethods.updateTokens(acc_token,refr_token, twitch_name, profile_pic_url, expires_in ,hotkey)
     dname, url = dbmethods.getUserDetails()
     print(dname + url)
     user_profile = {'display_name': dname, 'profile_pic_url': url, 'hotkey': hotkey}
@@ -217,10 +209,9 @@ def grabUserDetails():
         if user_info['data']:
             user = user_info['data'][0]
             twitch_id = user['id']
-
             twitch_name = user['display_name']
             profile_pic_url = user['profile_image_url']
-            print(f"User ID: {user_id}")
+            print(f"User ID: {twitch_id}")
             print(f"Username: {twitch_name}")
         else:
             print("No user data found.")
@@ -231,7 +222,7 @@ def grabUserDetails():
 
 # To grab the game being played from the user at the time of creating the clip
 def grabGame():
-    global twitch_name, twitch_id, acc_token, auth_cid, user_id
+    global twitch_name, twitch_id, acc_token, auth_cid
     print("acess token " + acc_token)
     headers = {
     'Authorization': f'Bearer {acc_token}',
@@ -277,9 +268,9 @@ def clip_creator():
     global twitch_name, twitch_id, acc_token, twitch_id
     print(hotkey)
     #Temp way of notifying a clip has been made.
-    duration = 200  # milliseconds
-    freq = 440  # Hz
-    winsound.Beep(freq, duration)
+    # duration = 150  # milliseconds
+    # freq = 3000 # Hz
+    # winsound.Beep(freq, duration)
     print("User ID: "+ twitch_id)
     clipped = Notification(app_id="enzynclipper", 
                            title="Clipped !", 
@@ -315,7 +306,7 @@ def createaClip():
 
 # Necessary for creating a new access token incase it expires.
 def refreshAccessToken():
-        global acc_token, refr_token
+        global acc_token, refr_token, expires_in
         token_url = "https://id.twitch.tv/oauth2/token"
         data = {
             "client_id": "s47rucw584h54boq3v35nwgg8vnxws",
@@ -332,12 +323,28 @@ def refreshAccessToken():
             token_info = response.json()
             acc_token = token_info['access_token']
             refr_token = token_info['refresh_token']
+            expires_in = token_info['expires_in']
+            grabUserDetails()
         else:
             print("Failed to exchange token")
 #Threads & Main
 keyboard_thread = threading.Thread(target=createaClip)
 keyboard_thread.daemon = True  
 keyboard_thread.start()
+
+
+#Establishing Tokens if they already exist
+try:
+    if(dbmethods.getAccessToken() != None and dbmethods.getRefreshToken() != None ):
+        acc_token = dbmethods.getAccessToken()
+        refr_token = dbmethods.getRefreshToken()
+        hotkey = dbmethods.getHotkey()
+        grabUserDetails()
+    else:
+        pass
+except:
+    print("Error: No pre-existing tokens exist in the database. ")
+
 
 async def main():
     eventlet.monkey_patch()
