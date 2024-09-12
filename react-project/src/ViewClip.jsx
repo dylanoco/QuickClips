@@ -41,7 +41,7 @@ function ViewClip(){
 
     function openEdit(slug){ //Gets the link of the slug thats selected from the Database, then opens the link
       console.log("test");
-      fetch("http://localhost:5173/getLink", {
+      fetch("http://localhost:5000/getLink", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -49,7 +49,7 @@ function ViewClip(){
         body: JSON.stringify(slug)
       })
       .then((response) => response.json())
-      .then((link) =>window.open(link[0], '_blank', 'location=yes'))
+      .then((link) => window.open(link[0], '_blank', 'location=yes'))
       .then((link) => console.log("Success:", link[0]))
       .catch((error) => console.error("Error:", error))
     }

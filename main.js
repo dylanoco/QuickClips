@@ -5,6 +5,7 @@ const { spawn } = require('child_process');
 const path = require('path');
 const log = require('electron-log');
 const fs = require('fs');
+// import { setTimeout } from "timers/promises";
 
 function logCurrentDirectory() {
   const currentDirectory = process.cwd();
@@ -13,6 +14,7 @@ function logCurrentDirectory() {
   // Optionally, write this information to a file for debugging purposes
   fs.appendFileSync(path.join(currentDirectory, 'app-log.txt'), `Current working directory: ${currentDirectory}\n`);
 }
+
 
 
 logCurrentDirectory();
@@ -32,16 +34,16 @@ function createWindow() {
     return { action: 'deny' };
   });
 
-  mainWindow.loadURL("http://localhost:5173/");
+  mainWindow.loadURL("http://localhost:5000/");
   mainWindow.webContents.on('did-fail-load', () => {
     log.error('Failed to load content.');
   });
 }
 //cd resources/backend && start twitchMomentsv3.exe Deployment Line for Starting the Server
 function startFlaskServer() {
-  // log.info('Starting Flask server...');
-  // // exec('cd backend && start twitchMomentsv3.exe', (error, stdout, stderr) => {
-  // exec('cd backend && python twitchMomentsv3.py', { env: process.env },(error, stdout, stderr) => {
+  log.info('Starting Flask server...');
+  // exec('cd backend && start twitchMomentsv3.exe', (error, stdout, stderr) => {
+  // // exec('cd backend && python twitchMomentsv3.py', { env: process.env },(error, stdout, stderr) => {
   //   log.info("Test Server");
   //   if (error) {
   //     log.error(`Error executing command: ${error.message}`);
@@ -85,11 +87,15 @@ function killServer() {
     log.info(`stdout: ${stdout}`);
   });
 }
-
+const timeout = async () => {
+  await setTimeout(createWindow,5000);
+  console.log("Waited an additional 5s");
+};
 app.whenReady().then(() => {
   startFlaskServer();
-  createWindow();
+  timeout();
 });
+
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') 
     killServer()
@@ -102,3 +108,4 @@ app.on('activate', () => {
 ipcMain.on('oauth-complete', (event, userProfile) => {
   console.log('User authenticated:', userProfile);
 });
+

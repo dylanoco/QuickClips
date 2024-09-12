@@ -58,16 +58,43 @@ dbmethods.initDatabase()
 # To check whether if the app is being launched with the executable or normally through .py script (Deployment vs Development)  
 if getattr(sys, 'frozen', False):
     base_dir = os.path.dirname(sys.executable)
-    app = Flask(__name__, static_folder=os.path.join(base_dir,'build'), static_url_path='')
+    app = Flask(__name__, static_folder=os.path.join(base_dir,'dist'), static_url_path='')
     socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet',logger=True, engineio_logger=True)
-    authHTML = "./build/auth.html"
+    authHTML = "./dist/auth.html"
     print("sys test")
 elif __file__:
     base_dir = os.path.dirname(__file__)
-    app = Flask(__name__)
-    socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet', engineio_logger=True)
-    authHTML = "base.html"
+    # app = Flask(__name__)
+    # socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet', engineio_logger=True)
+    # authHTML = "base.html"
+    app = Flask(__name__, static_folder=os.path.join(base_dir,'dist'), static_url_path='')
+    socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet',logger=True, engineio_logger=True)
+    authHTML = "./dist/auth.html"
     print("file test")
+
+    # Necessary for creating a new access token incase it expires.
+def refreshAccessToken():
+        global acc_token, refr_token, expires_in
+        token_url = "https://id.twitch.tv/oauth2/token"
+        data = {
+            "client_id": "s47rucw584h54boq3v35nwgg8vnxws",
+            "client_secret": client_secret,
+            "grant_type": "refresh_token",
+            "refresh_token": refr_token
+        }
+        print("Sending POST request to exchange code for token")
+        response = requests.post(token_url, data=data)
+        print(f"Response status code: {response.status_code}")
+        print(f"Response content: {response.text}")
+        if response.status_code == 200:
+            print("Token exchange successful")
+            token_info = response.json()
+            acc_token = token_info['access_token']
+            refr_token = token_info['refresh_token']
+            expires_in = token_info['expires_in']
+            grabUserDetails()
+        else:
+            print("Failed to exchange token")
 
 # Used to get basic user information from Twitch API.
 def grabUserDetails():
@@ -135,7 +162,7 @@ def serve():
     return send_from_directory(app.static_folder, 'index.html')
 @app.route('/authorizeFlask')
 def home():
-    return render_template('base.html')
+    return send_from_directory(app.static_folder,"auth.html")
 # Callback route from when collecting tokens from Twitch API
 @app.route('/callback')
 def callback():
@@ -164,9 +191,9 @@ def callback():
             expires_in = token_info['expires_in']
             grabUserDetails()
             dbmethods.updateTokens(acc_token,refr_token, twitch_name, profile_pic_url, expires_in,hotkey)
-            return redirect("http://localhost:5173")
+            return redirect("http://localhost:5000")
     
-    return redirect("http://localhost:5173")
+    return redirect("http://localhost:5000")
 
 # Route used to get the Profile Picture and Dispaly Name. Requests made from Client.
 @app.route('/callbackRender')
@@ -320,29 +347,6 @@ def createaClip():
     keyboard.add_hotkey(hotkey, clip_creator)
     keyboard.wait()
 
-# Necessary for creating a new access token incase it expires.
-def refreshAccessToken():
-        global acc_token, refr_token, expires_in
-        token_url = "https://id.twitch.tv/oauth2/token"
-        data = {
-            "client_id": "s47rucw584h54boq3v35nwgg8vnxws",
-            "client_secret": client_secret,
-            "grant_type": "refresh_token",
-            "refresh_token": refr_token
-        }
-        print("Sending POST request to exchange code for token")
-        response = requests.post(token_url, data=data)
-        print(f"Response status code: {response.status_code}")
-        print(f"Response content: {response.text}")
-        if response.status_code == 200:
-            print("Token exchange successful")
-            token_info = response.json()
-            acc_token = token_info['access_token']
-            refr_token = token_info['refresh_token']
-            expires_in = token_info['expires_in']
-            grabUserDetails()
-        else:
-            print("Failed to exchange token")
 #Threads & Main
 keyboard_thread = threading.Thread(target=createaClip)
 keyboard_thread.daemon = True  

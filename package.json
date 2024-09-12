@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "main.js",
   "scripts": {
-    "start": "concurrently \"npm run start-react\" \"npm run start-electron\"",
+    "start": "concurrently  \"npm run start-electron\"",
+    "start2": "concurrently \"npm run start-react\" \"npm run start-electron\"",
     "start-react": "npx serve -s ./react-project/dist -l 3000",
     "start-electron": "electron .",
     "package": "electron-builder"
