@@ -75,7 +75,7 @@ function startFlaskServer() {
 }
 function killServer() {
   log.info("Test Kill Server");
-  exec('taskkill /IM twitchMomentsv3.py /F', (error, stdout, stderr) => {
+  exec('taskkill /IM electron.exe /F', (error, stdout, stderr) => {
     if (error) {
       log.error(`Error executing command: ${error.message}`);
       return;
@@ -97,9 +97,8 @@ app.whenReady().then(() => {
 });
 
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') 
-    killServer()
-    app.quit();
+  killServer()
+  app.quit();
 });
 app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) createWindow();
