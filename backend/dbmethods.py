@@ -302,3 +302,25 @@ def getHotkey():
         if sqliteConnection:
             sqliteConnection.close()
             print("sqlite connection is closed")
+
+#Updating Hotkey
+def updateHotkey(hk):
+    print("user val" + hk)
+    sqliteConnection = sqlite3.connect(db_path)
+    sqlite_find_row = '''SELECT COUNT(*) from AuthKeys'''
+    cursor = sqliteConnection.cursor()
+    cursor.execute(sqlite_find_row)
+    result = cursor.fetchone()
+    row_count = result[0]
+
+    if(row_count > 0):
+        sqlite_create_table_query = '''UPDATE AuthKeys set hotkey = ? WHERE id = 1;'''
+        cursor = sqliteConnection.cursor()
+        print("Successfully Connected to SQLite")
+        cursor.execute(sqlite_create_table_query, (hk,))
+        sqliteConnection.commit()
+        print("SQLite Update Completed")
+        cursor.close()
+
+    sqliteConnection.close()
+    print("sqlite connection is closed")

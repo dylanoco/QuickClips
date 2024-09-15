@@ -50,7 +50,6 @@ logging.basicConfig(level=logging.DEBUG,
                     ])
 
 logger = logging.getLogger(__name__)
-
 # Initializing the Database
 dbmethods.initDatabase()
 
@@ -61,16 +60,16 @@ if getattr(sys, 'frozen', False):
     app = Flask(__name__, static_folder=os.path.join(base_dir,'dist'), static_url_path='')
     socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet',logger=True, engineio_logger=True)
     authHTML = "./dist/auth.html"
-    print("sys test")
+    print(f"sys test")
 elif __file__:
     base_dir = os.path.dirname(__file__)
-    # app = Flask(__name__)
-    # socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet', engineio_logger=True)
-    # authHTML = "base.html"
-    app = Flask(__name__, static_folder=os.path.join(base_dir,'dist'), static_url_path='')
-    socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet',logger=True, engineio_logger=True)
-    authHTML = "./dist/auth.html"
-    print("file test")
+    app = Flask(__name__)
+    socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet', engineio_logger=True)
+    authHTML = "base.html"
+    # app = Flask(__name__, static_folder=os.path.join(base_dir,'dist'), static_url_path='')
+    # socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet',logger=True, engineio_logger=True)
+    # authHTML = "./dist/auth.html"
+    print(f"file test")
 
     # Necessary for creating a new access token incase it expires.
 def refreshAccessToken():
@@ -125,28 +124,19 @@ def grabUserDetails():
         grabUserDetails()
     return print("UserID: " + twitch_id)
 
-#Establishing Tokens if they already exist
-if(dbmethods.getAccessToken() != None and dbmethods.getRefreshToken() != None ):
-    acc_token = dbmethods.getAccessToken()
-    refr_token = dbmethods.getRefreshToken()
-    hotkey = dbmethods.getHotkey()
-    grabUserDetails()
-    print("TRY EXCEPT SUCCEEDED. ACC_TOKEN,REFR_TOKEN,HOTKEY" + acc_token + refr_token + hotkey)
-else:
-    print("Try Except Failed.")
-
 CORS(app)
 
 # Run the flask server on port 5000
 def run_flask():
     socketio.run(app, host='0.0.0.0', port=5000)
     logger.info("Flask server started successfully.")
-    print("Flask server started successfully.")
+    print(f"Flask server started successfully.")
 
 try:
     threading.Thread(target=run_flask).start()
 except Exception as e:
     logger.error(f"Error starting Flask server: {e}")
+    print(f"Error starting Flask server: {e}")
 
 
 
@@ -162,7 +152,8 @@ def serve():
     return send_from_directory(app.static_folder, 'index.html')
 @app.route('/authorizeFlask')
 def home():
-    return send_from_directory(app.static_folder,"auth.html")
+    return render_template("base.html")
+    # return send_from_directory(app.static_folder,"auth.html")
 # Callback route from when collecting tokens from Twitch API
 @app.route('/callback')
 def callback():
@@ -191,9 +182,9 @@ def callback():
             expires_in = token_info['expires_in']
             grabUserDetails()
             dbmethods.updateTokens(acc_token,refr_token, twitch_name, profile_pic_url, expires_in,hotkey)
-            return redirect("http://localhost:5000")
+            return redirect("http://localhost:5001")
     
-    return redirect("http://localhost:5000")
+    return redirect("http://localhost:5001")
 
 # Route used to get the Profile Picture and Dispaly Name. Requests made from Client.
 @app.route('/callbackRender')
@@ -202,9 +193,16 @@ def callbackRender():
     # refreshAccessToken()
     # grabUserDetails()
     # dbmethods.updateTokens(acc_token,refr_token, twitch_name, profile_pic_url, expires_in ,hotkey)
-    dname, url = dbmethods.getUserDetails()
-    print(dname + url)
-    user_profile = {'display_name': dname, 'profile_pic_url': url, 'hotkey': hotkey}
+    try:
+        dname, url = dbmethods.getUserDetails()
+        print(dname + url)
+        user_profile = {'display_name': dname, 'profile_pic_url': url, 'hotkey': hotkey}
+    except:
+        dname = None
+        url = None
+        user_profile = ""
+    
+    
     return jsonify(user_profile)
 
 # Request from Client, to send over clips from Database
@@ -258,6 +256,7 @@ def hotkey_assign(hk):
     print(hotkey)
     keyboard.add_hotkey(hk, clip_creator)
     #Change Hotkey in Database Code Here.
+    dbmethods.updateHotkey(hk)
 
 
 
@@ -351,11 +350,19 @@ def createaClip():
 keyboard_thread = threading.Thread(target=createaClip)
 keyboard_thread.daemon = True  
 keyboard_thread.start()
-
 keyboard_thread.join()
 
 
-
+#Establishing Tokens if they already exist
+if(dbmethods.getAccessToken() != None and dbmethods.getRefreshToken() != None ):
+    acc_token = dbmethods.getAccessToken()
+    refr_token = dbmethods.getRefreshToken()
+    hotkey = dbmethods.getHotkey()
+    grabUserDetails()
+    print("TRY EXCEPT SUCCEEDED. ACC_TOKEN,REFR_TOKEN,HOTKEY" + acc_token + refr_token + hotkey)
+else:
+    print("Try Except Failed.")
+    
 async def main():
     eventlet.monkey_patch()
     loop = asyncio.new_event_loop()                                                                                                                             

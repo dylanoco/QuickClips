@@ -18,12 +18,16 @@
     "extraResources": [
       {
         "from": "react-project/dist/",
-        "to": "backend/build",
+        "to": "backend/dist",
         "filter": ["**/*"]
       },
       {
-        "from": "backend/twitchMomentsv3.exe",
-        "to": "backend/twitchMomentsv3.exe"
+        "from": "backend/twitchMomentsv3.py",
+        "to": "backend/twitchMomentsv3.py"
+      },
+      {
+        "from": "backend/dbmethods.py",
+        "to": "backend/dbmethods.py"
       },
       {
         "from": "backend/.env",

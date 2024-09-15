@@ -15,7 +15,7 @@ function NavBar() {
 
 
   useEffect(() => {
-    // const socket = io('http://localhost:5000')
+    const socket = io('http://localhost:5000')
     const detectKeyDown = (event) => {
       if (isRecording) {
         const key = event.key.toLowerCase(); 
@@ -85,15 +85,23 @@ function NavBar() {
         }
         const data = await response.json();
         setProfile(data);
-        console.log(profile.hotkey);
-        setAuthStatus('Authenticated');
+        if(profile != ""){
+          setAuthStatus('Authenticated');
+          console.log(profile.hotkey);
+          console.log(profile);
+        }
+        else{
+          setAuthStatus('Unauthenticated');
+          console.log("User is unauthenticated");
+        }
+        
       } catch (error) {
         console.error('Failed to fetch profile:', error);
         setAuthStatus('Error fetching profile');
       }
     };
     fetchUserProfile();
-  }, []);
+  }, [isRecording]);
 
   const startRecording = () => {
     setIsRecording(true);
