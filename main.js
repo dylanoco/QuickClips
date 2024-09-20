@@ -10,7 +10,7 @@ const fs = require('fs');
 function logCurrentDirectory() {
   const currentDirectory = process.cwd();
   log.info(`Current working directory: ${currentDirectory}`);
-  
+
   // Optionally, write this information to a file for debugging purposes
   fs.appendFileSync(path.join(currentDirectory, 'app-log.txt'), `Current working directory: ${currentDirectory}\n`);
 }
@@ -43,7 +43,7 @@ function createWindow() {
 function startFlaskServer() {
   log.info('Starting Flask server...');
   // exec('cd backend && start twitchMomentsv3.exe', (error, stdout, stderr) => {
-  // // exec('cd backend && python twitchMomentsv3.py', { env: process.env },(error, stdout, stderr) => {
+  // exec('cd resources/backend && python twitchMomentsv3.py', { env: process.env },(error, stdout, stderr) => {
   //   log.info("Test Server");
   //   if (error) {
   //     log.error(`Error executing command: ${error.message}`);
@@ -62,20 +62,20 @@ function startFlaskServer() {
   });
 
   flaskProcess.stdout.on('data', (data) => {
-      log.info(`stdout: ${data}`);
+    log.info(`stdout: ${data}`);
   });
 
   flaskProcess.stderr.on('data', (data) => {
-      log.error(`stderr: ${data}`);
+    log.error(`stderr: ${data}`);
   });
 
   flaskProcess.on('close', (code) => {
-      log.info(`Flask server exited with code ${code}`);
+    log.info(`Flask server exited with code ${code}`);
   });
 }
 function killServer() {
   log.info("Test Kill Server");
-  exec('taskkill /IM electron.exe /F', (error, stdout, stderr) => {
+  exec('taskkill /IM python.exe /F', (error, stdout, stderr) => {
     if (error) {
       log.error(`Error executing command: ${error.message}`);
       return;
@@ -88,7 +88,7 @@ function killServer() {
   });
 }
 const timeout = async () => {
-  await setTimeout(createWindow,5000);
+  await setTimeout(createWindow, 5000);
   console.log("Waited an additional 5s");
 };
 app.whenReady().then(() => {

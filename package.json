@@ -32,6 +32,10 @@
       {
         "from": "backend/.env",
         "to": "backend/.env"
+      },
+      {
+        "from": "backend/templates/auth.html",
+        "to": "backend/templates/auth.html"
       }
     ]
   },

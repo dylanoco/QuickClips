@@ -63,7 +63,32 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
+.modal, .overlay {
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  position: fixed;
+}
 
+.overlay {
+  background: rgba(65, 65, 65, 0.329);
+}
+.modal-content {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  line-height: 1.4;
+  background: hwb(310 4% 65%);
+  padding: 14px 28px;
+  border-radius: 3px;
+  max-width: 600px;
+  min-width: 300px;
+  border-radius: 50px;
+}
 
 @media (prefers-color-scheme: light) {
   :root {

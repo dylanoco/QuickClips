@@ -11,6 +11,11 @@ function NavBar() {
   const [pressedKeys, setPressedKeys] = useState(new Set());
   const [isRecording, setIsRecording] = useState(false); 
   const [shortcuts, setShortcuts] = useState(); 
+  const [modal, setModal] = useState(false);
+
+  const toggleModal = () => {
+    setModal(!modal);
+  }
 
 
 
@@ -42,6 +47,7 @@ function NavBar() {
     const stopRecording = () => {
       console.log("Stopped the Recording");
       setIsRecording(false);
+      toggleModal();
     };
 
     const saveShortcut = (keys) => {
@@ -84,8 +90,9 @@ function NavBar() {
           throw new Error('Expected JSON but received: ' + contentType);
         }
         const data = await response.json();
+        console.log(data)
         setProfile(data);
-        if(profile != ""){
+        if(data != ""){
           setAuthStatus('Authenticated');
           console.log(profile.hotkey);
           console.log(profile);
@@ -93,6 +100,7 @@ function NavBar() {
         else{
           setAuthStatus('Unauthenticated');
           console.log("User is unauthenticated");
+          console.log(profile);
         }
         
       } catch (error) {
@@ -118,6 +126,15 @@ function NavBar() {
               <h1 id='display-name-1'>{profile.display_name}</h1>
               <button onClick={startRecording}>Hotkey Listen</button>
               <p>{profile.hotkey}</p>
+
+              {modal && (
+                <div className="modal">
+                  <div onClick={toggleModal} className="overlay"></div>
+                  <div className='modal-content'>
+                    <h1>Hotkey Saved !</h1>
+                  </div>
+                </div>
+              )}
             </>
             ) 
             : 
