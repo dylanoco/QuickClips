@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guide - How to Use the App</title>
+    <style>
+        /* General Styles */
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #121212;
+            color: white;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2 {
+            color: #ff4d4d;
+        }
+        h2 {
+            font-size: 1.4em;
+            margin-top: 20px;
+        }
+        p {
+            line-height: 1.6;
+        }
+        /* Navigation Styles */
+        .nav {
+            display: flex;
+            background-color: #1e1e1e;
+            padding: 10px;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #333;
+        }
+        .nav .logo {
+            color: #f0a500;
+            font-weight: bold;
+        }
+        .nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            padding: 5px 10px;
+            border: 1px solid transparent;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+        .nav a:hover {
+            background-color: #f0a500;
+            color: black;
+        }
+        /* Guide Sections */
+        .guide-section {
+            margin-bottom: 40px;
+        }
+        .guide-section img {
+            width: 100%;
+            max-width: 600px;
+            border: 1px solid #444;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .guide-section .example {
+            color: #f0a500;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <div class="nav">
+        <div class="logo">Your App</div>
+        <div>
+            <a href="app.html">Back to App</a>
+        </div>
+    </div>
+
+    <!-- Guide Content -->
+    <div class="container">
+        <h1>How to Use the App</h1>
+        
+        <!-- Hotkey Listen Section -->
+        <div class="guide-section">
+            <h2>Hotkey Listen</h2>
+            <p>
+                The <strong>Hotkey Listen</strong> feature allows you to quickly set a hotkey for capturing moments during your streams. 
+                When you click the <span class="example">"Hotkey Listen"</span> button, the app will listen for a key press and assign that key as the hotkey.
+            </p>
+            <p>Steps:</p>
+            <ol>
+                <li>Click on the "Hotkey Listen" button.</li>
+                <li>Press the key you want to assign as the hotkey.</li>
+                <li>The app will confirm the selected key.</li>
+            </ol>
+            <img src="hotkey-guide.png" alt="Hotkey Listen Guide">
+        </div>
+
+        <!-- Clips Created Section -->
+        <div class="guide-section">
+            <h2>Clips Created</h2>
+            <p>
+                All the clips you create during your stream are displayed in the <strong>Clips Created</strong> section. 
+                You can see details like the clip title, date, and game category. Clicking on a clip lets you perform actions such as viewing, editing, or deleting it.
+            </p>
+            <p>Features:</p>
+            <ul>
+                <li>View the list of created clips.</li>
+                <li>Select a clip to see more details or take action.</li>
+                <li>Manage your clips easily with intuitive controls.</li>
+            </ul>
+            <img src="clips-created-guide.png" alt="Clips Created Guide">
+        </div>
+
+        <!-- View Clip Section -->
+        <div class="guide-section">
+            <h2>View Clip</h2>
+            <p>
+                The <strong>View Clip</strong> section provides details about a specific clip. Here, you can edit the clip's title, see a thumbnail, or remove it from the list. Use the "Next" button to navigate to the next clip in the list.
+            </p>
+            <p>Steps to Edit a Clip:</p>
+            <ol>
+                <li>Select a clip from the "Clips Created" section.</li>
+                <li>Edit the title or other details.</li>
+                <li>Save changes or delete the clip if no longer needed.</li>
+            </ol>
+            <img src="view-clip-guide.png" alt="View Clip Guide">
+        </div>
+    </div>
+</body>
+</html>

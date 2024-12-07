@@ -12,9 +12,14 @@ function NavBar() {
   const [isRecording, setIsRecording] = useState(false); 
   const [shortcuts, setShortcuts] = useState(); 
   const [modal, setModal] = useState(false);
+  const [guideModal, setguideModal] = useState(false);
+  
 
   const toggleModal = () => {
     setModal(!modal);
+  }
+  const toggleguideModal = () => {
+    setguideModal(!guideModal);
   }
 
 
@@ -126,12 +131,23 @@ function NavBar() {
               <h1 id='display-name-1'>{profile.display_name}</h1>
               <button onClick={startRecording}>Hotkey Listen</button>
               <p>{profile.hotkey}</p>
-
+              <button onClick={toggleguideModal}>Guide</button>
               {modal && (
                 <div className="modal">
                   <div onClick={toggleModal} className="overlay"></div>
                   <div className='modal-content'>
                     <h1>Hotkey Saved !</h1>
+                  </div>
+                </div>
+              )}
+              {guideModal && (
+                <div className="modal">
+                  <div onClick={toggleguideModal} className="overlay"></div>
+                  <div className='modal-guide'>
+                    <div className='hkl-container'>
+                      <h3>Hotkey Listen</h3></div>
+                    <div className='cc-container'><h3>Clips Created</h3></div>
+                    <div className='vc-container'><h3>View Clips</h3></div>
                   </div>
                 </div>
               )}

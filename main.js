@@ -11,7 +11,6 @@ function logCurrentDirectory() {
   const currentDirectory = process.cwd();
   log.info(`Current working directory: ${currentDirectory}`);
 
-  // Optionally, write this information to a file for debugging purposes
   fs.appendFileSync(path.join(currentDirectory, 'app-log.txt'), `Current working directory: ${currentDirectory}\n`);
 }
 
@@ -21,8 +20,8 @@ logCurrentDirectory();
 function createWindow() {
   log.info('Creating window...');
   const mainWindow = new BrowserWindow({
-    minWidth : 1280,
-    minHeight: 720,
+    minWidth : 1600,
+    minHeight: 900,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
@@ -39,6 +38,8 @@ function createWindow() {
     log.error('Failed to load content.');
   });
 }
+
+
 //cd resources/backend && start twitchMomentsv3.exe Deployment Line for Starting the Server
 function startFlaskServer() {
   log.info('Starting Flask server...');

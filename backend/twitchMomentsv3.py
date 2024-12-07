@@ -18,13 +18,10 @@ from flask_cors import CORS
 import logging
 import keyboard
 import sys
-import winsound
 import logging
 import os
-import time
 import eventlet
 import eventlet.wsgi
-import json
 #AUTH KEY NOT BEING VERIFIED PROPERLY WHEN LAUNCHING ELECTRON. TEST AUTHKEY, IF IT NEEDS CHANGING THEN RUN REFRESHTOKEN FUNCTION
 #Variables
 load_dotenv()
@@ -122,25 +119,15 @@ def grabUserDetails():
         print(f"Failed to get user information: {response.status_code} - {response.text}")
         refreshAccessToken()
         grabUserDetails()
-    return print("UserID: " + twitch_id)
+    return print("UserID (GrabUserDetails): " + twitch_id)
 
 CORS(app)
-
+#Establishing Tokens if they already exist
 # Run the flask server on port 5000
 def run_flask():
     socketio.run(app, host='0.0.0.0', port=5000)
     logger.info("Flask server started successfully.")
     print(f"Flask server started successfully.")
-
-try:
-    threading.Thread(target=run_flask).start()
-except Exception as e:
-    logger.error(f"Error starting Flask server: {e}")
-    print(f"Error starting Flask server: {e}")
-
-
-
-
 #HTML Routes
 
 # Differ from Deployment vs. Development
@@ -152,7 +139,7 @@ def serve():
     return send_from_directory(app.static_folder, 'index.html')
 @app.route('/authorizeFlask')
 def home():
-    return render_template("base.html")
+    return render_template("auth.html")
     # return send_from_directory(app.static_folder,"auth.html")
 # Callback route from when collecting tokens from Twitch API
 @app.route('/callback')
@@ -238,6 +225,8 @@ def trigger_message():
     with app.app_context():
         socketio.emit('refresh-clips', {'data': 'Manual trigger from Flask!'})
     return "Message sent!", 200
+
+
 # Hotkey assign for when the user wants to change the hotkey
 @socketio.on('hotkey-assign')
 def recieve_hotkey(json):
@@ -347,21 +336,23 @@ def createaClip():
     keyboard.wait()
 
 #Threads & Main
+try:
+    threading.Thread(target=run_flask).start()
+    acc_token = dbmethods.getAccessToken()
+    refr_token = dbmethods.getRefreshToken()
+    hotkey = dbmethods.getHotkey()
+    grabUserDetails()
+    logger.info("TRY EXCEPT SUCCEEDED. ACC_TOKEN,REFR_TOKEN,HOTKEY" + acc_token + refr_token + hotkey)
+    print("TRY EXCEPT SUCCEEDED. ACC_TOKEN,REFR_TOKEN,HOTKEY" + acc_token + refr_token + hotkey)
+except Exception as e:
+    logger.error(f"Error starting Flask server: {e}")
+    print(f"Error starting Flask server: {e}")
+    
 keyboard_thread = threading.Thread(target=createaClip)
 keyboard_thread.daemon = True  
 keyboard_thread.start()
 keyboard_thread.join()
 
-
-#Establishing Tokens if they already exist
-if(dbmethods.getAccessToken() != None and dbmethods.getRefreshToken() != None ):
-    acc_token = dbmethods.getAccessToken()
-    refr_token = dbmethods.getRefreshToken()
-    hotkey = dbmethods.getHotkey()
-    grabUserDetails()
-    print("TRY EXCEPT SUCCEEDED. ACC_TOKEN,REFR_TOKEN,HOTKEY" + acc_token + refr_token + hotkey)
-else:
-    print("Try Except Failed.")
     
 async def main():
     eventlet.monkey_patch()

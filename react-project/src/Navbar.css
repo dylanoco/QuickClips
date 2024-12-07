@@ -89,6 +89,27 @@ button {
   min-width: 300px;
   border-radius: 50px;
 }
+.modal-guide {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  line-height: 1.4;
+  background: hwb(310 4% 65%);
+  padding: 14px 28px;
+  border-radius: 3px;
+  /* min-width: 80%;
+  min-width: 80%; */
+  border-radius: 50px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.modal-guide, h3 {
+  text-align: center;
+}
+
 
 @media (prefers-color-scheme: light) {
   :root {
@@ -118,7 +139,8 @@ header {
 .profile-container{
   display: grid;
   grid-template-columns: auto auto;
-  grid-template-rows: auto auto;
+  grid-template-rows: auto auto auto;
+  row-gap: 10px;
   justify-content: center;
   column-gap: 10px;
   padding-inline: 30px;
@@ -132,5 +154,20 @@ header {
   height:96px;
 }
 
+.hkl-container{
+  min-height: 50vh;
+  min-width: 15vw;
+  background-color: rgba(255, 255, 0, 0.171);
+}
+.cc-container{
+  min-height: 50vh;
+  min-width: 15vw;
+  background-color: hsla(0, 0%, 0%, 0.171);
+}
+.vc-container{
+  min-height: 50vh;
+  min-width: 15vw;
+  background-color: rgba(0, 128, 0, 0.171);
+}
 
 

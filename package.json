@@ -19,7 +19,9 @@
       {
         "from": "react-project/dist/",
         "to": "backend/dist",
-        "filter": ["**/*"]
+        "filter": [
+          "**/*"
+        ]
       },
       {
         "from": "backend/twitchMomentsv3.py",
