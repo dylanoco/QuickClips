@@ -33,7 +33,7 @@ function createWindow() {
     return { action: 'deny' };
   });
 
-  mainWindow.loadURL("http://localhost:5001/");
+  mainWindow.loadURL("https://twitchmoments.netlify.app/");
   mainWindow.webContents.on('did-fail-load', () => {
     log.error('Failed to load content.');
   });
