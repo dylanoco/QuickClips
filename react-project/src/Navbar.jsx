@@ -129,7 +129,7 @@ function NavBar() {
             <>
               <img id='profile-pic-url' src={profile.profile_pic_url}></img>
               <h1 id='display-name-1'>{profile.display_name}</h1>
-              <button onClick={startRecording}>Hotkey Listen</button>
+              <button className={isRecording ? 'blue-text' : 'red-text'} onClick={startRecording}>Hotkey Listen</button>
               <p>{profile.hotkey}</p>
               <button onClick={toggleguideModal}>Guide</button>
               {modal && (

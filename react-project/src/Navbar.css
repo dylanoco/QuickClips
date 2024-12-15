@@ -31,6 +31,12 @@ a:hover {
   color: #D03838;
   transition: all 0.2s;
 }
+.blue-text {
+  color: #747bff;
+}
+.red-text {
+  color: white;
+}
 body {
   margin: 0;
   display: flex;

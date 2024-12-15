@@ -91,6 +91,33 @@ def refreshAccessToken():
             grabUserDetails()
         else:
             print("Failed to exchange token")
+            return "Failed"
+
+def validateToken():
+        global acc_token
+        token_url = "https://id.twitch.tv/oauth2/validate"
+        headers = {
+            'Authorization': f'Bearer {acc_token}'
+        }
+        print("Sending GET request to validate access token")
+        response = requests.get(token_url, headers=headers)
+        print(f"Response status code: {response.status_code}")
+        print(f"Response content: {response.text} "+ acc_token)
+        if response.status_code == 200:
+            print("Token validated." + acc_token)
+            grabUserDetails()
+            return response.status_code
+        else:
+            print("Failed to validate token")
+            print("TKKKKKKKKKKK FAILED")
+            refreshAccessToken()
+            if (refreshAccessToken() == "Failed"):
+                print("TTTTTTTTTTTTT FAILED")
+                return "Failed"
+            else:
+                return response.status_code
+
+        
 
 # Used to get basic user information from Twitch API.
 def grabUserDetails():
@@ -169,9 +196,9 @@ def callback():
             expires_in = token_info['expires_in']
             grabUserDetails()
             dbmethods.updateTokens(acc_token,refr_token, twitch_name, profile_pic_url, expires_in,hotkey)
-            return redirect("http://localhost:5001")
+            return redirect("https://twitchmoments.netlify.app/")
     
-    return redirect("http://localhost:5001")
+    return redirect("https://twitchmoments.netlify.app/")
 
 # Route used to get the Profile Picture and Dispaly Name. Requests made from Client.
 @app.route('/callbackRender')
@@ -180,15 +207,17 @@ def callbackRender():
     # refreshAccessToken()
     # grabUserDetails()
     # dbmethods.updateTokens(acc_token,refr_token, twitch_name, profile_pic_url, expires_in ,hotkey)
-    try:
-        dname, url = dbmethods.getUserDetails()
-        print(dname + url)
-        user_profile = {'display_name': dname, 'profile_pic_url': url, 'hotkey': hotkey}
-    except:
-        dname = None
-        url = None
-        user_profile = ""
-    
+
+    if(validateToken() != "Failed"):
+        try:
+            dname, url = dbmethods.getUserDetails()
+            print(dname + url)
+            user_profile = {'display_name': dname, 'profile_pic_url': url, 'hotkey': hotkey}
+        except:
+            dname = None
+            url = None
+            user_profile = ""
+        
     
     return jsonify(user_profile)
 
@@ -247,6 +276,12 @@ def hotkey_assign(hk):
     #Change Hotkey in Database Code Here.
     dbmethods.updateHotkey(hk)
 
+import time
+
+def token_validation_thread():
+    while True:
+        validateToken()
+        time.sleep(3600)  # Wait 5 minutes before checking again
 
 
 # To grab the game being played from the user at the time of creating the clip
@@ -337,13 +372,16 @@ def createaClip():
 
 #Threads & Main
 try:
-    threading.Thread(target=run_flask).start()
+    threading.Thread(target=run_flask,daemon=True).start()
+    threading.Thread(target=token_validation_thread(), daemon=True).start()
+    #if tokens not valid, refresh them,and update db. if cant refresh them, invalidate all tokens and request re-authentication.
     acc_token = dbmethods.getAccessToken()
     refr_token = dbmethods.getRefreshToken()
     hotkey = dbmethods.getHotkey()
-    grabUserDetails()
-    logger.info("TRY EXCEPT SUCCEEDED. ACC_TOKEN,REFR_TOKEN,HOTKEY" + acc_token + refr_token + hotkey)
-    print("TRY EXCEPT SUCCEEDED. ACC_TOKEN,REFR_TOKEN,HOTKEY" + acc_token + refr_token + hotkey)
+    validateToken()
+    if (validateToken() != "Failed"):
+        logger.info("TRY EXCEPT SUCCEEDED. ACC_TOKEN,REFR_TOKEN,HOTKEY" + acc_token + refr_token + hotkey)
+        print("TRY EXCEPT SUCCEEDED. ACC_TOKEN,REFR_TOKEN,HOTKEY" + acc_token + refr_token + hotkey)
 except Exception as e:
     logger.error(f"Error starting Flask server: {e}")
     print(f"Error starting Flask server: {e}")
