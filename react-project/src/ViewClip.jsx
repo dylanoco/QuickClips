@@ -8,7 +8,7 @@ function ViewClip(){
     const { slug, setSlug, clips, setClips } = useContext(DataContext); //The Shared useStates provided by DataContext
     //Parts of the URL Segmented for when shifting through Clips
     const urlBody = "https://clips.twitch.tv/embed?clip=";
-    const urlParent = "&parent=twitchmoments.netlify.app";
+    const urlParent = "&parent=https://twitchmoments.netlify.app";
     const url = urlBody.concat(slug, urlParent);
     
     function removeList(slug){
@@ -69,8 +69,8 @@ function ViewClip(){
             : 
             (
               <div className='vc-controls-container'>
-                <webview src={url}
-                frameBorder="0" allowFullScreen={true} scrolling="no" ></webview>
+                <iframe src={url}
+                frameBorder="0" allowFullScreen={true} scrolling="no" ></iframe>
                 <button onClick = {() => openEdit(slug)}id='vc-b-1'>Edit</button>
                 <button onClick = {() => removeList(slug)} id='vc-b-2'>Remove from List</button>
               </div>
