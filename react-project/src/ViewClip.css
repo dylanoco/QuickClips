@@ -10,7 +10,7 @@
     margin: 0;
 }
 
-.viewclip-container iframe{
+.viewclip-container webview{
     display: block;
     margin: auto;
     border: #D767FF;
