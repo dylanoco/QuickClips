@@ -69,8 +69,8 @@ function ViewClip(){
             : 
             (
               <div className='vc-controls-container'>
-                <iframe src={url}
-                frameBorder="0" allowFullScreen={true} scrolling="no" ></iframe>
+                <webview src={url}
+                frameBorder="0" allowFullScreen={true} scrolling="no" ></webview>
                 <button onClick = {() => openEdit(slug)}id='vc-b-1'>Edit</button>
                 <button onClick = {() => removeList(slug)} id='vc-b-2'>Remove from List</button>
               </div>
