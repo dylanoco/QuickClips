@@ -8,7 +8,7 @@ function ViewClip(){
     const { slug, setSlug, clips, setClips } = useContext(DataContext); //The Shared useStates provided by DataContext
     //Parts of the URL Segmented for when shifting through Clips
     const urlBody = "https://clips.twitch.tv/embed?clip=";
-    const urlParent = "&parent=localhost";
+    const urlParent = "&parent=twitchmoments.netlify.app";
     const url = urlBody.concat(slug, urlParent);
     
     function removeList(slug){
