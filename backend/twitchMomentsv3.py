@@ -61,7 +61,7 @@ if getattr(sys, 'frozen', False):
 elif __file__:
     base_dir = os.path.dirname(__file__)
     app = Flask(__name__)
-    socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet', engineio_logger=True)
+    socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet')
     authHTML = "base.html"
     # app = Flask(__name__, static_folder=os.path.join(base_dir,'dist'), static_url_path='')
     # socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet',logger=True, engineio_logger=True)
@@ -168,6 +168,8 @@ def serve():
 def home():
     return render_template("auth.html")
     # return send_from_directory(app.static_folder,"auth.html")
+
+    
 # Callback route from when collecting tokens from Twitch API
 @app.route('/callback')
 def callback():
@@ -247,14 +249,21 @@ def remove_List():
 # Handle WebSocket events
 
 #trigger_key Is to post a message to the client to re-render the app. Usually for when a clip has been made.
-def trigger_key():
-    requests.post('http://localhost:5000/trigger-message')
+def trigger_key(status):
+    if status == True:
+        requests.post('http://localhost:5000/trigger-message-success')
+    else:
+        requests.post('http://localhost:5000/trigger-message-fail')
 @app.route('/trigger-message', methods=['POST'])
 def trigger_message():
     with app.app_context():
         socketio.emit('refresh-clips', {'data': 'Manual trigger from Flask!'})
     return "Message sent!", 200
-
+@app.route('/trigger-message', methods=['POST'])
+def trigger_message():
+    with app.app_context():
+        socketio.emit('refresh-clips', {'data': 'Fail Clip Creation. Trigger Flask!'})
+    return "Message sent!", 200
 
 # Hotkey assign for when the user wants to change the hotkey
 @socketio.on('hotkey-assign')
@@ -356,13 +365,16 @@ def clip_creator():
             refreshAccessToken()
         if htperr.status == 404:
             print(htperr.reason)
+            trigger_key(False)
             return
     except ValueError as verr:
         print("Value Error")
         print("UserID: " + twitch_id)
         print(verr)
+        trigger_key(False)
+        return
     print("Sending over the Refresh Clips Signal")
-    trigger_key()
+    trigger_key(True)
     print("Sent the refresh clips signal.")
 
 # Function used to wait for a hotkeypress to create a clip.
@@ -373,7 +385,7 @@ def createaClip():
 #Threads & Main
 try:
     threading.Thread(target=run_flask,daemon=True).start()
-    threading.Thread(target=token_validation_thread(), daemon=True).start()
+    # threading.Thread(target=token_validation_thread(), daemon=True).start()
     #if tokens not valid, refresh them,and update db. if cant refresh them, invalidate all tokens and request re-authentication.
     acc_token = dbmethods.getAccessToken()
     refr_token = dbmethods.getRefreshToken()
