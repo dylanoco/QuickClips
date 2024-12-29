@@ -255,12 +255,12 @@ def trigger_key(status):
     else:
         requests.post('http://localhost:5000/trigger-message-fail')
 @app.route('/trigger-message-success', methods=['POST'])
-def trigger_message():
+def trigger_message_s():
     with app.app_context():
         socketio.emit('refresh-clips', {'data': 'Manual trigger from Flask!'})
     return "Message sent!", 200
 @app.route('/trigger-message-fail', methods=['POST'])
-def trigger_message():
+def trigger_message_f():
     with app.app_context():
         socketio.emit('refresh-clips', {'data': 'Fail Clip Creation. Trigger Flask!'})
     return "Message sent!", 200
