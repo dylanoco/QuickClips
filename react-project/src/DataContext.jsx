@@ -1,7 +1,7 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
 
-import {Toaster, toast} from '/react-project/node_modules/sonner/dist/index.js';
+import {Toaster, toast} from '../react-project/node_modules/sonner/dist/index.js';
 
 //DataContext / DataProvider used to help the two components communicate with clips.
 export const DataContext = createContext();
