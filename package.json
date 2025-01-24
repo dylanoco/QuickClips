@@ -51,6 +51,7 @@
     "dependencies": "^0.0.1",
     "electron-log": "^5.1.7",
     "shell": "^0.9.6",
+    "sonner": "^1.7.2",
     "wait-on": "^7.2.0"
   }
 }

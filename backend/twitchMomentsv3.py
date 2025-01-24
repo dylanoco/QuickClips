@@ -1,6 +1,8 @@
 import os
 import datetime
 import asyncio
+import twitchio
+import twitchio.ext
 from twitchio.ext import commands
 from dotenv import load_dotenv
 from winotify import Notification, audio
@@ -249,11 +251,11 @@ def remove_List():
 # Handle WebSocket events
 
 #trigger_key Is to post a message to the client to re-render the app. Usually for when a clip has been made.
-def trigger_key(status):
+def trigger_key(status, reason):
     if status == True:
         requests.post('http://localhost:5000/trigger-message-success')
     else:
-        requests.post('http://localhost:5000/trigger-message-fail')
+        requests.post('http://localhost:5000/trigger-message-fail', data={'reason': reason})
 @app.route('/trigger-message-success', methods=['POST'])
 def trigger_message_s():
     with app.app_context():
@@ -261,8 +263,10 @@ def trigger_message_s():
     return "Message sent!", 200
 @app.route('/trigger-message-fail', methods=['POST'])
 def trigger_message_f():
+
+    data =  request.form.get('reason', 'No reason provided')
     with app.app_context():
-        socketio.emit('refresh-clips', {'data': 'Fail Clip Creation. Trigger Flask!'})
+        socketio.emit('refresh-clips', {'data': f'Fail Clip Creation. {data}'})
     return "Message sent!", 200
 
 # Hotkey assign for when the user wants to change the hotkey
@@ -286,11 +290,14 @@ def hotkey_assign(hk):
     dbmethods.updateHotkey(hk)
 
 import time
-
+import winsound
 def token_validation_thread():
     while True:
+        # duration = 150  # milliseconds
+        # freq = 3000 # Hz
+        # winsound.Beep(freq, duration)
         validateToken()
-        time.sleep(3600)  # Wait 5 minutes before checking again
+        time.sleep(3600)  # Wait 1hr  before checking again
 
 
 # To grab the game being played from the user at the time of creating the clip
@@ -325,7 +332,6 @@ def grabGame():
             print(htperr.reason)
             return
 
-
 # Initializes the 'Bot' to create clips, etc.
 class Bot(commands.Bot):
     def __init__(self):
@@ -345,11 +351,6 @@ def clip_creator():
     # freq = 3000 # Hz
     # winsound.Beep(freq, duration)
     print("User ID: "+ twitch_id)
-    clipped = Notification(app_id="enzynclipper", 
-                           title="Clipped !", 
-                           msg="You have clipped the last 30 seconds to your Twitch !", 
-                           duration="short")
-    clipped.show()
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     
@@ -360,21 +361,22 @@ def clip_creator():
         game_name = grabGame()
         print(game_name)
         dbmethods.insertClip(clip_url['id'],clip_url['edit_url'],str(  (datetime.datetime.now()).strftime("%x")  ) ,str(  (datetime.datetime.now()).strftime("%X")  ),game_name)
-    except HTTPException as htperr:
+    except twitchio.errors.HTTPException as htperr:
         if htperr.status == 401:
             refreshAccessToken()
         if htperr.status == 404:
-            print(htperr.reason)
-            trigger_key(False)
+            print(htperr.args)
+            trigger_key(False, None)
             return
+
     except ValueError as verr:
         print("Value Error")
         print("UserID: " + twitch_id)
         print(verr)
-        trigger_key(False)
+        trigger_key(False, verr)
         return
     print("Sending over the Refresh Clips Signal")
-    trigger_key(True)
+    trigger_key(True, "")
     print("Sent the refresh clips signal.")
 
 # Function used to wait for a hotkeypress to create a clip.
@@ -385,12 +387,12 @@ def createaClip():
 #Threads & Main
 try:
     threading.Thread(target=run_flask,daemon=True).start()
-    # threading.Thread(target=token_validation_thread(), daemon=True).start()
+    threading.Thread(target=token_validation_thread, daemon=True).start()
     #if tokens not valid, refresh them,and update db. if cant refresh them, invalidate all tokens and request re-authentication.
     acc_token = dbmethods.getAccessToken()
     refr_token = dbmethods.getRefreshToken()
     hotkey = dbmethods.getHotkey()
-    validateToken()
+    #validateToken()
     if (validateToken() != "Failed"):
         logger.info("TRY EXCEPT SUCCEEDED. ACC_TOKEN,REFR_TOKEN,HOTKEY" + acc_token + refr_token + hotkey)
         print("TRY EXCEPT SUCCEEDED. ACC_TOKEN,REFR_TOKEN,HOTKEY" + acc_token + refr_token + hotkey)
