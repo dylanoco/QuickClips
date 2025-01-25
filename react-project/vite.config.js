@@ -7,7 +7,7 @@ export default defineConfig({
   server: {port: 5001},
   build: {
     rollupOptions: {
-      external: ['sonner'],
+      external: ['sonner','../react-project/node_modules/sonner/dist/index.js'],
     },
   },
 })
