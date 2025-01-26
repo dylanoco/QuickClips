@@ -30,7 +30,6 @@ export const DataProvider = ({ children }) => {
     return( //Provides the two useStates to both children 
         <DataContext.Provider value={{clips, setClips, slug, setSlug }}> 
             <Toaster/>
-            <button onClick={() => toast('Hello, world!')}>Show Toast</button>
             {children}
         </DataContext.Provider>
     )

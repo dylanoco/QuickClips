@@ -330,7 +330,10 @@ def grabGame():
             refreshAccessToken()
         if htperr.status == 404:
             print(htperr.reason)
+            trigger_key(False, htperr.reason)
             return
+        
+
 
 # Initializes the 'Bot' to create clips, etc.
 class Bot(commands.Bot):
@@ -365,8 +368,12 @@ def clip_creator():
         if htperr.status == 401:
             refreshAccessToken()
         if htperr.status == 404:
-            print(htperr.args)
-            trigger_key(False, None)
+            print(htperr.message)
+            trigger_key(False, "The channel is not online. Please go live before creating a clip.")
+            return
+        if htperr.status == 403:
+            print(htperr.message)
+            trigger_key(False, "You must authorize your twitch account before creating a clip.")
             return
 
     except ValueError as verr:
