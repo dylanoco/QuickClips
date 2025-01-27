@@ -251,11 +251,11 @@ def remove_List():
 # Handle WebSocket events
 
 #trigger_key Is to post a message to the client to re-render the app. Usually for when a clip has been made.
-def trigger_key(status, reason):
+def trigger_key(status, process, reason):
     if status == True:
         requests.post('http://localhost:5000/trigger-message-success')
     else:
-        requests.post('http://localhost:5000/trigger-message-fail', data={'reason': reason})
+        requests.post('http://localhost:5000/trigger-message-fail', data={'reason': reason, 'process' : process})
 @app.route('/trigger-message-success', methods=['POST'])
 def trigger_message_s():
     with app.app_context():
@@ -265,8 +265,9 @@ def trigger_message_s():
 def trigger_message_f():
 
     data =  request.form.get('reason', 'No reason provided')
+    process =  request.form.get('process', 'No process provided')
     with app.app_context():
-        socketio.emit('refresh-clips', {'data': f'Fail Clip Creation. {data}'})
+        socketio.emit('refresh-clips', {'data': f'{process}. {data}'})
     return "Message sent!", 200
 
 # Hotkey assign for when the user wants to change the hotkey
@@ -330,7 +331,7 @@ def grabGame():
             refreshAccessToken()
         if htperr.status == 404:
             print(htperr.reason)
-            trigger_key(False, htperr.reason)
+            trigger_key(False, "Clip Creation", htperr.reason)
             return
         
 
@@ -369,11 +370,11 @@ def clip_creator():
             refreshAccessToken()
         if htperr.status == 404:
             print(htperr.message)
-            trigger_key(False, "The channel is not online. Please go live before creating a clip.")
+            trigger_key(False, "Clip Creation", "The channel is not online. Please go live before creating a clip.")
             return
         if htperr.status == 403:
             print(htperr.message)
-            trigger_key(False, "You must authorize your twitch account before creating a clip.")
+            trigger_key(False, "Clip Creation", "You must authorize your twitch account before creating a clip.")
             return
 
     except ValueError as verr:
@@ -383,7 +384,7 @@ def clip_creator():
         trigger_key(False, verr)
         return
     print("Sending over the Refresh Clips Signal")
-    trigger_key(True, "")
+    trigger_key(True, "Clip Creation", "Successfully created a clip.")
     print("Sent the refresh clips signal.")
 
 # Function used to wait for a hotkeypress to create a clip.
