@@ -28,7 +28,7 @@ export const DataProvider = ({ children }) => {
       }, [response]);
 
       useEffect(() => {
-        fetch("http://localhost:5000/api/version")
+        fetch("http://localhost:5000/api/version", ['GET'])
           .then((response) => response.json())
           .then((data) => {
             console.log(data.backend_version);
