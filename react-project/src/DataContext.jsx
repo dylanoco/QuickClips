@@ -27,6 +27,17 @@ export const DataProvider = ({ children }) => {
           .catch(error => console.error('Error fetching data:', error));
       }, [response]);
 
+      useEffect(() => {
+        fetch("http://localhost:5000/api/version")
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data.backend_version);
+          })
+          .catch((error) => {
+            console.error("Error fetching backend version:", error);
+          });
+      }, []);
+
     return( //Provides the two useStates to both children 
         <DataContext.Provider value={{clips, setClips, slug, setSlug }}> 
             <Toaster/>

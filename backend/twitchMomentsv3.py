@@ -24,7 +24,8 @@ import logging
 import os
 import eventlet
 import eventlet.wsgi
-#AUTH KEY NOT BEING VERIFIED PROPERLY WHEN LAUNCHING ELECTRON. TEST AUTHKEY, IF IT NEEDS CHANGING THEN RUN REFRESHTOKEN FUNCTION
+import json
+
 #Variables
 load_dotenv()
 client_secret = os.getenv('TWITCH_CLIENT_SECRET')
@@ -412,6 +413,17 @@ keyboard_thread = threading.Thread(target=createaClip)
 keyboard_thread.daemon = True  
 keyboard_thread.start()
 keyboard_thread.join()
+
+
+# Load version from JSON file
+def get_backend_version():
+    with open("version.json") as f:
+        version_data = json.load(f)
+    return version_data["backend_version"]
+
+@app.route('/api/version', methods=['GET'])
+def get_version():
+    return jsonify({"backend_version": get_backend_version()})
 
     
 async def main():
