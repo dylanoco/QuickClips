@@ -246,7 +246,20 @@ def remove_List():
     dbmethods.remove_clips(slug)
     return jsonify("Successful")
 
+# Load version from JSON file
+def get_backend_version():
+    with open("version.json") as f:
+        version_data = json.load(f)
+    return version_data["backend_version"]
 
+@app.route('/api/version', methods=['GET'])
+def get_version():
+    print("GET /api/version called")  # Debugging
+    version = get_backend_version()
+    response = jsonify({"backend_version": version})
+    print(f"Response: {response}")  # Debugging
+    print(f"Backend version: {version}")  # Debugging
+    return jsonify({"backend_version": get_backend_version()})
 
 
 # Handle WebSocket events
@@ -415,15 +428,7 @@ keyboard_thread.start()
 keyboard_thread.join()
 
 
-# Load version from JSON file
-def get_backend_version():
-    with open("version.json") as f:
-        version_data = json.load(f)
-    return version_data["backend_version"]
 
-@app.route('/api/version', methods=['GET'])
-def get_version():
-    return jsonify({"backend_version": get_backend_version()})
 
     
 async def main():
