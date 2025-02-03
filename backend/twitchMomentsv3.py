@@ -406,6 +406,35 @@ def createaClip():
     keyboard.add_hotkey(hotkey, clip_creator)
     keyboard.wait()
 
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #Threads & Main
 try:
     threading.Thread(target=run_flask,daemon=True).start()
@@ -427,10 +456,6 @@ keyboard_thread.daemon = True
 keyboard_thread.start()
 keyboard_thread.join()
 
-
-
-
-    
 async def main():
     eventlet.monkey_patch()
     loop = asyncio.new_event_loop()                                                                                                                             
