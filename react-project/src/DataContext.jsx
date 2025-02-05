@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
 import Popup from "./Popup";
+import AppVersion from '../version.json'
 
 import {Toaster, toast} from 'sonner';
 
@@ -21,6 +22,7 @@ export const DataProvider = ({ children }) => {
       socket.on('refresh-clips', (data) => {
           setResponse(data.data);
           console.log(data.data);
+          toast.success(data.data);
         
           });
           fetch('http://localhost:5000/clips', ['GET'])
@@ -37,10 +39,13 @@ export const DataProvider = ({ children }) => {
         fetch('http://localhost:5000/api/version', ['GET'])
           .then((response) => response.json())
           .then((data) => {
-            console.log(data.backend_version);
-            toast.success(data.data);
-            setIsOutdated(true);
-            setShowPopup(true);
+            const versionData = AppVersion.required_backend_version
+            console.log("Backend Version: " + data.backend_version);
+            console.log("Required Backend Version: " + versionData);
+            if (data.backend_version!== versionData) {
+              setIsOutdated(true);
+              setShowPopup(true);
+            }
           })
           .catch((error) => {
             console.error("Error fetching backend version:", error);
