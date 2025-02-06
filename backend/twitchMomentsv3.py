@@ -40,6 +40,7 @@ hotkey = 'Ctrl+Alt+L'
 expires_in = ""
 print(f"Current working directory: {os.getcwd()}")
 authHTML = ""
+hostingLink = "http://localhost:5001/" ## https://twitchmoments.netlify.app/
 
 # Configure the logging
 logging.basicConfig(level=logging.DEBUG,
@@ -76,7 +77,7 @@ def refreshAccessToken():
         global acc_token, refr_token, expires_in
         token_url = "https://id.twitch.tv/oauth2/token"
         data = {
-            "client_id": "s47rucw584h54boq3v35nwgg8vnxws",
+            "client_id": auth_cid,
             "client_secret": client_secret,
             "grant_type": "refresh_token",
             "refresh_token": refr_token
@@ -183,7 +184,7 @@ def callback():
     if code:
         token_url = "https://id.twitch.tv/oauth2/token"
         data = {
-            "client_id": "s47rucw584h54boq3v35nwgg8vnxws",
+            "client_id": auth_cid,
             "client_secret": client_secret,
             "code": code,
             "grant_type": "authorization_code",
@@ -201,9 +202,9 @@ def callback():
             expires_in = token_info['expires_in']
             grabUserDetails()
             dbmethods.updateTokens(acc_token,refr_token, twitch_name, profile_pic_url, expires_in,hotkey)
-            return redirect("https://twitchmoments.netlify.app/")
+            return redirect(hostingLink)
     
-    return redirect("https://twitchmoments.netlify.app/")
+    return redirect(hostingLink)
 
 # Route used to get the Profile Picture and Dispaly Name. Requests made from Client.
 @app.route('/callbackRender')
