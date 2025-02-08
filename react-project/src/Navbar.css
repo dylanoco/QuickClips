@@ -156,7 +156,7 @@ header {
   column-gap: 10px;
   padding-inline: 30px;
   background-color: red;
-
+  height: 100vh;
 }
 .profile-container #display-name-1{
   grid-area: displayname;
@@ -171,8 +171,17 @@ header {
   background-color: orange;
   grid-area: bugicon;
 }
+.profile-container #hk-button{
+  background-color: orange;
+  grid-area: hotkeybutton;
+}
+.profile-container #g-button{
+  background-color: orange;
+  grid-area: guidebutton;
+}
 
 .hkl-container{
+  grid-area: hotkeybutton;
   min-height: 50vh;
   min-width: 15vw;
   background-color: rgba(255, 255, 0, 0.171);
