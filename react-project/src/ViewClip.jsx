@@ -2,6 +2,7 @@ import { useEffect, useState, useContext } from 'react'
 import './ViewClip.css'
 import ClipsList from './ClipsList'
 import { DataContext } from './DataContext';
+import { FaBug } from "react-icons/fa";
 //Displays the Selected Clip to Preview, Edit or Delete from the Datbase.
 function ViewClip(){
 

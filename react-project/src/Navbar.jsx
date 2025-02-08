@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import './Navbar.css';
 import { io } from 'socket.io-client';
 
+import { FaBug } from "react-icons/fa";
+
 
 function NavBar() {
   const [profile, setProfile] = useState('');
@@ -132,6 +134,7 @@ function NavBar() {
               <button className={isRecording ? 'blue-text' : 'red-text'} onClick={startRecording}>Hotkey Listen</button>
               <p>{profile.hotkey}</p>
               <button onClick={toggleguideModal}>Guide</button>
+              <div id='bug-icon'><FaBug/></div>
               {modal && (
                 <div className="modal">
                   <div onClick={toggleModal} className="overlay"></div>
