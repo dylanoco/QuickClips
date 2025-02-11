@@ -155,7 +155,6 @@ header {
   justify-content: center;
   column-gap: 10px;
   padding-inline: 30px;
-  background-color: red;
   height: 100vh;
 }
 .profile-container #display-name-1{
