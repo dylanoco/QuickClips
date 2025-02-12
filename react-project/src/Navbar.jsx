@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import './Navbar.css';
 import GuideModal from './GuideModal.jsx';
+import BugReport from './BugReport.jsx';
 import { io } from 'socket.io-client';
 
 import { FaBug } from "react-icons/fa";
@@ -16,6 +17,7 @@ function NavBar() {
   const [shortcuts, setShortcuts] = useState();
   const [modal, setModal] = useState(false);
   const [guideModal, setguideModal] = useState(false);
+  const [bugReportModal, setbugReportModal] = useState(false);
 
 
   const toggleModal = () => {
@@ -23,6 +25,9 @@ function NavBar() {
   }
   const toggleguideModal = () => {
     setguideModal(!guideModal);
+  }
+  const togglebugReportModal = () => {
+    setbugReportModal(!bugReportModal);
   }
 
 
@@ -135,7 +140,7 @@ function NavBar() {
                 <button id = 'hk-button' className={isRecording ? 'blue-text' : 'red-text'} onClick={startRecording}>Hotkey Listen</button>
                 <p>{profile.hotkey}</p>
                 <button id = 'g-button' onClick={toggleguideModal}>Guide</button>
-                <div id='bug-icon'><FaBug /></div>
+                <div id='bug-icon' onClick={togglebugReportModal}><FaBug /></div>
                 {modal && (
                   <div className="modal">
                     <div onClick={toggleModal} className="overlay"></div>
@@ -146,6 +151,9 @@ function NavBar() {
                 )}
                 {guideModal && (
                   <GuideModal isOpen={guideModal} toggleModal={toggleguideModal} />
+                )}
+                {bugReportModal && (
+                  <BugReport isOpen={bugReportModal} toggleModal={togglebugReportModal} />
                 )}
               </>
             )
