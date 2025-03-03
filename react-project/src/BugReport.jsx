@@ -3,16 +3,28 @@ import styles from './BugReport.module.css';
 const BugReport = ({ isOpen, toggleModal }) => {
   if (!isOpen) return null;
 
+const [email, setEmail] = useState("");
+const [description, setDescription] = useState("");
+const handleEmailChange = (e) => setEmail(e.target.value);
+const handleDescriptionChange = (e) => setDescription(e.target.value);
+
   return (
     <div className="modal">
       <div onClick={toggleModal} className={styles.overlay}></div>
       <div className={styles['modalContent']}>
         <div className={styles['modalGuide']}>
-          <form>
+          <form onSubmit={handleSubmit}>
             <label>Email</label>
-            <input></input>
+            <input
+            type="email"
+            value={email}
+            onChange={handleEmailChange}
+            required/>
             <label>Description</label>
-            <textarea></textarea>
+            <textarea
+            value={description} 
+            onChange={handleDescriptionChange} 
+            required />
             <input type="submit"></input>
           </form>
         </div>
