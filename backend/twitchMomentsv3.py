@@ -25,6 +25,7 @@ import os
 import eventlet
 import eventlet.wsgi
 import json
+import resend
 
 #Variables
 load_dotenv()
@@ -41,6 +42,8 @@ expires_in = ""
 print(f"Current working directory: {os.getcwd()}")
 authHTML = ""
 hostingLink = "http://localhost:5001/" ## https://twitchmoments.netlify.app/
+
+resend.api_key = os.environ["RESEND_API_KEY"]
 
 # Configure the logging
 logging.basicConfig(level=logging.DEBUG,
@@ -232,6 +235,24 @@ def callbackRender():
 def get_clips():
     clips = dbmethods.get_clips()
     return jsonify(clips)
+
+@app.route('/BugReport', methods=['POST'])
+def BugReport():
+
+    data = request.get_json()
+
+    params: resend.Emails.SendParams = {
+        "from": "ZYN <reply@quickclips.uk>",
+        "to": [data['email']],
+        "subject": "hello world",
+        "html": data['description'],
+    }
+
+    email = resend.Emails.send(params)
+    print(email)
+    
+    reportSuccessful = "Email Successfully Sent"
+    return jsonify(reportSuccessful)
 
 #Request from Client, to get the clips of the link from Database.
 @app.route('/getLink', methods=['POST'])
