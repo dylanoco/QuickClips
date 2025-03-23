@@ -41,7 +41,7 @@ hotkey = 'Ctrl+Alt+L'
 expires_in = ""
 print(f"Current working directory: {os.getcwd()}")
 authHTML = ""
-hostingLink = "http://localhost:5001/" ## https://twitchmoments.netlify.app/
+hostingLink = "http://localhost:5001/" 
 
 resend.api_key = os.environ["RESEND_API_KEY"]
 
@@ -240,11 +240,10 @@ def get_clips():
 def BugReport():
 
     data = request.get_json()
-
     params: resend.Emails.SendParams = {
-        "from": "ZYN <reply@quickclips.uk>",
+        "from": {os.environ["BUG_EMAIL"]},
         "to": [data['email']],
-        "subject": "hello world",
+        "subject": "Bug Report Recieved",
         "html": data['description'],
     }
 

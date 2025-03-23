@@ -2,19 +2,19 @@
     position: fixed;
     top: 20px;
     right: 20px;
-    z-index: 1000; /* Ensure it appears above other content */
+    z-index: 1000; 
   }
   
   .popup-content {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: #ffebee; /* Light red background for alert */
-    color: #c62828; /* Dark red text */
+    background-color: #ffebee; 
+    color: #c62828; 
     padding: 10px 20px;
     border-radius: 5px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    border: 1px solid #ffcdd2; /* Light red border */
+    border: 1px solid #ffcdd2; 
   }
   
   .popup-close-button {

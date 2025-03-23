@@ -12,7 +12,6 @@ const handleEmailChange = (e) => setEmail(e.target.value);
 const handleDescriptionChange = (e) => setDescription(e.target.value);
 const handleSubmit = async (e) => {
   e.preventDefault();
-
   const data = {
     email,
     description,
@@ -30,6 +29,8 @@ const handleSubmit = async (e) => {
     );
     const responseData = await response.json();
     console.log("Success:", responseData);
+    setEmail("");
+    setDescription(""); 
   } catch (error) {
     console.error("Error:", error);
   } 
@@ -38,23 +39,21 @@ const handleSubmit = async (e) => {
   return (
     <div className="modal">
       <div onClick={toggleModal} className={styles.overlay}></div>
-      <div className={styles['modalContent']}>
         <div className={styles['modalGuide']}>
           <form onSubmit={handleSubmit}>
-            <label>Email</label>
-            <input
-            type="email"
-            value={email}
-            onChange={handleEmailChange}
-            required/>
-            <label>Description</label>
-            <textarea
-            value={description} 
-            onChange={handleDescriptionChange} 
-            required />
+            <header>Report a Bug</header>
+            <div className={styles['brInputs']}>
+              <label>Email</label>
+              <input type="email" placeholder="Enter your email address." id="textbox" value={email} onChange={handleEmailChange} required/>
+            </div>
+
+            <div className={styles['brInputs']}>
+              <label>Description</label>
+              <textarea id="textbox" placeholder="Please describe the bug." value={description}  onChange={handleDescriptionChange} required />
+            </div>
+
             <input type="submit"></input>
           </form>
-        </div>
       </div>
     </div>
   );
