@@ -241,11 +241,13 @@ def BugReport():
 
     data = request.get_json()
     params: resend.Emails.SendParams = {
-        "from": {os.environ["BUG_EMAIL"]},
+        "from": os.environ["BUG_EMAIL"],
         "to": [data['email']],
         "subject": "Bug Report Recieved",
-        "html": data['description'],
+        "html": data['bugDescription'],
     }
+
+    print(params)
 
     email = resend.Emails.send(params)
     print(email)

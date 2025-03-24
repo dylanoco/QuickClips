@@ -1,6 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
 import styles from './BugReport.module.css';
+import { getBugReportEmailHTML } from './BugReportEmail';
 
 const BugReport = ({ isOpen, toggleModal }) => {
   if (!isOpen) return null;
@@ -12,9 +13,10 @@ const handleEmailChange = (e) => setEmail(e.target.value);
 const handleDescriptionChange = (e) => setDescription(e.target.value);
 const handleSubmit = async (e) => {
   e.preventDefault();
+  const bugDescription = getBugReportEmailHTML(description)
   const data = {
     email,
-    description,
+    bugDescription
   };
 
   try {
