@@ -115,11 +115,10 @@ def validateToken():
             grabUserDetails()
             return response.status_code
         else:
-            print("Failed to validate token")
-            print("TKKKKKKKKKKK FAILED")
+            print("Failed to validate token. Using Refresh Token ...")
             refreshAccessToken()
             if (refreshAccessToken() == "Failed"):
-                print("TTTTTTTTTTTTT FAILED")
+                print("Refresh Token Failed.")
                 return "Failed"
             else:
                 return response.status_code
@@ -128,9 +127,8 @@ def validateToken():
 
 # Used to get basic user information from Twitch API.
 def grabUserDetails():
-    print("GRABBING. DETAILS")
+    print("Grabbing Details ...")
     global twitch_name, twitch_id, acc_token, auth_cid, profile_pic_url
-    print("access token " + acc_token)
     headers = {
     'Authorization': f'Bearer {acc_token}',
     'Client-Id': auth_cid
@@ -145,7 +143,6 @@ def grabUserDetails():
             twitch_id = user['id']
             twitch_name = user['display_name']
             profile_pic_url = user['profile_image_url']
-            print(f"User ID: {twitch_id}")
             print(f"Username: {twitch_name}")
         else:
             print("No user data found.")
@@ -181,9 +178,9 @@ def home():
 @app.route('/callback')
 def callback():
     global auth_cid, acc_token, refr_token,twitch_name, profile_pic_url
-    print("Callback route accessed")
+    print("Callback Route Accessed")
     code = request.args.get('code')
-    print(f"Authorization code received: {code}")
+    print(f"Authorization code received.")
     if code:
         token_url = "https://id.twitch.tv/oauth2/token"
         data = {
@@ -213,14 +210,10 @@ def callback():
 @app.route('/callbackRender')
 def callbackRender():
     global hotkey, expires_in
-    # refreshAccessToken()
-    # grabUserDetails()
-    # dbmethods.updateTokens(acc_token,refr_token, twitch_name, profile_pic_url, expires_in ,hotkey)
 
     if(validateToken() != "Failed"):
         try:
             dname, url = dbmethods.getUserDetails()
-            print(dname + url)
             user_profile = {'display_name': dname, 'profile_pic_url': url, 'hotkey': hotkey}
         except:
             dname = None
@@ -239,12 +232,13 @@ def get_clips():
 @app.route('/BugReport', methods=['POST'])
 def BugReport():
 
+    print("Sending Email ...")
     data = request.get_json()
     params: resend.Emails.SendParams = {
         "from": os.environ["BUG_EMAIL"],
         "to": [data['email']],
         "subject": "Bug Report Recieved",
-        "html": data['bugDescription'],
+        "html": data['bugDescription'], 
     }
 
     print(params)
@@ -265,6 +259,7 @@ def get_link():
 # Request from Client to remove clip from database.
 @app.route('/removeClip', methods=['POST'])
 def remove_List():
+    print("Removing Clip ...")
     slug = request.get_json()
     dbmethods.remove_clips(slug)
     return jsonify("Successful")
@@ -331,9 +326,6 @@ import time
 import winsound
 def token_validation_thread():
     while True:
-        # duration = 150  # milliseconds
-        # freq = 3000 # Hz
-        # winsound.Beep(freq, duration)
         validateToken()
         time.sleep(3600)  # Wait 1hr  before checking again
 
@@ -341,7 +333,6 @@ def token_validation_thread():
 # To grab the game being played from the user at the time of creating the clip
 def grabGame():
     global twitch_name, twitch_id, acc_token, auth_cid
-    print("access token " + acc_token)
     headers = {
     'Authorization': f'Bearer {acc_token}',
     'Client-Id': auth_cid
@@ -387,11 +378,6 @@ class Bot(commands.Bot):
 def clip_creator():
     global twitch_name, twitch_id, acc_token, twitch_id
     print(hotkey)
-    #Temp way of notifying a clip has been made.
-    # duration = 150  # milliseconds
-    # freq = 3000 # Hz
-    # winsound.Beep(freq, duration)
-    print("User ID: "+ twitch_id)
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     
@@ -416,13 +402,12 @@ def clip_creator():
 
     except ValueError as verr:
         print("Value Error")
-        print("UserID: " + twitch_id)
         print(verr)
         trigger_key(False, verr)
         return
     print("Sending over the Refresh Clips Signal")
     trigger_key(True, "Clip Creation", "Successfully created a clip.")
-    print("Sent the refresh clips signal.")
+    print("Sent the Refresh Clips Signal.")
 
 # Function used to wait for a hotkeypress to create a clip.
 def createaClip():
