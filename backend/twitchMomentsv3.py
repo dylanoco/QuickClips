@@ -41,7 +41,7 @@ hotkey = 'Ctrl+Alt+L'
 expires_in = ""
 print(f"Current working directory: {os.getcwd()}")
 authHTML = ""
-hostingLink = "http://localhost:5001/" 
+hostingLink = "https://quickclips.uk/" 
 
 resend.api_key = os.environ["RESEND_API_KEY"]
 
@@ -59,21 +59,24 @@ dbmethods.initDatabase()
 
 
 # To check whether if the app is being launched with the executable or normally through .py script (Deployment vs Development)  
-if getattr(sys, 'frozen', False):
-    base_dir = os.path.dirname(sys.executable)
-    app = Flask(__name__, static_folder=os.path.join(base_dir,'dist'), static_url_path='')
-    socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet',logger=True, engineio_logger=True)
-    authHTML = "./dist/auth.html"
-    print(f"sys test")
-elif __file__:
-    base_dir = os.path.dirname(__file__)
-    app = Flask(__name__)
-    socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet')
-    authHTML = "base.html"
-    # app = Flask(__name__, static_folder=os.path.join(base_dir,'dist'), static_url_path='')
-    # socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet',logger=True, engineio_logger=True)
-    # authHTML = "./dist/auth.html"
-    print(f"file test")
+# if getattr(sys, 'frozen', False):
+#     base_dir = os.path.dirname(sys.executable)
+#     app = Flask(__name__, static_folder=os.path.join(base_dir,'dist'), static_url_path='')
+#     socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet',logger=True, engineio_logger=True)
+#     authHTML = "./dist/auth.html"
+#     print(f"sys test")
+# elif __file__:
+#     base_dir = os.path.dirname(__file__)
+#     app = Flask(__name__)
+#     socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet')
+#     authHTML = "base.html"
+#     # app = Flask(__name__, static_folder=os.path.join(base_dir,'dist'), static_url_path='')
+#     # socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet',logger=True, engineio_logger=True)
+#     # authHTML = "./dist/auth.html"
+#     print(f"file test")
+
+app = Flask(__name__)
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet')
 
     # Necessary for creating a new access token incase it expires.
 def refreshAccessToken():
@@ -109,14 +112,13 @@ def validateToken():
         print("Sending GET request to validate access token")
         response = requests.get(token_url, headers=headers)
         print(f"Response status code: {response.status_code}")
-        print(f"Response content: {response.text} "+ acc_token)
+        print(f"Response content: {response.text} ")
         if response.status_code == 200:
-            print("Token validated." + acc_token)
+            print("Token validated.")
             grabUserDetails()
             return response.status_code
         else:
             print("Failed to validate token. Using Refresh Token ...")
-            refreshAccessToken()
             if (refreshAccessToken() == "Failed"):
                 print("Refresh Token Failed.")
                 return "Failed"
@@ -453,8 +455,8 @@ try:
     hotkey = dbmethods.getHotkey()
     #validateToken()
     if (validateToken() != "Failed"):
-        logger.info("TRY EXCEPT SUCCEEDED. ACC_TOKEN,REFR_TOKEN,HOTKEY" + acc_token + refr_token + hotkey)
-        print("TRY EXCEPT SUCCEEDED. ACC_TOKEN,REFR_TOKEN,HOTKEY" + acc_token + refr_token + hotkey)
+        logger.info("TRY EXCEPT SUCCEEDED. ACC_TOKEN,REFR_TOKEN,HOTKEY")
+        print("TRY EXCEPT SUCCEEDED. ACC_TOKEN,REFR_TOKEN,HOTKEY")
 except Exception as e:
     logger.error(f"Error starting Flask server: {e}")
     print(f"Error starting Flask server: {e}")
