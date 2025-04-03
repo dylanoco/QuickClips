@@ -105,7 +105,7 @@ function NavBar() {
         const data = await response.json();
         console.log(data)
         setProfile(data);
-        if (data != "") {
+        if (data != null) {
           setAuthStatus('Authenticated');
           console.log(profile.hotkey);
           console.log(profile);
