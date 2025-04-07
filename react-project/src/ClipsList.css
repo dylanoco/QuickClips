@@ -41,6 +41,10 @@
     font-size: 20px;
     margin: 0;
 }
+ul{
+    overflow: scroll;
+    scrollbar-color: purple;
+}
 
 .time-wrap:hover,.dategame-wrap:hover{
     font-weight: bold;
