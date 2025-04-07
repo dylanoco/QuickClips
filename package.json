@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "main.js",
   "scripts": {
-    "start": "concurrently  \"npm run start-electron\" --kill-others-on-fail",
+    "start": "concurrently  \"npm run start-electron .\" --kill-others-on-fail",
     "start2": "concurrently \"npm run start-react\" \"npm run start-electron\"",
     "start-react": "npx serve -s ./react-project/dist -l 3000",
     "start-electron": "electron .",
@@ -11,46 +11,31 @@
   },
   "build": {
     "appId": "com.example.app",
+    "asar": false,
     "files": [
       "main.js",
-      "preload.js"
+      "preload.js",
+      "**/*",
+      "twitchMomentsv3.exe" 
     ],
     "extraResources": [
       {
-        "from": "react-project/dist/",
-        "to": "backend/dist",
-        "filter": [
-          "**/*"
-        ]
-      },
-      {
-        "from": "backend/twitchMomentsv3.py",
-        "to": "backend/twitchMomentsv3.py"
-      },
-      {
-        "from": "backend/dbmethods.py",
-        "to": "backend/dbmethods.py"
-      },
-      {
-        "from": "backend/.env",
-        "to": "backend/.env"
-      },
-      {
-        "from": "backend/templates/auth.html",
-        "to": "backend/templates/auth.html"
+        "from": "backend/dist/twitchMomentsv3.exe",
+        "to": "backend/dist/twitchMomentsv3.exe"
       }
     ]
   },
   "devDependencies": {
     "autoprefixer": "^10.4.21",
     "concurrently": "^7.6.0",
-    "electron": "^31.3.0",
+    "electron": "^31.7.7",
     "electron-builder": "^24.13.3",
     "postcss": "^8.5.3",
     "tailwindcss": "^4.0.14",
     "vite": "^5.3.5"
   },
   "dependencies": {
+    "child_process": "^1.0.2",
     "dependencies": "^0.0.1",
     "electron-log": "^5.1.7",
     "react-icons": "^5.4.0",

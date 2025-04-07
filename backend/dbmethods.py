@@ -31,7 +31,7 @@ except sqlite3.Error as error:
 finally:
         if sqliteConnection:
             sqliteConnection.close()
-            print("sqlite connection is closed")
+            print("sqlite connection is closed1")
 #Initializing the Database
 def initDatabase():
     sqliteConnection = sqlite3.connect(db_path)
@@ -78,7 +78,7 @@ def initDatabase():
     finally:
         if sqliteConnection:
             sqliteConnection.close()
-            print("sqlite connection is closed")
+            print("sqlite connection is closed2")
 #Removing Clips from Database
 def remove_clips(slugs):
     try:
@@ -99,7 +99,7 @@ def remove_clips(slugs):
     finally:
         if sqliteConnection:
             sqliteConnection.close()
-            print("sqlite connection is closed")
+            print("sqlite connection is closed3")
 #Inserting Tokens if Token does not exist
 def insertTokens(auth_t,refr_t,d_name,prof_pic_url,exp_in,hk):
     try:
@@ -119,7 +119,7 @@ def insertTokens(auth_t,refr_t,d_name,prof_pic_url,exp_in,hk):
     finally:
         if sqliteConnection:
             sqliteConnection.close()
-            print("sqlite connection is closed")
+            print("sqlite connection is closed4")
 #Updating Tokens
 def updateTokens(auth_t,refr_t,d_name,prof_pic_url,exp_in,hk):
     userValues = (auth_t,refr_t,d_name,prof_pic_url,exp_in,hk)
@@ -143,7 +143,7 @@ def updateTokens(auth_t,refr_t,d_name,prof_pic_url,exp_in,hk):
         insertTokens(auth_t,refr_t,d_name,prof_pic_url,exp_in,hk)
 
     sqliteConnection.close()
-    print("sqlite connection is closed")
+    print("sqlite connection is closed5")
 #Insert Recently Created Clips
 def insertClip(slug,link,date,time,game):
     try:
@@ -164,7 +164,7 @@ def insertClip(slug,link,date,time,game):
     finally:
         if sqliteConnection:
             sqliteConnection.close()
-            print("sqlite connection is closed")
+            print("sqlite connection is closed6")
 #Getter Functions
 #Getting Clips
 def get_clips():
@@ -188,7 +188,7 @@ def get_clips():
     finally:
         if sqliteConnection:
             sqliteConnection.close()
-            print("sqlite connection is closed")
+            print("sqlite connection is closed7")
 #Getting the Link of the Clip(s)
 def get_link(slug):
 
@@ -212,7 +212,7 @@ def get_link(slug):
     finally:
         if sqliteConnection:
             sqliteConnection.close()
-            print("sqlite connection is closed")
+            print("sqlite connection is closed8")
 #Getting User Details (Profile Picture, Display Name)
 def getUserDetails():
     try:
@@ -235,7 +235,7 @@ def getUserDetails():
     finally:
         if sqliteConnection:
             sqliteConnection.close()
-            print("sqlite connection is closed")
+            print("sqlite connection is closed9")
 #Grabbing Refresh Token from Database
 def getRefreshToken():
     try:
@@ -249,6 +249,9 @@ def getRefreshToken():
         print("SQLite Insert Completed")
 
         cursor.close()
+        if refresh_token is None:
+            print("No refresh token found in the database.")
+            return None
         return refresh_token[0]
 
     except sqlite3.Error as error:
@@ -257,7 +260,7 @@ def getRefreshToken():
     finally:
         if sqliteConnection:
             sqliteConnection.close()
-            print("sqlite connection is closed")
+            print("sqlite connection is closed11")
 #Grabbing Access Token from Database
 def getAccessToken():
     try:
@@ -270,6 +273,9 @@ def getAccessToken():
         auth_token = cursor.fetchone()
         print("SQLite Insert Completed")
 
+        if auth_token is None:
+            print("No access token found in the database.")
+            return None
         cursor.close()
         return auth_token[0]
 
@@ -279,7 +285,7 @@ def getAccessToken():
     finally:
         if sqliteConnection:
             sqliteConnection.close()
-            print("sqlite connection is closed")
+            print("sqlite connection is closed22")
 #Grabbing Hotkey from Database
 def getHotkey():
     try:
@@ -293,6 +299,9 @@ def getHotkey():
         print("SQLite Insert Completed")
 
         cursor.close()
+        if hotkey is None:
+            print("No hotkey found in the database.")
+            return "CTRL+ALT+H" 
         return hotkey[0]
 
     except sqlite3.Error as error:
@@ -301,7 +310,7 @@ def getHotkey():
     finally:
         if sqliteConnection:
             sqliteConnection.close()
-            print("sqlite connection is closed")
+            print("sqlite connection is closed33")
 
 #Updating Hotkey
 def updateHotkey(hk):
@@ -323,4 +332,4 @@ def updateHotkey(hk):
         cursor.close()
 
     sqliteConnection.close()
-    print("sqlite connection is closed")
+    print("sqlite connection is closed44")

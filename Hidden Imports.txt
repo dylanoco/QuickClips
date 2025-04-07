@@ -1,0 +1,16 @@
+        hiddenimports=[
+        'eventlet',
+        'eventlet.hubs.epolls',
+        'eventlet.hubs.selects',
+        'eventlet.hubs.kqueue',
+        'dns',
+        'dns.dnssec',
+        'dns.e164',
+        'dns.hash',
+        'dns.namedict',
+        'dns.tsigkeyring',
+        'dns.update',
+        'dns.version',
+        'dns.zone',
+        'dns.versioned'
+    ],

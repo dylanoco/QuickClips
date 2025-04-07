@@ -7,9 +7,7 @@ from twitchio.ext import commands
 from dotenv import load_dotenv
 from winotify import Notification, audio
 from urllib import request
-from win10toast import ToastNotifier
 import requests
-import webbrowser
 import threading
 from flask import Flask, request, redirect, session, url_for, render_template, jsonify, send_from_directory
 from flask_socketio import SocketIO, emit
@@ -18,7 +16,7 @@ from twitchio.errors import HTTPException
 import dbmethods
 from flask_cors import CORS
 import logging
-import keyboard
+import keyboard 
 import sys
 import logging
 import os
@@ -26,9 +24,20 @@ import eventlet
 import eventlet.wsgi
 import json
 import resend
+from engineio.async_drivers import gevent
+from pathlib import Path
 
 #Variables
 load_dotenv()
+# Get the directory of the running script (handles both dev & PyInstaller cases)
+BASE_DIR = Path(getattr(sys, '_MEIPASS', Path(__file__).parent))
+
+# Load .env from the correct directory
+dotenv_path = BASE_DIR / ".env"
+if dotenv_path.exists():
+    load_dotenv(dotenv_path)
+else:
+    print("Warning: .env file not found!")
 client_secret = os.getenv('TWITCH_CLIENT_SECRET')
 url = os.getenv('AUTH_URL')
 acc_token = ""
@@ -43,7 +52,7 @@ print(f"Current working directory: {os.getcwd()}")
 authHTML = ""
 hostingLink = "https://quickclips.uk/" 
 
-resend.api_key = os.environ["RESEND_API_KEY"]
+resend.api_key = os.getenv("RESEND_API_KEY")
 
 # Configure the logging
 logging.basicConfig(level=logging.DEBUG,
@@ -57,26 +66,10 @@ logger = logging.getLogger(__name__)
 # Initializing the Database
 dbmethods.initDatabase()
 
-
-# To check whether if the app is being launched with the executable or normally through .py script (Deployment vs Development)  
-# if getattr(sys, 'frozen', False):
-#     base_dir = os.path.dirname(sys.executable)
-#     app = Flask(__name__, static_folder=os.path.join(base_dir,'dist'), static_url_path='')
-#     socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet',logger=True, engineio_logger=True)
-#     authHTML = "./dist/auth.html"
-#     print(f"sys test")
-# elif __file__:
-#     base_dir = os.path.dirname(__file__)
-#     app = Flask(__name__)
-#     socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet')
-#     authHTML = "base.html"
-#     # app = Flask(__name__, static_folder=os.path.join(base_dir,'dist'), static_url_path='')
-#     # socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet',logger=True, engineio_logger=True)
-#     # authHTML = "./dist/auth.html"
-#     print(f"file test")
-
+print("test1")
 app = Flask(__name__)
-socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet')
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode='gevent')
+print("test2")
 
     # Necessary for creating a new access token incase it expires.
 def refreshAccessToken():
@@ -89,19 +82,22 @@ def refreshAccessToken():
             "refresh_token": refr_token
         }
         print("Sending POST request to exchange code for token")
-        response = requests.post(token_url, data=data)
-        print(f"Response status code: {response.status_code}")
-        print(f"Response content: {response.text}")
-        if response.status_code == 200:
-            print("Token exchange successful")
-            token_info = response.json()
-            acc_token = token_info['access_token']
-            refr_token = token_info['refresh_token']
-            expires_in = token_info['expires_in']
-            grabUserDetails()
-        else:
-            print("Failed to exchange token")
-            return "Failed"
+        try:
+            response = requests.post(token_url, data=data)
+            print(f"Response status code: {response.status_code}")
+            print(f"Response content: {response.text}")
+            if response.status_code == 200:
+                print("Token exchange successful")
+                token_info = response.json()
+                acc_token = token_info['access_token']
+                refr_token = token_info['refresh_token']
+                expires_in = token_info['expires_in']
+                grabUserDetails()
+            else:
+                print("Failed to exchange token")
+                return "Failed"
+        except:
+            pass
 
 def validateToken():
         global acc_token
@@ -111,19 +107,22 @@ def validateToken():
         }
         print("Sending GET request to validate access token")
         response = requests.get(token_url, headers=headers)
-        print(f"Response status code: {response.status_code}")
-        print(f"Response content: {response.text} ")
+        print("Response status code: {response.status_code}")
+        print("Response content: {response.text} ")
         if response.status_code == 200:
             print("Token validated.")
             grabUserDetails()
             return response.status_code
         else:
             print("Failed to validate token. Using Refresh Token ...")
-            if (refreshAccessToken() == "Failed"):
-                print("Refresh Token Failed.")
-                return "Failed"
-            else:
-                return response.status_code
+            try:
+                if (refreshAccessToken() == "Failed"):
+                    print("Refresh Token Failed.")
+                    return "Failed"
+                else:
+                    return response.status_code
+            except:
+                pass
 
         
 
@@ -212,6 +211,8 @@ def callback():
 @app.route('/callbackRender')
 def callbackRender():
     global hotkey, expires_in
+
+    user_profile = None
 
     if(validateToken() != "Failed"):
         try:
@@ -326,10 +327,7 @@ def hotkey_assign(hk):
 
 import time
 import winsound
-def token_validation_thread():
-    while True:
-        validateToken()
-        time.sleep(3600)  # Wait 1hr  before checking again
+
 
 
 # To grab the game being played from the user at the time of creating the clip
@@ -378,38 +376,48 @@ class Bot(commands.Bot):
         return super().create_user(user_id, user_name)
 # The Main function to create clips
 def clip_creator():
-    global twitch_name, twitch_id, acc_token, twitch_id
-    print(hotkey)
+    global twitch_name, twitch_id, acc_token
+
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
-    
+
     try:
         bot = Bot()
-        User = bot.create_user(twitch_id,twitch_name)
+        User = bot.create_user(twitch_id, twitch_name)
         clip_url = loop.run_until_complete(User.create_clip(token=acc_token))
         game_name = grabGame()
-        print(game_name)
-        dbmethods.insertClip(clip_url['id'],clip_url['edit_url'],str(  (datetime.datetime.now()).strftime("%x")  ) ,str(  (datetime.datetime.now()).strftime("%X")  ),game_name)
+
+        dbmethods.insertClip(
+            clip_url['id'],
+            clip_url['edit_url'],
+            str(datetime.datetime.now().strftime("%x")),
+            str(datetime.datetime.now().strftime("%X")),
+            game_name
+        )
+        
+        trigger_key(True, "Clip Creation", "Successfully created a clip.")
+    
     except twitchio.errors.HTTPException as htperr:
         if htperr.status == 401:
             refreshAccessToken()
-        if htperr.status == 404:
-            print(htperr.message)
+        elif htperr.status == 404:
             trigger_key(False, "Clip Creation", "The channel is not online. Please go live before creating a clip.")
-            return
-        if htperr.status == 403:
-            print(htperr.message)
-            trigger_key(False, "Clip Creation", "You must authorize your twitch account before creating a clip.")
-            return
+        elif htperr.status == 403:
+            trigger_key(False, "Clip Creation", "You must authorize your Twitch account before creating a clip.")
+        return
 
     except ValueError as verr:
-        print("Value Error")
-        print(verr)
-        trigger_key(False, verr)
+        trigger_key(False, "Clip Creation", str(verr))
         return
-    print("Sending over the Refresh Clips Signal")
-    trigger_key(True, "Clip Creation", "Successfully created a clip.")
-    print("Sent the Refresh Clips Signal.")
+
+    finally:
+        # Cleanup: close the internal session
+        try:
+            loop.run_until_complete(bot.close())
+        except Exception as e:
+            print("Error during bot.close():", e)
+        finally:
+            loop.close()
 
 # Function used to wait for a hotkeypress to create a clip.
 def createaClip():
@@ -448,7 +456,7 @@ def createaClip():
 #Threads & Main
 try:
     threading.Thread(target=run_flask,daemon=True).start()
-    threading.Thread(target=token_validation_thread, daemon=True).start()
+    #threading.Thread(target=token_validation_thread, daemon=True).start()
     #if tokens not valid, refresh them,and update db. if cant refresh them, invalidate all tokens and request re-authentication.
     acc_token = dbmethods.getAccessToken()
     refr_token = dbmethods.getRefreshToken()
