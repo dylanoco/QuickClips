@@ -42,9 +42,9 @@
     margin: 0;
 }
 ul{
-    overflow: scroll;
+    overflow-y: scroll;
     scrollbar-color: purple;
-    max-height: fit-content;
+    max-height: 80%;
 }
 
 .time-wrap:hover,.dategame-wrap:hover{
