@@ -7,7 +7,7 @@ import { DataContext } from './DataContext';
 function ClipsCreated(){
     const {clips} = useContext(DataContext);
     const {setClips} = useContext(DataContext);
-    const {reload, setReload} = useState(false);
+    const [reload, setReload] = useState(false);
     //Grabbing Clips from Database
     useEffect(() => {
         fetch('http://localhost:5000/clips', ['GET'])
