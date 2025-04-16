@@ -7,19 +7,9 @@ import { DataContext } from './DataContext';
 function ClipsCreated(){
     const {clips} = useContext(DataContext)
     const {setClips} = useContext(DataContext)
-    //Grabbing Clips from Database
 
-    function fetchClips() {
-        useEffect(() => {
-            fetch('http://localhost:5000/clips', ['GET'])
-                .then(response => response.json())
-                .then(clips => {
-                    setClips(clips);
-                    console.log(clips)
-                })
-                .catch(error => console.error('Error fetching data:', error));
-            }, []);
-    }
+    const {reload, setReload} = useState(false)
+    //Grabbing Clips from Database
     useEffect(() => {
         fetch('http://localhost:5000/clips', ['GET'])
             .then(response => response.json())
@@ -28,13 +18,12 @@ function ClipsCreated(){
                 console.log(clips)
             })
             .catch(error => console.error('Error fetching data:', error));
-        }, []);
+        }, [reload]);
     return(
         <div className="clipscreated-container">
             <div>
             <header>Clips Created</header>
-            <button className="force-reload-button" onClick={() => fetchClips()}>Create Clip</button>
-            <p>Click on a clip to view it</p>
+            <button className="force-reload-button" onClick={() => setReload(refresh => !refresh) }>Reload</button>
             </div>
             
             <ClipsList clips={clips}/>
