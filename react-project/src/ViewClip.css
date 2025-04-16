@@ -2,6 +2,7 @@
     min-width: 50vw;
     min-height: 100vh;
     background-color: #18181C;
+    overflow: hidden;
 }
 
 .viewclip-container header{
