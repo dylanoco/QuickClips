@@ -44,7 +44,7 @@
 ul{
     overflow-y: scroll;
     scrollbar-color: purple;
-    max-height: 750px;
+    max-height: 100vh;
 }
 
 .time-wrap:hover,.dategame-wrap:hover{
