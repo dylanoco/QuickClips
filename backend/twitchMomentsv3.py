@@ -410,14 +410,14 @@ def clip_creator():
         trigger_key(False, "Clip Creation", str(verr))
         return
 
-    finally:
-        # Cleanup: close the internal session
-        try:
-            loop.run_until_complete(bot.close())
-        except Exception as e:
-            print("Error during bot.close():", e)
-        finally:
-            loop.close()
+    # finally:
+    #     # Cleanup: close the internal session
+    #     try:
+    #         loop.run_until_complete(bot.close())
+    #     except Exception as e:
+    #         print("Error during bot.close():", e)
+    #     finally:
+    #         loop.close()
 
 # Function used to wait for a hotkeypress to create a clip.
 def createaClip():
