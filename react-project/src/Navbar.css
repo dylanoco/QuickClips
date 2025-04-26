@@ -199,7 +199,7 @@ header {
   
 }
 
-#bug-icon:hover{
+.profile-container #bug-icon:hover {
   color: #ff00d4;
   transition: all 0.2s;
   cursor: pointer;
