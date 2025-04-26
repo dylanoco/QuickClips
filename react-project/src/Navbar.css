@@ -203,5 +203,6 @@ header {
   color: #ff00d4;
   transition: all 0.2s;
   cursor: pointer;
+  transform: scale(1.2);
 }
 
