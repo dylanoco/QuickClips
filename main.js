@@ -1,5 +1,6 @@
 const { app, BrowserWindow } = require("electron");
 const { spawn } = require("child_process");
+const { exec } = require("child_process");
 const path = require("path");
 
 let mainWindow;
@@ -14,27 +15,40 @@ app.on("ready", () => {
     },
   });
 
-  mainWindow.loadURL("http://Quickclips.uk"); // Change this if needed
+  mainWindow.loadURL("http://Quickclips.uk");
 
-  // Start Python backend
-  backendPath = path.join(process.resourcesPath, "backend", "dist", "twitchmomentsv3.exe");
+  const isDev = !app.isPackaged;
+  const backendPath = isDev
+    ? path.join(__dirname, "backend", "dist", "twitchmomentsv3.exe")
+    : path.join(process.resourcesPath, "backend", "dist", "twitchmomentsv3.exe");
 
-  backendProcess = spawn(backendPath, [], { stdio: ["inherit", "pipe", "pipe"] });
-
-  backendProcess.stdout.on("data", (data) => {
-    console.log(`Backend Output: ${data.toString()}`);
+  backendProcess = spawn(backendPath, [], {
+    detached: true,
+    stdio: "ignore",
+    windowsHide: true,
   });
 
-  backendProcess.stderr.on("data", (data) => {
-    console.error(`Backend Error: ${data.toString()}`);
-  });
-  
-  backendProcess.on("close", (code) => {
-    console.log(`Backend exited with code ${code}`);
-  });
+  backendProcess.unref();
 
-  mainWindow.on("closed", () => {
-    mainWindow = null;
-    backendProcess.kill();
-  });
+  console.log("Spawned backend with PID:", backendProcess.pid);
 });
+
+// Before quit
+app.on('before-quit', async () => {
+  if (backendProcess && backendProcess.pid) {
+    try {
+      const taskkillPath = path.join(process.env['WINDIR'], 'System32', 'taskkill.exe');
+      const cmd = `"${taskkillPath}" /pid ${backendProcess.pid} /T /F`;
+      exec(cmd, (err, stdout, stderr) => {
+        if (err) {
+          console.error("Failed to kill backend process tree:", err);
+        } else {
+          console.log("Successfully killed backend process tree.");
+        }
+      });
+    } catch (error) {
+      console.error("Failed to shutdown backend:", error);
+    }
+  }
+});
+

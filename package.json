@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "main.js",
   "scripts": {
-    "start": "concurrently  \"npm run start-electron .\" --kill-others-on-fail",
+    "start": "concurrently  \"npm run start-electron .",
     "start2": "concurrently \"npm run start-react\" \"npm run start-electron\"",
     "start-react": "npx serve -s ./react-project/dist -l 3000",
     "start-electron": "electron .",
@@ -16,7 +16,7 @@
       "main.js",
       "preload.js",
       "**/*",
-      "twitchMomentsv3.exe" 
+      "twitchMomentsv3.exe"
     ],
     "extraResources": [
       {
@@ -38,9 +38,11 @@
     "child_process": "^1.0.2",
     "dependencies": "^0.0.1",
     "electron-log": "^5.1.7",
+    "ps-tree": "^1.2.0",
     "react-icons": "^5.4.0",
     "shell": "^0.9.6",
     "sonner": "^1.7.2",
+    "tree-kill": "^1.2.2",
     "wait-on": "^7.2.0"
   }
 }
