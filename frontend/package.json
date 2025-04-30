@@ -4,6 +4,7 @@
   "proxy": "ws://localhost:5000",
   "version": "0.0.0",
   "type": "module",
+  "homepage": "/app",
 
   "scripts": {
     "start": "react-scripts start",
