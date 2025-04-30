@@ -26,6 +26,33 @@ import json
 import resend
 from engineio.async_drivers import gevent
 from pathlib import Path
+import os
+import psutil
+import signal
+import sys
+
+#This is needed to make sure that the backend doesn't linger after the program is closed.
+
+def clean_exit(signum, frame):
+    print(f"Received signal {signum}, cleaning up...")
+    try:
+        parent = psutil.Process(os.getpid())
+        for child in parent.children(recursive=True):
+            print(f"Killing child process {child.pid}")
+            child.kill()
+        parent.kill()  # Finally kill yourself
+    except Exception as e:
+        print(f"Error during cleanup: {e}")
+    finally:
+        sys.exit(0)
+
+signal.signal(signal.SIGINT, clean_exit)   # Ctrl+C or interrupt
+signal.signal(signal.SIGTERM, clean_exit)  # Termination (kill signal)
+if os.name == 'nt':
+    try:
+        signal.signal(signal.SIGBREAK, clean_exit)
+    except AttributeError:
+        pass 
 
 #Variables
 load_dotenv()
@@ -50,7 +77,7 @@ hotkey = 'Ctrl+Alt+L'
 expires_in = ""
 print(f"Current working directory: {os.getcwd()}")
 authHTML = ""
-hostingLink = "https://quickclips.uk/" 
+hostingLink = "https://quickclips.uk/app" 
 
 resend.api_key = os.getenv("RESEND_API_KEY")
 
@@ -410,14 +437,6 @@ def clip_creator():
         trigger_key(False, "Clip Creation", str(verr))
         return
 
-    # finally:
-    #     # Cleanup: close the internal session
-    #     try:
-    #         loop.run_until_complete(bot.close())
-    #     except Exception as e:
-    #         print("Error during bot.close():", e)
-    #     finally:
-    #         loop.close()
 
 # Function used to wait for a hotkeypress to create a clip.
 def createaClip():
