@@ -3,8 +3,9 @@ base = "frontend/react-app"
 publish = "../site"
 command = "npm run build && rm -rf ../site/app && mkdir ../site/app && cp -r build/* ../site/app/"
 
-[redirects]
-  [[redirects]]
-    from = "/app/*"
-    to = "/app/index.html"
-    status = 200
+
+[[redirects]]
+from = "/app/*"
+to = "/app/index.html"
+status = 200
+force = false
