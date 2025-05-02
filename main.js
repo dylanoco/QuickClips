@@ -15,7 +15,7 @@ app.on("ready", () => {
     },
   });
 
-  mainWindow.loadURL("http://Quickclips.uk");
+  mainWindow.loadURL("http://Quickclips.uk/app");
 
   const isDev = !app.isPackaged;
   const backendPath = isDev
