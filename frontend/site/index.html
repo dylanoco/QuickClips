@@ -1,46 +1,128 @@
-<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>QuickClips</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css" />
-</head>
-<body>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QuickClips - Capture Your Streaming Moments</title>
+  <meta name="description" content="QuickClips - Instantly capture your favorite Streaming moments with one hotkey. Fast. Simple. Powerful.">
+    <link rel="stylesheet" href="styles.css">
+    </head>
 
+
+
+
+<body>
   <header>
-    <h1>QuickClips</h1>
-    <p>Instantly capture your favorite Streaming moments with one hotkey. Fast. Simple. Powerful.</p>
-    <a href="https://yourdomain.com/download/QuickClips.exe" class="download-btn">Download .EXE</a>
+      <h1>QuickClips</h1>
+      <p>Instantly capture your favorite Streaming moments with one hotkey. Fast. Simple. Powerful.</p>
+      <a href="https://yourdomain.com/download/QuickClips.exe" class="download-btn">Download .EXE</a>
   </header>
 
-  <section class="features">
-    <div class="feature">
-      <h3>🎯 One-Key Clipping</h3>
-      <p>Just tap a key and QuickClips saves the moment — no distractions or overlays.</p>
+  <section class="how-it-works fade-in">
+    <h2>How It Works</h2>
+    <div class="steps">
+        <div class="step">
+            <div class="step-icon">🔑</div>
+            <h3>Authenticate</h3>
+            <p>Log in securely with your Twitch account — no extra accounts or sign-ups required.</p>
+        </div>
+        <div class="step">
+            <div class="step-icon">🎮</div>
+            <h3>Choose Your Hotkey</h3>
+            <p>Pick the perfect key combo to capture your best moments without interrupting your gameplay.</p>
+        </div>
+        <div class="step">
+            <div class="step-icon">📡</div>
+            <h3>Go Live</h3>
+            <p>Start your stream and focus on entertaining your audience — we’ll handle the rest in the background.</p>
+        </div>
+        <div class="step">
+            <div class="step-icon">⚡</div>
+            <h3>Press & Clip</h3>
+            <p>Hit your hotkey anytime to instantly save the last 30 seconds as a highlight — simple, fast, reliable.</p>
+        </div>
     </div>
-    <div class="feature">
-      <h3>📁 Built-In Viewer</h3>
-      <p>Access all saved clips directly inside the app, with links to edit or rename on Twitch.</p>
+</section>
+<section class="features fade-in">
+    <h2>Features</h2>
+    <div class="feature-grid">
+        <div class="feature">
+            <h3>🎯 One-Key Clipping</h3>
+            <p>Just tap a key and QuickClips saves the moment — no distractions or overlays.</p>
+        </div>
+        <div class="feature">
+            <h3>📁 Built-In Viewer</h3>
+            <p>Access all saved clips directly inside the app, with links to edit or rename on Twitch.</p>
+        </div>
+        <div class="feature">
+            <h3>⚡ Lightweight</h3>
+            <p>Zero bloat. Launches fast, runs smooth — doesn’t eat up your CPU while you stream.</p>
+        </div>
+        <div class="feature">
+            <h3>🧠 Dead Simple Setup</h3>
+            <p>No accounts, no fluff. Bind your key and start clipping in seconds.</p>
+        </div>
     </div>
-    <div class="feature">
-      <h3>⚡ Lightweight</h3>
-      <p>Zero bloat. Launches fast, runs smooth — doesn’t eat up your CPU while you stream.</p>
-    </div>
-    <div class="feature">
-      <h3>🧠 Dead Simple Setup</h3>
-      <p>No accounts, no fluff. Bind your key and start clipping in seconds.</p>
-    </div>
+</section>
+
+
+  <section class="cta fade-in">
+      <h2>Start capturing clips like a pro.</h2>
+      <a href="https://yourdomain.com/download/QuickClips.exe" class="download-btn">Download Now</a>
+      <img src="..\react-app\images\application.png" alt="QuickClips in Action" class="screenshot">
   </section>
 
-  <section class="cta">
-    <h2>Start capturing clips like a pro.</h2>
-    <a href="https://yourdomain.com/download/QuickClips.exe" class="download-btn">Download Now</a>
+  <section class="pricing fade-in">
+      <h2>Pricing Plans</h2>
+      <div class="pricing-plans">
+          <div class="plan">
+              <h3>Free</h3>
+              <p class="price">£0.00</p>
+              <ul>
+                  <li>Basic Clipping</li>
+                  <li>Local Logs</li>
+              </ul>
+              <a href="#" class="cta-btn">Download Free</a>
+          </div>
+          <div class="plan" id="pro-plan">
+              <h3>Pro</h3>
+              <p class="price">£3.99/month</p>
+              <ul>
+                  <li>✨ All Free Features</li>
+                  <li>✨ Smart Naming</li>
+                  <li>✨ Custom Hotkeys</li>
+                  <li>✨ Cloud Sync</li>
+              </ul>
+              <a href="#" class="cta-btn">Subscribe Now</a>
+          </div>
+          <div class="plan">
+              <h3>Coming Soon</h3>
+              <p class="price">£6.99/month</p>
+              <ul>
+              </ul>
+              <a href="#" class="cta-btn">Subscribe Now</a>
+          </div>
+      </div>
   </section>
 
   <footer>
-    &copy; 2025 QuickClips. All rights reserved.
+      &copy; 2025 QuickClips. All rights reserved.
   </footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('show');
+                }
+            });
+        }, { threshold: 0.1 });
+    
+        document.querySelectorAll('.fade-in').forEach(section => {
+            observer.observe(section);
+        });
+    });
+    </script>
+
 
 </body>
 </html>
