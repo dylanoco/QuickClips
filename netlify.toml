@@ -2,8 +2,7 @@
 base = "frontend/react-app"
 publish = "../site"
 command = "npm run build && rm -rf ../site/app && mkdir ../site/app && cp -r dist/* ../site/app/"
-[functions]
-  directory = "netlify/functions"
+functions = "netlify/functions" 
 
 
 
