@@ -1,5 +1,5 @@
-const { createClient } = require('@supabase/supabase-js');
 const fetch = require('node-fetch');
+const { createClient } = require('@supabase/supabase-js');
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -11,7 +11,6 @@ exports.handler = async (event) => {
   const userAgent = event.headers['user-agent'] || 'unknown';
   const timestamp = new Date().toISOString();
 
-  // Optional: use IP lookup service
   let country = 'Unknown';
   try {
     const geoRes = await fetch(`https://ipapi.co/${ip}/json/`);
@@ -21,7 +20,6 @@ exports.handler = async (event) => {
     console.error('Geo lookup failed:', err.message);
   }
 
-  // Log to Supabase
   const { error } = await supabase
     .from('downloads')
     .insert([{ ip, user_agent: userAgent, country, timestamp }]);
@@ -32,11 +30,10 @@ exports.handler = async (event) => {
     console.log('✅ Download logged to Supabase');
   }
 
-  // Redirect to installer
   return {
     statusCode: 302,
     headers: {
-      Location: 'https://github.com/dylanoco/twitchMoments/releases/tag/vA.1.0.0' // or GitHub/S3 URL
+      Location: 'https://github.com/dylanoco/twitchMoments/releases/download/v1.0.0/QuickClips%20Setup%201.0.0.exe'
     }
   };
 };
