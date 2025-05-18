@@ -10,11 +10,7 @@
     "package": "electron-builder --win --x64"
   },
   "build": {
-    "directories": {
-      "output": "downloads"
-    },
     "appId": "com.quickclips.app",
-    "productName": "QuickClips",
     "asar": false,
     "files": [
       "main.js",
