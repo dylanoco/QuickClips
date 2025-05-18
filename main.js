@@ -15,19 +15,29 @@ app.on("ready", () => {
     },
   });
 
-  // mainWindow.loadURL("http://Quickclips.uk/app");
-  mainWindow.loadURL("http://localhost:5001/app/");
+  mainWindow.loadURL("http://Quickclips.uk/app");
+  // mainWindow.loadURL("http://localhost:5001/app/");
 
   const isDev = !app.isPackaged;
   const backendPath = isDev
-    ? path.join(__dirname, "backend", "dist", "twitchmomentsv3.exe")
-    : path.join(process.resourcesPath, "backend", "dist", "twitchmomentsv3.exe");
+    ? path.join(__dirname, "backend", "dist", "twitchmomentsv3", "twitchmomentsv3.exe")
+    : path.join(process.resourcesPath, "backend", "dist", "twitchmomentsv3", "twitchmomentsv3.exe");
 
-  backendProcess = spawn(backendPath, [], {
-    detached: true,
-    stdio: "ignore",
-    windowsHide: true,
-  });
+  // backendProcess = spawn(backendPath, [], {
+  //   detached: true,
+  //   stdio: "ignore",
+  //   windowsHide: true,
+  // });
+
+  const cmdPath = path.join(process.env['WINDIR'], 'System32', 'cmd.exe');
+
+backendProcess = spawn(cmdPath, ["/k", backendPath], {
+  detached: true,
+  stdio: "inherit",
+});
+
+
+  
 
   backendProcess.unref();
 

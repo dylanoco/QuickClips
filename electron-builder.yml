@@ -1,7 +1,7 @@
-appId: com.yourname.yourapp
-productName: YourAppName
+appId: com.nero.quickclips
+productName: QuickClips
 directories:
-  output: dist_electron
+  output: ./downloads
 files:
   - build/**/*
   - main.js

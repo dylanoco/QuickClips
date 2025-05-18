@@ -65,19 +65,24 @@ if dotenv_path.exists():
     load_dotenv(dotenv_path)
 else:
     print("Warning: .env file not found!")
+
+
 client_secret = os.getenv('TWITCH_CLIENT_SECRET')
 url = os.getenv('AUTH_URL')
+auth_cid = os.getenv('APP_CLIENT_ID')
+hostingLink = os.getenv('APP_URL')
+localHost = os.getenv('LOCAL_HOST')    
 acc_token = ""
 refr_token = ""
 twitch_name = ""
 profile_pic_url = ""
 twitch_id = ""
-auth_cid = os.getenv('APP_CLIENT_ID')
 hotkey = 'Ctrl+Alt+L'
 expires_in = ""
-print(f"Current working directory: {os.getcwd()}")
+# print(f"Current working directory: {os.getcwd()}")
 authHTML = ""
-hostingLink = "https://quickclips.uk/app" 
+
+
 
 resend.api_key = os.getenv("RESEND_API_KEY")
 
@@ -206,6 +211,7 @@ def home():
 @app.route('/callback')
 def callback():
     global auth_cid, acc_token, refr_token,twitch_name, profile_pic_url
+    print("HTML REDIRECTING TO APP")
     print("Callback Route Accessed")
     code = request.args.get('code')
     print(f"Authorization code received.")
@@ -216,12 +222,13 @@ def callback():
             "client_secret": client_secret,
             "code": code,
             "grant_type": "authorization_code",
-            "redirect_uri": "http://localhost:5000/callback"
+            "redirect_uri": f"{localHost}/callback"
         }
         print("Sending POST request to exchange code for token")
         response = requests.post(token_url, data=data)
         print(f"Response status code: {response.status_code}")
         print(f"Response content: {response.text}")
+        
         if response.status_code == 200:
             print("Token exchange successful")
             token_info = response.json()
@@ -230,9 +237,29 @@ def callback():
             expires_in = token_info['expires_in']
             grabUserDetails()
             dbmethods.updateTokens(acc_token,refr_token, twitch_name, profile_pic_url, expires_in,hotkey)
-            return redirect(hostingLink)
+            return """
+        <html>
+            <head>
+                <meta http-equiv="refresh" content="0; url=https://quickclips.uk/app/">
+                <script>window.location.href='https://quickclips.uk/app/';</script>
+            </head>
+            <body>
+                <p>Redirecting to app...</p>
+            </body>
+        </html>
+    """
     
-    return redirect(hostingLink)
+    return """
+        <html>
+            <head>
+                <meta http-equiv="refresh" content="0; url=https://quickclips.uk/app/">
+                <script>window.location.href='https://quickclips.uk/app/';</script>
+            </head>
+            <body>
+                <p>Redirecting to app...</p>
+            </body>
+        </html>
+    """
 
 # Route used to get the Profile Picture and Dispaly Name. Requests made from Client.
 @app.route('/callbackRender')
@@ -315,9 +342,9 @@ def get_version():
 #trigger_key Is to post a message to the client to re-render the app. Usually for when a clip has been made.
 def trigger_key(status, process, reason):
     if status == True:
-        requests.post('http://localhost:5000/trigger-message-success')
+        requests.post(f'{localHost}/trigger-message-success')
     else:
-        requests.post('http://localhost:5000/trigger-message-fail', data={'reason': reason, 'process' : process})
+        requests.post(f'{localHost}/trigger-message-fail', data={'reason': reason, 'process' : process})
 @app.route('/trigger-message-success', methods=['POST'])
 def trigger_message_s():
     with app.app_context():
@@ -487,13 +514,21 @@ try:
 except Exception as e:
     logger.error(f"Error starting Flask server: {e}")
     print(f"Error starting Flask server: {e}")
+    import traceback
+    traceback.print_exc()
+
+    input("🔁 Press Enter to exit...")
     
 keyboard_thread = threading.Thread(target=createaClip)
 keyboard_thread.daemon = True  
 keyboard_thread.start()
 keyboard_thread.join()
 
+
 async def main():
-    eventlet.monkey_patch()
-    loop = asyncio.new_event_loop()                                                                                                                             
-    loop.run_until_complete(main())
+    try:
+        eventlet.monkey_patch()
+        loop = asyncio.new_event_loop()                                                                                                                             
+        loop.run_until_complete(main())
+    except Exception as e:  
+        input(f"Error: {e}")

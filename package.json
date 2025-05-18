@@ -1,5 +1,5 @@
 {
-  "name": "twitchmoments",
+  "name": "quickclips",
   "version": "1.0.0",
   "main": "main.js",
   "scripts": {
@@ -7,23 +7,30 @@
     "start2": "concurrently \"npm run start-react\" \"npm run start-electron\"",
     "start-react": "npx serve -s ./react-project/dist -l 3000",
     "start-electron": "electron .",
-    "package": "electron-builder"
+    "package": "electron-builder --win --x64"
   },
   "build": {
-    "appId": "com.example.app",
+    "directories": {
+      "output": "downloads"
+    },
+    "appId": "com.quickclips.app",
+    "productName": "QuickClips",
     "asar": false,
     "files": [
       "main.js",
       "preload.js",
-      "**/*",
       "twitchMomentsv3.exe"
     ],
     "extraResources": [
       {
-        "from": "backend/dist/twitchMomentsv3.exe",
-        "to": "backend/dist/twitchMomentsv3.exe"
+        "from": "backend/dist",
+        "to": "backend/dist"
       }
-    ]
+    ],
+      "win": {
+    "target": "nsis"
+      }
+    
   },
   "devDependencies": {
     "autoprefixer": "^10.4.21",
