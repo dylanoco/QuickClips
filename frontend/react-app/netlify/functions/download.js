@@ -33,7 +33,7 @@ exports.handler = async (event) => {
   return {
     statusCode: 302,
     headers: {
-      Location: 'https://github.com/dylanoco/twitchMoments/releases/download/v1.0.0/QuickClips%20Setup%201.0.0.exe'
+      Location:'https://github.com/dylanoco/twitchMoments/releases/download/vA.1.0.0/QuickClips.Setup.1.0.0.exe'
     }
   };
 };
