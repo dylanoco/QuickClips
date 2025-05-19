@@ -1,8 +1,7 @@
 [build]
-base = "frontend/react-app"
-publish = "../site"
-command = "npm run build && rm -rf ../site/app && mkdir ../site/app && cp -r dist/* ../site/app/"
-functions = "../../netlify/functions" 
+publish = "frontend/site"
+command = "cd frontend/react-app && npm run build && rm -rf ../site/app && mkdir ../site/app && cp -r dist/* ../site/app"
+functions = "netlify/functions" 
 
 
 
