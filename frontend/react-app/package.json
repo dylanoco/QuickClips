@@ -17,10 +17,12 @@
     "serve": "serve -s dist -l 3000"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.49.4",
     "@tailwindcss/vite": "^4.1.5",
     "cors": "^2.8.5",
     "dependencies": "^0.0.1",
     "netlify": "^13.1.21",
+    "node-fetch": "^2.7.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-icons": "^5.4.0",
