@@ -14,9 +14,11 @@ const handleDescriptionChange = (e) => setDescription(e.target.value);
 const handleSubmit = async (e) => {
   e.preventDefault();
   const bugDescription = getBugReportEmailHTML(description)
+  const rawDescription = description
   const data = {
     email,
-    bugDescription
+    bugDescription,
+    rawDescription
   };
 
   try {
