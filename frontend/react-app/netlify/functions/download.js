@@ -15,6 +15,7 @@ exports.handler = async (event) => {
   try {
     const geoRes = await fetch(`https://ipapi.co/${ip}/json/`);
     const geoData = await geoRes.json();
+    console.log('Client IP:', ip);
     country = geoData.country_name || 'Unknown';
   } catch (err) {
     console.error('Geo lookup failed:', err.message);
@@ -33,7 +34,8 @@ exports.handler = async (event) => {
   return {
     statusCode: 302,
     headers: {
-      Location:'https://github.com/dylanoco/twitchMoments/releases/download/vA.1.0.0/QuickClips.Setup.1.0.0.exe'
+      // Location:'https://github.com/dylanoco/twitchMoments/releases/download/vA.1.0.0/QuickClips.Setup.1.0.0.exe'
+      Location:'#'
     }
   };
 };
