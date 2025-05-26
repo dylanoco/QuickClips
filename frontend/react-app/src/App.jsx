@@ -5,10 +5,11 @@ import ViewClip from './ViewClip.jsx'
 import { io } from 'socket.io-client';
 import './App.css'
 import { DataProvider } from './DataContext.jsx'
+import { Socket } from 'socket.io-client';
 
 //useState and useEffect to trigger a render to the client, updating the app without needing a manual refresh
 function App() {
-  socket.on('authenticated', (data) => {
+  Socket.on('authenticated', (data) => {
   console.log('User authenticated:', data);
   window.location.reload(); // or refetch user data
 });
