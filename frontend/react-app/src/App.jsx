@@ -8,6 +8,11 @@ import { DataProvider } from './DataContext.jsx'
 
 //useState and useEffect to trigger a render to the client, updating the app without needing a manual refresh
 function App() {
+  socket.on('authenticated', (data) => {
+  console.log('User authenticated:', data);
+  window.location.reload(); // or refetch user data
+});
+
   
   return (
   <div className="container">
