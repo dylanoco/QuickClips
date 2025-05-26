@@ -19,12 +19,9 @@ export const DataProvider = ({ children }) => {
     const [response, setResponse] = useState('');
     useEffect(() => {
       const socket = io('http://localhost:5000') //Connects to Backend via SocketIO. Communicates through 'refresh-clips' channel
-      socket.on('refresh-clips', (data) => {
-          setResponse(data.data);
+      socket.on('refresh-clips', (data) => {        
           console.log(data.data);
           toast.success(data.data);
-        
-          });
           fetch('http://localhost:5000/clips', ['GET'])
           .then(response => response.json())
           .then(clips => {
@@ -33,6 +30,9 @@ export const DataProvider = ({ children }) => {
               
           })
           .catch(error => console.error('Error fetching data:', error));
+          setResponse(data.data);
+        
+          });
       }, [response]);
 
       useEffect(() => {
