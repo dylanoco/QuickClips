@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow,shell } = require("electron");
 const { spawn } = require("child_process");
 const { exec } = require("child_process");
 const path = require("path");
@@ -20,8 +20,8 @@ app.on("ready", () => {
 
   const isDev = !app.isPackaged;
   const backendPath = isDev
-    ? path.join(__dirname, "backend", "dist", "twitchmomentsv3", "twitchmomentsv3.exe")
-    : path.join(process.resourcesPath, "backend", "dist", "twitchmomentsv3", "twitchmomentsv3.exe");
+    ? path.join(__dirname, "backend", "dist", "QC_B", "QC_B.exe")
+    : path.join(process.resourcesPath, "backend", "dist", "QC_B", "QC_B.exe");
 
   // backendProcess = spawn(backendPath, [], {
   //   detached: true,
@@ -35,14 +35,26 @@ backendProcess = spawn(cmdPath, ["/k", backendPath], {
   detached: true,
   stdio: "inherit",
 });
-
-
-  
-
   backendProcess.unref();
-
   console.log("Spawned backend with PID:", backendProcess.pid);
 });
+
+app.on('web-contents-created', (event, contents) => {
+  contents.setWindowOpenHandler(({ url }) => {
+    // Open all new windows in default browser
+    shell.openExternal(url);
+    return { action: 'deny' };
+  });
+
+  contents.on('will-navigate', (event, url) => {
+    const allowedHost = contents.getURL(); // allow your app's own URL
+    if (url !== allowedHost) {
+      event.preventDefault();
+      shell.openExternal(url);
+    }
+  });
+});
+
 
 // Before quit
 app.on('before-quit', async () => {

@@ -15,12 +15,12 @@
     "files": [
       "main.js",
       "preload.js",
-      "twitchMomentsv3.exe"
+      "QC_B.exe"
     ],
     "extraResources": [
       {
-        "from": "backend/dist",
-        "to": "backend/dist"
+        "from": "backend/dist/QC_B",
+        "to": "backend/dist/QC_B"
       }
     ],
     "win": {
