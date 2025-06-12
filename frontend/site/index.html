@@ -8,8 +8,6 @@
     </head>
 
 
-
-
 <body>
     <nav>
         <a href="#how-it-works">How It Works</a>
@@ -17,123 +15,21 @@
         <a href="#cta">Get Started</a>
         <a href="#pricing">Pricing</a>
       </nav>
-  <header>
-      <h1>QuickClips</h1>
-      <p>Instantly capture your favorite Streaming moments with one hotkey. Fast. Simple. Powerful.</p>
-      <a href="/.netlify/functions/download" class="download-btn">Get QuickClips for Windows</a>
-  </header>
 
-  <section class="how-it-works fade-in" id="how-it-works">
-    <h2>How It Works</h2>
-    <div class="steps">
-        <div class="step">
-            <div class="step-icon">🔑</div>
-            <h3>Authenticate</h3>
-            <p>Log in securely with your Twitch account — no extra accounts or sign-ups required.</p>
+      <section id="hero">
+        <div class="hero-wrapper">
+            <div class="hero-content">
+                <h2>QuickClips</h2>
+                <h1>F*** Surfing Through VoD's.</h1>
+                <p>Capture your highlights in the moment.</p>
+                <a href = "https://quickclips.uk/.netlify/functions/download "class="download-btn">Download for Windows</a>
+            </div>
+            <div class="hero-image">
+                <img src="images/hero-image.png" alt="QuickClips Hero Image">
+            </div>
         </div>
-        <div class="step">
-            <div class="step-icon">🎮</div>
-            <h3>Choose Your Hotkey</h3>
-            <p>Pick the perfect key combo to capture your best moments without interrupting your gameplay.</p>
-        </div>
-        <div class="step">
-            <div class="step-icon">📡</div>
-            <h3>Go Live</h3>
-            <p>Start your stream and focus on entertaining your audience — we’ll handle the rest in the background.</p>
-        </div>
-        <div class="step">
-            <div class="step-icon">⚡</div>
-            <h3>Press & Clip</h3>
-            <p>Hit your hotkey anytime to instantly save the last 30 seconds as a highlight — simple, fast, reliable.</p>
-        </div>
-    </div>
-</section>
-<section class="features fade-in" id="features">
-    <h2>Features</h2>
-    <div class="feature-grid">
-        <div class="feature">
-            <h3>🎯 One-Key Clipping</h3>
-            <p>Just tap a key and QuickClips saves the moment — no distractions or overlays.</p>
-        </div>
-        <div class="feature">
-            <h3>📁 Built-In Viewer</h3>
-            <p>Access all saved clips directly inside the app, with links to edit or rename on Twitch.</p>
-        </div>
-        <div class="feature">
-            <h3>⚡ Lightweight</h3>
-            <p>Zero bloat. Launches fast, runs smooth — doesn’t eat up your CPU while you stream.</p>
-        </div>
-        <div class="feature">
-            <h3>🧠 Dead Simple Setup</h3>
-            <p>No accounts, no fluff. Bind your key and start clipping in seconds.</p>
-        </div>
-    </div>
-</section>
+      </section>
 
-
-  <section class="cta fade-in" id="cta">
-      <h2>Start capturing clips like a pro.</h2>
-      <a href="/.netlify/functions/download" class="download-btn">Download for Windows</a>
-      <img src=".\images\application.png" alt="QuickClips in Action" class="screenshot">
-  </section>
-
-  <!-- <section class="pricing fade-in" id="pricing">
-      <h2>Pricing Plans</h2>
-      <div class="pricing-plans">
-          <div class="plan">
-              <h3>Free</h3>
-              <p class="price">£0.00</p>
-              <ul>
-                  <li>Basic Clipping</li>
-                  <li>Local Logs</li>
-              </ul>
-              <a href="#" class="cta-btn">Download Free</a>
-          </div>
-          <div class="plan" id="pro-plan">
-              <h3>Coming Soon</h3>
-              <p class="price">Coming Soon</p>
-               <ul>
-                  <li>✨ All Free Features</li>
-                  <li>✨ Smart Naming</li>
-                  <li>✨ Custom Hotkeys</li>
-                  <li>✨ Cloud Sync</li>
-              </ul>
-              <a href="#" class="cta-btn">Subscribe Now</a>
-          </div>
-          <div class="plan">
-              <h3>Coming Soon</h3>
-              <p class="price">Coming Soon</p>
-              <ul>
-              </ul>
-              <a href="#" class="cta-btn">Subscribe Now</a>
-          </div>
-      </div>
-  </section> -->
-  <section class="feedback fade-in">
-    <h2>We Need Your Feedback!</h2>
-    <p>Help us improve QuickClips by sharing your experience.</p>
-    <a href="https://forms.gle/oAscAynttSQhKxq78" class="download-btn">Submit Feedback</a>
-  </section>
-
-  <footer>
-      &copy; 2025 QuickClips. All rights reserved.
-  </footer>
-
-  <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const observer = new IntersectionObserver(entries => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('show');
-                }
-            });
-        }, { threshold: 0.1 });
-    
-        document.querySelectorAll('.fade-in').forEach(section => {
-            observer.observe(section);
-        });
-    });
-    </script>
 
 
 </body>
