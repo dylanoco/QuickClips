@@ -11,15 +11,12 @@ body {
 }
 
 section{
-    padding: 10rem 15rem;
+    padding-bottom: 120px;
 }
-
-
 #hero {
     background: linear-gradient(135deg, #1bbfbf 0%, #a3e3dc 50%, #ffffff 100%);
     padding: 5rem;
 }
-
 
     
 nav {
@@ -131,7 +128,7 @@ nav a:hover {
 #save-time {
     text-align: center;
     background: white;
-    padding: .5rem .5rem;
+    
 }   
 .save-time-text h1, img{
     display: inline;
@@ -188,16 +185,23 @@ nav a:hover {
     stroke-dashoffset: 0;
   }
 }
-
+.feature-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
 #features {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto auto;
     grid-template-areas: 
     "text image"
     "image2 text2";
-    gap: 10rem;
-    align-items: center;
+    column-gap: 120px;
+    row-gap: 120px;
+    margin: 0 auto;
+    width: 100%;
+    
+
 }
 
 span.f-hotkey-text h2, span.f-management-text h2 {
@@ -221,7 +225,6 @@ span.f-hotkey-text {
     justify-content: center;
     flex-direction: column;
     grid-area: text;
-    padding-left: 10rem;
 }
 
 span.f-hotkey-image{
@@ -236,6 +239,11 @@ span.f-hotkey-image{
     margin: 0;
 }
 
+.f-hotkey-wrapper{
+    margin: 0;
+    padding: 0;
+    justify-content: center;
+}
 
 
 span.f-management-image img, span.f-hotkey-image img {
@@ -260,7 +268,6 @@ span.f-management-text {
     display: flex;
     justify-content: center;
     flex-direction: column;
-    padding-right: 10rem;
     grid-area: text2;
 }
 
