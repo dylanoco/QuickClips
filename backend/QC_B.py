@@ -99,6 +99,20 @@ expires_in = ""
 # print(f"Current working directory: {os.getcwd()}")
 authHTML = ""
 
+# Initializes the 'Bot' to create clips, etc.
+class Bot(commands.Bot):
+    def __init__(self):
+        global twitch_name,acc_token
+        super().__init__(token=acc_token, prefix='', initial_channels=[twitch_name])
+    async def event_ready(self):
+        print(f'Logged in as | {self.nick}')
+        print(f'User id is | {self.user_id}')  
+    def create_user(self, user_id: int, user_name: str):
+        return super().create_user(user_id, user_name)
+    
+bot = None
+loop = None
+
 
 
 
@@ -122,7 +136,7 @@ print("test2")
 
     # Necessary for creating a new access token incase it expires.
 def refreshAccessToken():
-        global acc_token, refr_token, expires_in
+        global acc_token, refr_token, expires_in, bot ,loop
         token_url = "https://id.twitch.tv/oauth2/token"
         data = {
             "client_id": auth_cid,
@@ -142,7 +156,10 @@ def refreshAccessToken():
                 refr_token = token_info['refresh_token']
                 expires_in = token_info['expires_in']
                 grabUserDetails()
-                super().__init__(token=acc_token, prefix='', initial_channels=[twitch_name])
+                loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(loop)
+                bot = Bot()
+
             else:
                 print("Failed to exchange token")
                 return "Failed"
@@ -150,7 +167,7 @@ def refreshAccessToken():
             pass
 
 def validateToken():
-        global acc_token
+        global acc_token, bot, loop
         token_url = "https://id.twitch.tv/oauth2/validate"
         headers = {
             'Authorization': f'Bearer {acc_token}'
@@ -162,6 +179,11 @@ def validateToken():
         if response.status_code == 200:
             print("Token validated.")
             grabUserDetails()
+            if loop == None:
+                loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(loop)
+            if bot == None:
+                bot = Bot()
             return response.status_code
         else:
             print("Failed to validate token. Using Refresh Token ...")
@@ -449,23 +471,11 @@ def grabGame():
         
 
 
-# Initializes the 'Bot' to create clips, etc.
-class Bot(commands.Bot):
-    def __init__(self):
-        global twitch_name,acc_token
-        super().__init__(token=acc_token, prefix='', initial_channels=[twitch_name])
-    async def event_ready(self):
-        print(f'Logged in as | {self.nick}')
-        print(f'User id is | {self.user_id}')  
-    def create_user(self, user_id: int, user_name: str):
-        return super().create_user(user_id, user_name)
+
 # The Main function to create clips
 def ClipFunction():
-        global twitch_name, twitch_id, acc_token
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        try:
-            bot = Bot()
+        global twitch_name, twitch_id, acc_token, bot, loop
+        if validateToken() != "Failed":
             User = bot.create_user(twitch_id, twitch_name)
             clip_url = loop.run_until_complete(User.create_clip(token=acc_token))
             game_name = grabGame()
@@ -478,10 +488,7 @@ def ClipFunction():
                 game_name
             )
             trigger_key(True, "Clip Creation", "Successfully created a clip.")
-        finally:
-            if bot:
-                loop.run_until_complete(bot.close())
-            loop.close()
+
 def clip_creator():
     try:
         ClipFunction()

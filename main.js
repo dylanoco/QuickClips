@@ -3,16 +3,34 @@ const { spawn } = require("child_process");
 const { exec } = require("child_process");
 const path = require("path");
 
+const { autoUpdater } = require("electron-updater");
+const log = require("electron-log");
+
+autoUpdater.logger = log;
+autoUpdater.logger.transports.file.level = "info";
+
+
+
+
 let mainWindow;
 let backendProcess;
 
 app.on("ready", () => {
+  autoUpdater.checkForUpdatesAndNotify();
+  autoUpdater.on('update-available', () => {
+  console.log("Update available");
+});
+
+autoUpdater.on('update-downloaded', () => {
+  console.log("Update downloaded – will install on restart");
+});
   mainWindow = new BrowserWindow({
     width: 1600,
     height: 900,
     webPreferences: {
       nodeIntegration: true,
     },
+    autoHideMenuBar: true,
   });
 
   mainWindow.loadURL("http://Quickclips.uk/app");

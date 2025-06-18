@@ -5,6 +5,7 @@
   <link rel="icon" type="image/png" href="images/favicon.png">
   <meta name="description" content="QuickClips - Instantly capture your favorite Streaming moments with one hotkey. Fast. Simple. Powerful.">
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="css/embla.css">
     </head>
 
 
@@ -70,9 +71,99 @@
 
         </section>
       </div>
-      <section id="real-uc-quotes"></section> 
-      <section id="viral-proof"></section> 
+      <section id="real-uc-quotes">
+        <div class="carousel-container">
+          <div class="carousel-quote active">"I missed the best moment of my stream because I couldn't find it in the VoD."</div>
+          <div class="carousel-quote">"Scrubbing through hours of footage just to find a single clip is exhausting."</div>
+          <div class="carousel-quote">"I wish there was a faster way to save highlights while streaming."</div>
+          <div class="carousel-quote">"My viewers always ask for clips, but it's such a hassle to make them after the stream."</div>
+        </div>
+      </section>
+
+      
+    <div class="embla">
+      <div class="embla__viewport">
+        <div class="embla__container">
+          <div class="embla__slide">
+            <div class="embla__slide__number">1</div>
+          </div>
+          <div class="embla__slide">
+            <div class="embla__slide__number">2</div>
+          </div>
+          <div class="embla__slide">
+            <div class="embla__slide__number">3</div>
+          </div>
+          <div class="embla__slide">
+            <div class="embla__slide__number">4</div>
+          </div>
+          <div class="embla__slide">
+            <div class="embla__slide__number">5</div>
+          </div>
+        </div>
+      </div>
+      <div class="embla__controls">
+        <div class="embla__buttons">
+          <button
+            class="embla__button embla__button--prev"
+            type="button"
+            disabled=""
+          >
+            <svg class="embla__button__svg" viewBox="0 0 532 532">
+              <path
+                fill="currentColor"
+                d="M355.66 11.354c13.793-13.805 36.208-13.805 50.001 0 13.785 13.804 13.785 36.238 0 50.034L201.22 266l204.442 204.61c13.785 13.805 13.785 36.239 0 50.044-13.793 13.796-36.208 13.796-50.002 0a5994246.277 5994246.277 0 0 0-229.332-229.454 35.065 35.065 0 0 1-10.326-25.126c0-9.2 3.393-18.26 10.326-25.2C172.192 194.973 332.731 34.31 355.66 11.354Z"
+              ></path>
+            </svg></button
+          ><button
+            class="embla__button embla__button--next"
+            type="button"
+            disabled=""
+          >
+            <svg class="embla__button__svg" viewBox="0 0 532 532">
+              <path
+                fill="currentColor"
+                d="M176.34 520.646c-13.793 13.805-36.208 13.805-50.001 0-13.785-13.804-13.785-36.238 0-50.034L330.78 266 126.34 61.391c-13.785-13.805-13.785-36.239 0-50.044 13.793-13.796 36.208-13.796 50.002 0 22.928 22.947 206.395 206.507 229.332 229.454a35.065 35.065 0 0 1 10.326 25.126c0 9.2-3.393 18.26-10.326 25.2-45.865 45.901-206.404 206.564-229.332 229.52Z"
+              ></path>
+            </svg>
+          </button>
+        </div>
+        <div class="embla__dots"></div>
+      </div>
+    </div>
+    </section>
       <section id="feedback"></section>
 
+
+
+<script src="https://unpkg.com/embla-carousel/embla-carousel.umd.js"></script>
+<script src="https://unpkg.com/embla-carousel-autoplay/embla-carousel-autoplay.umd.js"></script>
+<script src="js/index.js"></script>
+
+
+
+
+  <script>
+    const quotes = document.querySelectorAll('.carousel-quote');
+    let current = 0;
+
+    function showQuote(idx) {
+      quotes.forEach((q, i) => q.classList.toggle('active', i === idx));
+    }
+
+    document.getElementById('prev-quote').onclick = () => {
+      current = (current - 1 + quotes.length) % quotes.length;
+      showQuote(current);
+    };
+    document.getElementById('next-quote').onclick = () => {
+      current = (current + 1) % quotes.length;
+      showQuote(current);
+    };
+
+    // Optional: auto-advance every 6 seconds
+    setInterval(() => {
+      current = (current + 1) % quotes.length;
+      showQuote(current);
+    }, 6000);
+  </script>
 </body>
 </html>
