@@ -30,11 +30,11 @@
             </div>
         </div>
       </section>
-      <section id="save-time">
+      <section id="save-time" >
           <span class="save-time-text">
-            <div class="strike-container">
+            <div class="strike-container" >
               <h1 id="thirty-mins">30 mins of VoD Hunting</h1>
-                <svg class="strike-line" viewBox="0 0 300 30" preserveAspectRatio="none">
+                <svg class="strike-line fade-in-strike" viewBox="0 0 300 30" preserveAspectRatio="none">
                   <line x1="50" y1="20" x2="250" y2="10" />
                 </svg>
             </div> 
@@ -81,7 +81,7 @@
       </section>
 
       
-    <div class="embla">
+    <!-- <div class="embla">
       <div class="embla__viewport">
         <div class="embla__container">
           <div class="embla__slide">
@@ -130,8 +130,22 @@
         <div class="embla__dots"></div>
       </div>
     </div>
+    </section> -->
+
+
+    <section id="feedback">
+      <div>
+        <h1>Elevate your short-form content workflow</h1>
+        <p>Turn a hotkey into a higlight.</p>
+        <a href="https://quickclips.uk/.netlify/functions/download" class="download-btn">Get Started</a>
+      </div>
     </section>
-      <section id="feedback"></section>
+
+
+
+
+
+
 
 
 
@@ -140,9 +154,7 @@
 <script src="js/index.js"></script>
 
 
-
-
-  <script>
+<script>
     const quotes = document.querySelectorAll('.carousel-quote');
     let current = 0;
 
@@ -150,20 +162,28 @@
       quotes.forEach((q, i) => q.classList.toggle('active', i === idx));
     }
 
-    document.getElementById('prev-quote').onclick = () => {
-      current = (current - 1 + quotes.length) % quotes.length;
-      showQuote(current);
-    };
-    document.getElementById('next-quote').onclick = () => {
-      current = (current + 1) % quotes.length;
-      showQuote(current);
-    };
-
     // Optional: auto-advance every 6 seconds
     setInterval(() => {
       current = (current + 1) % quotes.length;
       showQuote(current);
     }, 6000);
-  </script>
+</script>
+
+<script>
+  const fadeIns = document.querySelectorAll('.fade-in, .fade-in-strike');
+
+  const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      observer.unobserve(entry.target); // optional: stops observing once visible
+    }
+  });
+}, {
+  threshold: 0.1
+});
+
+  fadeIns.forEach(el => observer.observe(el));
+</script>
 </body>
 </html>

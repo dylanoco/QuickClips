@@ -31,6 +31,8 @@ nav {
     display: flex;
     justify-content: center;
     padding: 1rem;
+
+    display: none;
 }
 
 nav a {
@@ -260,18 +262,23 @@ span.f-management-text {
 
 /*carousel styles*/
 .carousel-container {
+  
   max-width: 1200px;
   margin: 0 auto;
   padding: 0rem 0rem;
   border-radius: 16px;
   position: relative;
   text-align: center;
+  
 
   height: 400px;
   overflow: hidden;
 }
 
 .carousel-quote {
+  height: 100%;
+  display: flex;
+  align-items: center;
   opacity: 0;
   pointer-events: none;
   position: absolute;
@@ -313,6 +320,39 @@ span.f-management-text {
   background: #139c9c;
 }
 
+
+#feedback {
+  display: flex;
+  background: #23243a;
+  padding: 4rem 0;
+  color: #e6f7f7;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  height: 400px;
+  margin: 0 auto;
+  padding: 0 0rem;
+}
+#feedback h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+#feedback p {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+}
+#feedback .download-btn {
+  padding: 1rem 2rem;
+  background-color: #1bbfbf;
+  color: #18181c;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  transition: background-color 0.3s, transform 0.2s;
+
+}
+
 /* Responsive and animation styles remain unchanged */
 @media (max-width: 900px) {
   .hero-wrapper {
@@ -348,7 +388,7 @@ span.f-management-text {
     padding: 1rem;
   }
   .feature-wrapper {
-    padding: 0 1rem;
+    padding: 4rem 0;
   }
   #features {
     grid-template-columns: 1fr;
@@ -368,7 +408,7 @@ span.f-management-text {
   }
 }
 
-.real-uc-quotes{
+#real-uc-quotes{
   margin: 0 0;
 }
 
@@ -454,4 +494,24 @@ span.f-management-text {
 @keyframes slideIn {
   0% { transform: translateY(30px); opacity: 0; }
   100% { transform: translateY(0); opacity: 1; }
+}
+
+.fade-in {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.fade-in-strike{
+  opacity: 0;
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.fade-in-strike.visible {
+  opacity: 1;
 }
