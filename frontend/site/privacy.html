@@ -1,13 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Privacy Policy – QuickClips</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f7f9fc;
+      color: #333;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    h1 {
+      color: #1bbfbf;
+      font-size: 2rem;
+    }
+    h2 {
+      color: #444;
+      margin-top: 1.5em;
+    }
+    p, li {
+      font-size: 1rem;
+    }
+    ul {
+      padding-left: 1.5em;
+    }
+    footer {
+      margin-top: 2em;
+      font-size: 0.9rem;
+      color: #666;
+    }
+  </style>
 </head>
 <body>
   <h1>Privacy Policy</h1>
-  <p><strong>Effective date:</strong> [Today's Date]</p>
-  
+  <p><strong>Effective date:</strong> <span id="date"></span></p>
+
   <p>QuickClips does not collect any personal information beyond what is necessary to monitor download activity for the purposes of improving the service.</p>
 
   <h2>What We Collect</h2>
@@ -24,5 +54,19 @@
 
   <h2>Contact</h2>
   <p>If you have questions about this privacy policy, please contact us at: quickclipsapp@gmail.com</p>
+
+  <footer>
+    © <span id="year"></span> QuickClips. All rights reserved.
+  </footer>
+
+  <script>
+    // Set today's date as the effective date
+    const now = new Date();
+    const formattedDate = now.toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' });
+    document.getElementById('date').textContent = formattedDate;
+
+    // Set current year in footer
+    document.getElementById('year').textContent = now.getFullYear();
+  </script>
 </body>
 </html>
