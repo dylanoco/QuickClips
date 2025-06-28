@@ -8,7 +8,7 @@
     "package": "electron-builder --win --x64"
   },
   "name": "quickclips",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "main": "main.js",
   "build": {
     "appId": "com.quickclips.app",
@@ -22,8 +22,7 @@
       {
         "provider": "github",
         "owner": "QuickClipsUK",
-        "repo": "quickclips-releases",
-        "releaseType": "prerelease"
+        "repo": "quickclips-releases"
       }
     ],
     "extraResources": [
