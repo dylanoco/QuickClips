@@ -22,7 +22,8 @@
       {
         "provider": "github",
         "owner": "QuickClipsUK",
-        "repo": "quickclips-releases"
+        "repo": "quickclips-releases",
+        "releaseType": "prerelease"
       }
     ],
     "extraResources": [
