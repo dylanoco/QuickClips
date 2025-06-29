@@ -1,12 +1,32 @@
 import sqlite3
 import os
 import sys
+from pathlib import Path
 
 if getattr(sys, 'frozen', False):
     base_dir = os.path.dirname(sys.executable)
 elif __file__:
     base_dir = os.path.dirname(__file__)
-db_path = os.path.join(base_dir, 'database', 'keys.db')
+
+
+# If a path is passed in from Electron, use it
+if len(sys.argv) > 1:
+    db_path = Path(sys.argv[1])
+    print(f"Using external DB path from Electron: {db_path}")
+else:
+    # fallback to old behavior (only if no argument passed)
+    if getattr(sys, 'frozen', False):
+        base_dir = os.path.dirname(sys.executable)
+    elif '__file__' in globals():
+        base_dir = os.path.dirname(__file__)
+    else:
+        base_dir = os.getcwd()
+    db_path = Path(base_dir) / 'database' / 'keys.db'
+    print(f"⚠️ Using fallback DB path (may reset on update): {db_path}")
+
+# Create directory if needed
+db_path.parent.mkdir(parents=True, exist_ok=True)
+
 
 
 temp_Path = base_dir + '/database'

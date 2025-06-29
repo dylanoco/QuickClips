@@ -6,6 +6,19 @@ const path = require("path");
 const { autoUpdater } = require("electron-updater");
 const log = require("electron-log");
 
+const fs = require('fs');
+
+const userDataPath = app.getPath('userData');
+const dbPath = path.join(userDataPath, 'keys.db');
+
+// Optional: migrate existing DB from backend folder on first run
+const oldDbPath = path.join(process.resourcesPath, 'backend', 'dist', 'keys.db');
+if (fs.existsSync(oldDbPath) && !fs.existsSync(dbPath)) {
+  fs.copyFileSync(oldDbPath, dbPath);
+  console.log("📁 Migrated database to user-safe location:", dbPath);
+}
+
+
 autoUpdater.logger = log;
 autoUpdater.logger.transports.file.level = "info";
 
@@ -49,7 +62,7 @@ autoUpdater.on('update-downloaded', () => {
 
   const cmdPath = path.join(process.env['WINDIR'], 'System32', 'cmd.exe');
 
-backendProcess = spawn(cmdPath, ["/k", backendPath], {
+backendProcess = spawn(cmdPath, ["/k", backendPath, dbPath], {
   detached: true,
   stdio: "inherit",
 });
