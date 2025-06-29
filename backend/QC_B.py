@@ -18,7 +18,6 @@ from flask_cors import CORS
 import logging
 import keyboard 
 import sys
-import logging
 import eventlet
 import eventlet.wsgi
 import json
@@ -85,7 +84,7 @@ else:
 # auth_cid = os.getenv('APP_CLIENT_ID')
 # hostingLink = os.getenv('APP_URL')
 # localHost = os.getenv('LOCAL_HOST')    
-resend.api_key = os.getenv("RESEND_API_KEY")
+resend.api_key = resend_api_key
 # bugEmail = os.getenv("BUG_EMAIL")
 # supabaseURL = os.getenv("SUPABASE_URL")
 # supabaseKey = os.getenv("SUPABASE_KEY")
@@ -118,14 +117,14 @@ loop = None
 
 
 # Configure the logging
-logging.basicConfig(level=logging.DEBUG,
-                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                    handlers=[
-                        logging.FileHandler("example.log"),
-                        logging.StreamHandler()
-                    ])
+# logging.basicConfig(level=logging.DEBUG,
+#                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+#                     handlers=[
+#                         logging.FileHandler("example.log"),
+#                         logging.StreamHandler()
+#                     ])
 
-logger = logging.getLogger(__name__)
+# logger = logging.getLogger(__name__)
 # Initializing the Database
 dbmethods.initDatabase()
 
