@@ -229,7 +229,7 @@ CORS(app)
 # Run the flask server on port 5000
 def run_flask():
     socketio.run(app, host='0.0.0.0', port=5000)
-    logger.info("Flask server started successfully.")
+    # logger.info("Flask server started successfully.")
     print(f"Flask server started successfully.")
 #HTML Routes
 
@@ -560,10 +560,10 @@ try:
     hotkey = dbmethods.getHotkey()
     #validateToken()
     if (validateToken() != "Failed"):
-        logger.info("TRY EXCEPT SUCCEEDED. ACC_TOKEN,REFR_TOKEN,HOTKEY")
+        # logger.info("TRY EXCEPT SUCCEEDED. ACC_TOKEN,REFR_TOKEN,HOTKEY")
         print("TRY EXCEPT SUCCEEDED. ACC_TOKEN,REFR_TOKEN,HOTKEY")
 except Exception as e:
-    logger.error(f"Error starting Flask server: {e}")
+    #logger.error(f"Error starting Flask server: {e}")
     print(f"Error starting Flask server: {e}")
     import traceback
     traceback.print_exc()
