@@ -1,0 +1,86 @@
+@import "tailwindcss";
+
+body {
+    font-family: 'Inter', sans-serif;
+    scroll-behavior: smooth;
+    background: #18181c;
+    color: #f0f0f0;
+}
+
+#hero {
+    background: linear-gradient(135deg, #1bbfbf 0%, #23243a 60%, #18181c 100%);
+    width: 100%;
+    padding-top: 8rem;
+}
+
+.hero-wrapper {
+    max-width: 1280px;
+    margin: auto;
+}
+.hero-content {
+    text-align: center;
+    padding: 2rem 0;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
+}
+
+.hero-content h1 {
+    font-size: 4rem;
+    color: #e6f7f7;
+    margin: 0;
+}
+.hero-content p {
+    font-size: 1.5rem;
+    color: #b8e6e6;
+    letter-spacing: 0.3px;
+    margin-top: 0.5rem;
+    font-weight: 600;
+}
+.hero-content h2 {
+    font-size: 2rem;
+    color: #00fcfc;
+    margin: 0;
+    margin-bottom: 2rem;
+}
+.hero-image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: visible;
+}
+.hero-image img {
+    align-self: center;
+    max-width: 120%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px #000;
+    transition: transform 0.3s ease;
+}
+.hero-video {
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  display: block;
+  box-shadow: 0 10px 40px #000;
+  border: 2px solid #23243a;
+}
+
+.download-btn {
+    padding: 1rem 2.5rem;
+    background-color: #23243a;
+    color: #1bbfbf;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.2rem;
+    border: 2px solid #1bbfbf;
+    border-radius: 10px;
+    display: inline-block;
+    transition: background 0.3s, transform 0.2s, color 0.3s;
+}
+
+
+.download-btn:hover, .plan .cta-btn:hover {
+    background-color: #1bbfbf;
+    color: #18181c;
+    transform: translateY(-2px);
+}

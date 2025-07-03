@@ -1,64 +1,124 @@
 {
 
   "scripts": {
+
     "start": "concurrently  \"npm run start-electron .",
+
     "start2": "concurrently \"npm run start-react\" \"npm run start-electron\"",
+
     "start-react": "npx serve -s ./react-project/dist -l 3000",
+
     "start-electron": "electron .",
+
     "package": "electron-builder --win --x64"
+
   },
+
   "name": "quickclips",
+
   "version": "1.0.6",
+
   "main": "main.js",
+
   "build": {
+
     "appId": "com.quickclips.app",
+
     "asar": false,
+
     "files": [
+
       "main.js",
+
       "preload.js",
+
       "QC_B.exe"
+
     ],
+
     "publish": [
+
       {
+
         "provider": "github",
+
         "owner": "QuickClipsUK",
+
         "repo": "quickclips-releases",
+
         "releaseType": "release"
+
       }
+
     ],
+
     "extraResources": [
+
       {
+
         "from": "backend/dist/QC_B",
+
         "to": "backend/dist/QC_B"
+
       }
+
     ],
+
     "win": {
+
       "target": "nsis",
+
       "artifactName": "QuickClipsSetup.exe"
+
     }
+
   },
+
   "devDependencies": {
+
     "autoprefixer": "^10.4.21",
+
     "concurrently": "^7.6.0",
+
     "electron": "^31.7.7",
+
     "electron-builder": "^24.13.3",
+
     "postcss": "^8.5.3",
-    "tailwindcss": "^4.0.14",
+
     "vite": "^5.3.5"
+
   },
+
   "dependencies": {
+
     "@supabase/supabase-js": "^2.49.4",
+
     "child_process": "^1.0.2",
+
     "dependencies": "^0.0.1",
+
     "electron-log": "^5.1.7",
+
     "electron-updater": "^6.6.2",
+
     "embla-carousel": "^8.6.0",
+
     "node-fetch": "^2.7.0",
+
     "ps-tree": "^1.2.0",
+
     "react-icons": "^5.4.0",
+
     "shell": "^0.9.6",
+
     "sonner": "^1.7.2",
+
     "tree-kill": "^1.2.2",
+
     "wait-on": "^7.2.0"
+
   }
+
 }
+

@@ -478,10 +478,11 @@ def ClipFunction():
             User = bot.create_user(twitch_id, twitch_name)
             clip_url = loop.run_until_complete(User.create_clip(token=acc_token))
             game_name = grabGame()
+            clip_link = "https://www.twitch.tv/" + twitch_name  +  "/clip/"+ clip_url['id']
 
             dbmethods.insertClip(
                 clip_url['id'],
-                clip_url['edit_url'],
+                clip_link,
                 str(datetime.datetime.now().strftime("%x")),
                 str(datetime.datetime.now().strftime("%X")),
                 game_name
