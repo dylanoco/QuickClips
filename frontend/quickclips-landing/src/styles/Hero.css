@@ -10,7 +10,8 @@ body {
 #hero {
     background: linear-gradient(135deg, #1bbfbf 0%, #23243a 60%, #18181c 100%);
     width: 100%;
-    padding-top: 8rem;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
 }
 
 .hero-wrapper {
@@ -47,16 +48,8 @@ body {
   align-items: center;
   overflow: visible;
 }
-.hero-image img {
-    align-self: center;
-    max-width: 120%;
-    height: auto;
-    border-radius: 10px;
-    box-shadow: 0 4px 20px #000;
-    transition: transform 0.3s ease;
-}
 .hero-video {
-  width: 100%;
+  width: 80%;
   height: auto;
   border-radius: 12px;
   display: block;
@@ -67,7 +60,7 @@ body {
 .download-btn {
     padding: 1rem 2.5rem;
     background-color: #23243a;
-    color: #1bbfbf;
+    color: #f3f3f3;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
     text-decoration: none;
     font-weight: 600;
