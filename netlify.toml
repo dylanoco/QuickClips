@@ -1,10 +1,28 @@
 [build]
-base = "frontend/react-app"
-publish = "../site"
-command = "npm run build && rm -rf ../site/app && mkdir ../site/app && cp -r dist/* ../site/app/"
-functions = "netlify/functions" 
+# Set the base to the root of your repo, or wherever both apps are accessible
 
+base = ""
+publish = "site"
+functions = "netlify/functions"
+command = """
+# Remove Site Folder Contents
+rm -rf site/* 
 
+# Build Electron web app
+cd frontend/react-app
+npm install
+npm run build
+rm -rf ../../site/app
+mkdir -p ../../site/app
+cp -r dist/* ../../site/app/
+
+# Build React+TSX landing page
+
+cd ../frontend/quickclips-landing
+npm install
+npm run build
+cp -r dist/* ../../site/
+"""
 
 [[redirects]]
 from = "/app/*"
