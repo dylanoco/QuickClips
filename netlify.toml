@@ -18,7 +18,7 @@ cp -r dist/* ../../site/app/
 
 # Build React+TSX landing page
 
-cd ../../frontend/quickclips-landing
+cd ../frontend/quickclips-landing
 npm install
 npm run build
 cp -r dist/* ../../site/
