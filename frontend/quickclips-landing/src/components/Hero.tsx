@@ -6,7 +6,7 @@ export function Hero() {
     <section id="hero">
       <div className="hero-wrapper">
         <div className="hero-content">
-          <p className='pb-4 text-shadow'>QuickClips</p>
+          <p className='text-shadow'>QuickClips</p>
           <h1 className=' font-bold text-shadow-md/80 text-shadow-black text-shadow-blur'> <span className='text-red-500 text-shadow-red-800 text-shadow-md text-shadow-blur'>F***</span> Surfing Through VoD's.</h1>
           <p className='p-8'>Turn a hotkey into a highlight.</p>
           <a href="https://quickclips.uk/.netlify/functions/download " className="download-btn">Download for Windows (v1.0.1)</a>
