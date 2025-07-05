@@ -1,5 +1,11 @@
-import CarouselComponent from "./CarouselComponent";
 
+
+
+
+
+
+
+import CarouselComponent from "./CarouselComponent";
 export function Quotes() {
     return (
         <section className="flex flex-col items-center justify-center p-6 sm:p-12 md:p-24 bg-blue-400/10 m-4 sm:m-8 md:m-10 rounded-2xl md:rounded-4xl shadow-lg">
