@@ -8,6 +8,7 @@ function ClipsCreated(){
     const {clips} = useContext(DataContext);
     const {setClips} = useContext(DataContext);
     const [reload, setReload] = useState(false);
+    const clipCounter = 0;
     //Grabbing Clips from Database
     useEffect(() => {
         fetch('http://localhost:5000/clips', ['GET'])
@@ -20,11 +21,11 @@ function ClipsCreated(){
         }, [reload]);
     return(
         <div className="clipscreated-container">
-            <div>
-            <header>Clips Created</header>
-            <button className="force-reload-button" 
-            onClick={() => setReload(refresh => !refresh) }>
-                Reload</button>
+            <div className="clipscreated-header">
+                <header>Clips Created</header>
+                <button className="force-reload-button" 
+                onClick={() => setReload(refresh => !refresh) }>
+                    Reload</button>
             </div>
             <ClipsList clips={clips}/>
         </div>

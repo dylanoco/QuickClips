@@ -3,8 +3,13 @@ div .clipscreated-container{
     background-color: #18181C;
     vertical-align: middle;
     min-width: 35vw;
-    min-height: 100vh;
+    max-height:max-content;
+    padding-top: 32px;
 }
 header{
     padding: 0%;
+}
+.clipscreated-header{
+    display: flex;
+    justify-content: center;
 }

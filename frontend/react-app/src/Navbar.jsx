@@ -140,7 +140,10 @@ function NavBar() {
                 <button id = 'hk-button' className={isRecording ? 'blue-text' : 'red-text'} onClick={startRecording}>Hotkey Listen</button>
                 <p>{profile.hotkey}</p>
                 <button id = 'g-button' onClick={toggleguideModal}>Guide</button>
-                <div id='bug-icon' onClick={togglebugReportModal}><FaBug /></div>
+                <div className='modal-buttons'>
+                  <button data-tally-open="wbMDBL" data-tally-emoji-text="🎬" data-tally-emoji-animation="wave" data-tally-auto-close="5000">Feedback 🎉</button>
+                  <div id='bug-icon' onClick={togglebugReportModal}><FaBug /></div>
+                </div>
                 {modal && (
                   <div className="modal">
                     <div onClick={toggleModal} className="overlay"></div>

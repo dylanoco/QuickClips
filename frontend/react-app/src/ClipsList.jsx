@@ -16,18 +16,21 @@ function ClipsList(props){ //Props will be the clips from ClipsCreated.jsx
         <div className='time-wrap'>
             <p id="time">{clip[2]}</p>
         </div>
-    </div></li>
+        </div>
+    </li>
     );
     useEffect(() =>
     {
         displayClips
     })
     return(
-    <ul className="clipsList">
-        <>
-            {displayClips}
-        </>
-    </ul>
+    <div className='clips-container'>
+        <ul className="clipsList">
+            <>
+                {displayClips}
+            </>
+        </ul>
+    </div>
     ) 
 }
 export default ClipsList

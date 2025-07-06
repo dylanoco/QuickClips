@@ -149,7 +149,7 @@ header {
   "profile-icon displayname"
   "hotkeybutton hotkey"
   "guidebutton nothing1"
-  "bugicon bugicon";
+  "modalbuttons modalbuttons";
   grid-template-columns: auto auto;
   grid-template-rows: 10em 5em 5em auto;
   row-gap: 10px;
@@ -168,14 +168,24 @@ header {
   height:96px;
   padding-top: 10px;
 }
-.profile-container #bug-icon{
-  grid-area: bugicon; /* Moves to bottom row */
+.profile-container .modal-buttons{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+  grid-area: modalbuttons; /* Moves to bottom row */
   align-self: end; /* Pushes it to the bottom */
   justify-self:left; /* Centers it horizontally */
   padding-bottom: 25px;
   mask-image: none;
+  font-size: large;
+}
+
+#bug-icon{
+  padding-left: 16px;
+  mask-image: none;
   font-size: x-large;
-  
 }
 .profile-container #hk-button{
   grid-area: hotkeybutton;

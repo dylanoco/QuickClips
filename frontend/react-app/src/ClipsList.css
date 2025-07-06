@@ -12,6 +12,16 @@
   background-color: #D03838;
   
 }
+
+.clips-container {
+  height: 100vh;           /* Full viewport height */
+  max-height: calc(100vh - 60px); /* Adjust for header/footer if needed */
+  overflow-y: auto;        /* Enables vertical scrolling */
+  box-sizing: border-box;  /* Includes padding/border in height */
+  padding: 16px;      /* Optional: for spacing */
+}
+
+
 .cl-div-button{
     display: flex;
     justify-self: center;
@@ -22,7 +32,7 @@
     border: #D03838;
     border-radius: 15px;
     width: 50%;
-    margin-block: 10px;
+    padding-block: 12px;
     
     
 }
@@ -64,13 +74,16 @@ ul{
 }
 
 .clipsList{
+    height: 100%;
+    overflow-y: auto;
     margin: 0;
     padding: 0;
-    overflow:-moz-hidden-unscrollable
-    
+    list-style: none;
 }
 p{
     margin: 0;
 }
 
 /* use grid for buttons probably */
+
+
