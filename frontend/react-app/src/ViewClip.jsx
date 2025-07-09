@@ -70,7 +70,7 @@ function ViewClip(){
             : 
             (
               <div className='flex flex-col w-full h-full justify-center p-12 py-24'>
-                <iframe className='border-purple-300 border-2 rounded-2xl shadow-sm shadow-purple-700 h-150  w-full' src={url} muted ></iframe>
+                <iframe className='border-purple-300 border-2 rounded-2xl shadow-sm shadow-purple-700 h-150  w-full' src={url} muted allowFullScreen ></iframe>
                 <div className='flex flex-row text-center items-center justify-center space-x-12 pt-12'>
                   <button className='button-format' onClick = {() => openEdit(slug)}>Edit</button>
                   <button className='button-format' onClick = {() => removeList(slug)}>Remove from List</button>

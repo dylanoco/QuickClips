@@ -25,7 +25,7 @@ function ClipsList(props){ //Props will be the clips from ClipsCreated.jsx
     })
     return(
     <div className='clips-container'>
-        <ul className="clipsList">
+        <ul className="clipsList scrollbar-style">
             <>
                 {displayClips}
             </>
