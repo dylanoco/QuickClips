@@ -1,4 +1,4 @@
-const { app, BrowserWindow,shell } = require("electron");
+const { app, BrowserWindow, shell } = require("electron");
 const { spawn } = require("child_process");
 const { exec } = require("child_process");
 const path = require("path");
@@ -31,12 +31,12 @@ let backendProcess;
 app.on("ready", () => {
   autoUpdater.checkForUpdatesAndNotify();
   autoUpdater.on('update-available', () => {
-  console.log("Update available");
-});
+    console.log("Update available");
+  });
 
-autoUpdater.on('update-downloaded', () => {
-  console.log("Update downloaded – will install on restart");
-});
+  autoUpdater.on('update-downloaded', () => {
+    console.log("Update downloaded – will install on restart");
+  });
   mainWindow = new BrowserWindow({
     width: 1600,
     height: 900,
@@ -66,10 +66,10 @@ autoUpdater.on('update-downloaded', () => {
 
   const cmdPath = path.join(process.env['WINDIR'], 'System32', 'cmd.exe');
 
-backendProcess = spawn(cmdPath, ["/k", backendPath, dbPath], {
-  detached: true,
-  stdio: "inherit",
-});
+  backendProcess = spawn(cmdPath, ["/k", backendPath, dbPath], {
+    detached: true,
+    stdio: "inherit",
+  });
   backendProcess.unref();
   console.log("Spawned backend with PID:", backendProcess.pid);
 });

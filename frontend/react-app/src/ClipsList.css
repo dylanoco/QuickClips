@@ -3,13 +3,16 @@
     display: grid;
 }
 .cl-div-button:hover{
-    background-color: #D03838;
+    background-color: #7c00cf;
     font-weight: 600;
     transition: all 0.2s;
     cursor: pointer;
 }
 .cl-div-button:focus {
-  background-color: #D03838;
+  background-color: #7c00cf;
+  border-style: solid;
+  border-width: 8px;
+  border-color: aliceblue;
   
 }
 
