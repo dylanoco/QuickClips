@@ -1,24 +1,17 @@
-.viewclip-container{
-    min-width: 50vw;
-    min-height: 100vh;
-    background-color: #18181C;
-    overflow: hidden;
+@import "tailwindcss";
+
+.button-format {
+  @apply border-2 border-blue-500 rounded-2xl shadow-md shadow-blue-500/50 p-4 font-medium ease-in-out duration-300 transition-transform transition-shadow hover:scale-105  bg-transparent
 }
 
-.viewclip-container header{
+.viewclip-bg{
+  background: linear-gradient(135deg, #1bbfbf 0%, #23243a 60%, #18181c 100%);
+}
+
+.viewclip-container header {
     text-align: center;
     padding: 0;
     margin: 0;
-}
-
-.viewclip-container iframe{
-    display: block;
-    margin: auto;
-    border: #D767FF;
-    border-style: solid;
-    border-radius: 10px;
-    height: 378px;  
-    width: 620px;
 }
 
 @font-face {
@@ -35,28 +28,34 @@ header{
     font-weight: bold;
 }
 
-.vc-controls-container{
-    display: block;
-    margin: auto;
-    max-width:620px;
-    
+.vc-controls-container {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  box-sizing: border-box;
 }
-.vc-controls-container #vc-b-1{
-    background-color: #D767FF;
-    font-weight: 600;
-    max-height: 40px;
-    max-width: 80px;
-    float: left;
 
+.vc-controls-container #vc-b-1 {
+  background-color: #D767FF;
+  font-weight: 600;
+  max-height: 40px;
+  max-width: 80px;
+  float: left;
+  margin: 0;
+  margin-top: 10px;
 }
-.vc-controls-container #vc-b-2{
-    font-weight: 600;
-    border-radius: 40px;
-    background-color: #820000;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    float: right;
+
+.vc-controls-container #vc-b-2 {
+  font-weight: 600;
+  border-radius: 40px;
+  background-color: #820000;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  float: right;
+  margin: 0;
+  margin-top: 10px;
 }
-.vc-controls-container #vc-b-2,#vc-b-1{
-    margin-top: 10px;
+
+.vc-controls-container #vc-b-2, #vc-b-1 {
+  margin-top: 10px;
 }

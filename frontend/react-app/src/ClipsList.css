@@ -18,7 +18,7 @@
   max-height: calc(100vh - 60px); /* Adjust for header/footer if needed */
   overflow-y: auto;        /* Enables vertical scrolling */
   box-sizing: border-box;  /* Includes padding/border in height */
-  padding: 16px;      /* Optional: for spacing */
+
 }
 
 
@@ -31,7 +31,7 @@
     border-style: solid; */
     border: #D03838;
     border-radius: 15px;
-    width: 50%;
+    width: 75%;
     padding-block: 12px;
     
     

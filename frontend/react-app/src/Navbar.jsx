@@ -129,21 +129,20 @@ function NavBar() {
     setPressedKeys(new Set());
   };
   return (
-    <div className='navbar'>
-      <ul className='navbar-ul'>
-        <div className='profile-container'>
-          {authStatus == 'Authenticated' ?
+    <div className='flex bg-[#18181C]'>
+            {authStatus == 'Authenticated' ?
             (
-              <>
-                <img id='profile-pic-url' src={profile.profile_pic_url}></img>
-                <h1 id='display-name-1'>{profile.display_name}</h1>
-                <button id = 'hk-button' className={isRecording ? 'blue-text' : 'red-text'} onClick={startRecording}>Hotkey Listen</button>
-                <p>{profile.hotkey}</p>
-                <button id = 'g-button' onClick={toggleguideModal}>Guide</button>
-                <div className='modal-buttons'>
-                  <button data-tally-open="wbMDBL" data-tally-emoji-text="🎬" data-tally-emoji-animation="wave" data-tally-auto-close="5000">Feedback 🎉</button>
-                  <div id='bug-icon' onClick={togglebugReportModal}><FaBug /></div>
-                </div>
+            <div className='flex flex-col items-start  w-max space-y-12 px-4'>
+              <div className='flex flex-row items-center space-x-4 clear-both w-full rounded-3xl py-2 drop-shadow-lg'>
+                  <img className='border-1 border-white rounded-full w-20 ' src={profile.profile_pic_url}></img>
+                  <p className='text-2xl text-shadow-md  font-bold'>{profile.display_name}</p>
+              </div>
+              <div className='flex flex-row space-x-4 items-center'>
+                <button className={`${isRecording ? 'text-blue-500' : 'text-white-500'} space-x-4 button-format border-purple-600`}
+                onClick={startRecording}>Hotkey Listen</button>
+                <p className='font-bold'>{profile.hotkey}</p>
+              </div>
+                <button className='button-format'onClick={toggleguideModal}>Guide</button>
                 {modal && (
                   <div className="modal">
                     <div onClick={toggleModal} className="overlay"></div>
@@ -158,12 +157,14 @@ function NavBar() {
                 {bugReportModal && (
                   <BugReport isOpen={bugReportModal} toggleModal={togglebugReportModal} />
                 )}
-              </>
+                <div className='flex flex-row items-end space-x-4 last-of-type:mt-auto '>
+                  <button className='self-center animate-bounce duration-1200 bg-gradient-to-l from-blue-500 to-purple-600 rounded-4xl p-4 shadow-md shadow-blue-400/20 transition:transform hover:scale-105' data-tally-open="wbMDBL" data-tally-emoji-text="🎬" data-tally-emoji-animation="wave" data-tally-auto-close="5000">Feedback 🎉</button>
+                  <div onClick={togglebugReportModal} className='self-center text-2xl transition-transform hover:scale-115 ease-in-out'><FaBug /></div>
+                </div>
+            </div>
             )
             :
             (<li><a href="http://localhost:5000/authorizeFlask" rel="noopener noreferrer">Authorize your Account</a></li>)}
-        </div>
-      </ul>
     </div>
   );
 }

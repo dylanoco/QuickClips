@@ -20,10 +20,10 @@ function ClipsCreated(){
             .catch(error => console.error('Error fetching data:', error));
         }, [reload]);
     return(
-        <div className="clipscreated-container">
-            <div className="clipscreated-header">
+        <div className="clipscreated-container p-0 m-0">
+            <div className="clipscreated-header space-x-4 text-xl items-center">
                 <header>Clips Created</header>
-                <button className="force-reload-button" 
+                <button className="force-reload-button button-format" 
                 onClick={() => setReload(refresh => !refresh) }>
                     Reload</button>
             </div>

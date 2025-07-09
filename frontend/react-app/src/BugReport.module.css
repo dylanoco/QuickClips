@@ -1,3 +1,5 @@
+@import 'tailwindcss';
+
 .modal, .overlay {
   width: 100vw;
   height: 100vh;
@@ -12,61 +14,15 @@
   background: rgba(65, 65, 65, 0.329);
 }
 .modalGuide {
-  background-color: aliceblue;
-  color: black;
   position: absolute;
-  top: 40%;
+  top: 50%;
   left: 50%;
-
   transform: translate(-50%, -50%);
-  padding: 14px 28px;
-  border-radius: 5px;
   display:flex;
   flex-direction: column;
-  justify-content: center;  
-  align-items: center;
-  width: 15%;
-  
+}
+.input-format {
+  @apply rounded-3xl border-1 border-amber-50/50 p-2 bg-amber-50/20 font-medium shadow-xl ease-in-out duration-300 hover:scale-102
 }
 
-.modalGuide, .brInputs {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 10px;
-}
-textarea, input[type="email"] {
-  background: aliceblue;
-  border-color: rgba(0, 0, 0, 0.062);
-  border-radius: 5px;
-  color: black;
-  height: 20px;
-  width: 200px;
-}
-
-textarea {
-  height: 50px;
-  resize: none;
-  overflow:hidden;
-}
-
-.modalGuide header {
-  color: black;
-  font-weight: bold;
-  text-align: center;
-  font-size: x-large;
-  -webkit-font-smoothing: antialiased
-}
-
-input[type="submit"] {
-  background-color: rgb(146, 45, 146);
-  color: white;
-  border: none;
-  border-radius: 5px;
-  padding: 10px 20px;
-  text-align: center;
-  font-size: 16px;
-  margin: 4px 2px;
-  cursor: pointer;
-  width: 100%;
-}
 

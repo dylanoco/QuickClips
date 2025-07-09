@@ -1,3 +1,9 @@
+@import "tailwindcss";
+
+.button-format {
+  @apply border-2 border-blue-500 rounded-2xl shadow-md shadow-blue-500/50 p-4 font-medium ease-in-out duration-300 transition-transform transition-shadow hover:scale-105  bg-transparent
+}
+
 :root {
   font-family: Inter;
   line-height: 1.5;
@@ -7,69 +13,13 @@
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  clear:both;
 }
 
-.navbar header {
-  padding-bottom: 50px;
-  font-size: xx-large;
-  color:#646cff;
-  font-weight: 500;
-  text-align: center;
-}
-a {
-  font-weight: 600;
-  padding-block: 11px;
-  color: #ffffff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #D03838;
-  transition: all 0.2s;
-}
-.blue-text {
-  color: #747bff;
-}
-.red-text {
-  color: white;
-}
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-ul ,.navbar-ul {
-    list-style-type: none;
-    padding-inline-start: 0px;
-    overflow: hidden; /* Hide scrollbars */
-}
-
-li a{
-    display: block;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
 .modal, .overlay {
   width: 100vw;
   height: 100vh;
@@ -96,124 +46,13 @@ button {
   min-width: 300px;
   border-radius: 50px;
 }
-.modal-guide {
-  position: absolute;
-  top: 40%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  line-height: 1.4;
-  background: hwb(310 4% 65%);
-  padding: 14px 28px;
-  border-radius: 3px;
-  /* min-width: 80%;
-  min-width: 80%; */
-  border-radius: 50px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.blue-text {
+  color: #747bff;
 }
-.modal-guide, h3 {
-  text-align: center;
+.red-text {
+  color: white;
 }
 
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-}
 
-header {
-  padding-bottom: 50px;
-  font-size: xx-large;
-  text-align: center;
-  font-weight: 500;
-}
-.navbar {
-  background-color: #111114;
-  min-height: 100vh;
-  min-width: 15vw;
-  overflow: hidden; /* Hide scrollbars */
-
-}
-.profile-container{
-  display: grid;
-  grid-template-areas:
-  "profile-icon displayname"
-  "hotkeybutton hotkey"
-  "guidebutton nothing1"
-  "modalbuttons modalbuttons";
-  grid-template-columns: auto auto;
-  grid-template-rows: 10em 5em 5em auto;
-  row-gap: 10px;
-  justify-content: center;
-  column-gap: 10px;
-  padding-inline: 30px;
-  height: 100vh;
-}
-.profile-container #display-name-1{
-  grid-area: displayname;
-  font-size: x-large;
-}
-.profile-container #profile-pic-url{
-  grid-area: profile-icon;
-  width:96px;
-  height:96px;
-  padding-top: 10px;
-}
-.profile-container .modal-buttons{
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  text-align: center;
-  justify-content: center;
-  grid-area: modalbuttons; /* Moves to bottom row */
-  align-self: end; /* Pushes it to the bottom */
-  justify-self:left; /* Centers it horizontally */
-  padding-bottom: 25px;
-  mask-image: none;
-  font-size: large;
-}
-
-#bug-icon{
-  padding-left: 16px;
-  mask-image: none;
-  font-size: x-large;
-}
-.profile-container #hk-button{
-  grid-area: hotkeybutton;
-}
-.profile-container #g-button{
-  grid-area: guidebutton;
-}
-
-.hkl-container{
-  grid-area: hotkeybutton;
-  min-height: 50vh;
-  min-width: 15vw;
-}
-.cc-container{
-  min-height: 50vh;
-  min-width: 15vw;
-}
-.vc-container{
-  min-height: 50vh;
-  min-width: 15vw;
-  
-}
-
-.profile-container #bug-icon:hover {
-  color: #ff00d4;
-  transition: all 0.2s;
-  cursor: pointer;
-  transform: scale(1.2);
-}
 

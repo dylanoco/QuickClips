@@ -40,10 +40,14 @@ autoUpdater.on('update-downloaded', () => {
   mainWindow = new BrowserWindow({
     width: 1600,
     height: 900,
+    minHeight: 720,
+    minWidth: 1280,
     webPreferences: {
       nodeIntegration: true,
     },
     autoHideMenuBar: true,
+    useContentSize: true,
+    webviewTag: true,
   });
 
   mainWindow.loadURL("http://Quickclips.uk/app");

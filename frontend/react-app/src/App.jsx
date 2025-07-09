@@ -23,8 +23,8 @@ function App() {
 
   
   return (
-  <div className="container">
-    <NavBar/> 
+  <div className='flex flex-row h-screen w-screen box-border overflow-hidden m-0 p-0'>
+      <NavBar/> 
     <DataProvider>
       <ClipsCreated/> 
       <ViewClip/> 

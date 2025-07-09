@@ -60,20 +60,21 @@ function ViewClip(){
 
     return(
     <>
-    <div className="viewclip-container">
+    <div className="flex flex-col justify-center w-screen h-screen items-center border-box overflow-hidden viewclip-bg">
     {slug == ''? 
             (
-            <>
-              <h1 >No Clip has been Selected.</h1> 
-            </>
+            <div className='flex justify-center items-center'>
+              <h1 className= 'font-bold text-xl' >No Clip has been Selected.</h1> 
+            </div>
             ) 
             : 
             (
-              <div className='vc-controls-container'>
-                <iframe src={url}
-                frameBorder="0" allowFullScreen={true} scrolling="no" ></iframe>
-                <button onClick = {() => openEdit(slug)}id='vc-b-1'>Edit</button>
-                <button onClick = {() => removeList(slug)} id='vc-b-2'>Remove from List</button>
+              <div className='flex flex-col w-full h-full justify-center p-12 py-24'>
+                <iframe className='border-purple-300 border-2 rounded-2xl shadow-sm shadow-purple-700 h-150  w-full' src={url} muted ></iframe>
+                <div className='flex flex-row text-center items-center justify-center space-x-12 pt-12'>
+                  <button className='button-format' onClick = {() => openEdit(slug)}>Edit</button>
+                  <button className='button-format' onClick = {() => removeList(slug)}>Remove from List</button>
+                </div>
               </div>
             )}
       </div>
