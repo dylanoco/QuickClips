@@ -13,7 +13,7 @@
 .cl-div-button:focus {
   background-color: #7c00cf;
   border-style: solid;
-  border-width: 8px;
+  border-width: 2px;
   border-color: aliceblue;
   
 }
