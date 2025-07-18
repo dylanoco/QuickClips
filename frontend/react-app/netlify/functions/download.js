@@ -34,7 +34,7 @@ exports.handler = async (event) => {
   return {
     statusCode: 302,
     headers: {
-      Location:'https://github.com/QuickClipsUK/quickclips-releases/releases/download/v1.0.1/QuickClipsSetup.exe'
+      Location:'https://github.com/QuickClipsUK/quickclips-releases/releases/download/v1.0.8/QuickClipsSetup.exe'
       // Location:'https://quickclips.uk'
     }
   };
