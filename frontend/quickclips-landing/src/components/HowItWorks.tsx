@@ -1,5 +1,5 @@
 import '../styles/HowItWorks.css';
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCog,faKeyboard,faClapperboard, faDownload} from "@fortawesome/free-solid-svg-icons";
 

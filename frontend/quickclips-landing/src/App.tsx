@@ -5,7 +5,6 @@ import { Quotes } from './components/Quotes.tsx'
 // import { NavBar } from './components/NavBar.tsx'
 import { Footer } from './components/Footer.tsx'
 import { SocialProof } from './components/SocialProof.tsx'
-import { motion } from 'framer-motion'
 import { HowItWorks } from './components/HowItWorks.tsx'
 
 function App() {
