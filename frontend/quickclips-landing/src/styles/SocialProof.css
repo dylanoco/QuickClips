@@ -1,0 +1,12 @@
+@import 'tailwindcss';
+
+.gradient-text{
+    @apply bg-[linear-gradient(135deg,_#1bbfbf_0%,_#1bbfbf_80%,_#18181c_100%)] bg-clip-text inline-block text-transparent 
+}
+
+.card{
+    @apply  transition-all ease-in-out duration-300 p-4 border-transparent bg-blue-400/2
+}
+.card:hover{
+    @apply shadow-[0_0px_25px_rgba(52,92,235,0.50)] transition-all ease-in-out duration-300 border-blue-400/50;
+}

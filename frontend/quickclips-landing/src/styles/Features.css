@@ -1,10 +1,19 @@
 @import "tailwindcss";
 
 .card-format {
-  @apply w-[300px] h-[400px] bg-blue-400/2 shadow-lg shadow-blue-400/20 hover:shadow-xl transition-shadow duration-300 ease-in-out transition-transform duration-300 hover:scale-101;
+  @apply w-[600px] h-[180px] bg-blue-400/2 border-transparent
+         transition-all duration-400 ease-in-out;
 }
-
+.card-format:hover {
+  @apply shadow-[0_0px_25px_rgba(52,92,235,0.50)] scale-101 border-blue-400/50;
+}
 .icon-format {
-  @apply text-8xl p-8 transition-colors transition-transform duration-600 ease-in-out hover:transform hover:scale-110 duration-500 ease-in-out;
+  @apply text-4xl p-4 m-2 transition-colors transition-transform duration-600 ease-in-out hover:transform hover:scale-110 duration-500 ease-in-out;
+}
+.icon-bg{
+  @apply bg-[linear-gradient(135deg,_#1bbfbf_0%,_#1bbfbf_0%,_#18181c_100%)] rounded-2xl
+}
+.card-header-format{
+  @apply flex flex-row items-center p-0 h-12
 }
 

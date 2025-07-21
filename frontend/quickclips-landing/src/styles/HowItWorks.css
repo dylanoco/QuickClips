@@ -1,0 +1,24 @@
+@import 'tailwindcss';
+
+.h-card-format {
+    @apply w-80 h-fit bg-blue-400/2 border-transparent
+         transition-all duration-400 ease-in-out
+}
+.h-card-format:hover {
+  @apply shadow-[0_0px_25px_rgba(52,92,235,0.50)] scale-101 border-blue-400/50;
+}
+.h-card-header-format {
+    @apply flex flex-col items-center;
+}
+
+
+.h-icon-format {
+    @apply text-2xl p-4 m-2 ;
+}
+.icon-bg{
+  @apply bg-[linear-gradient(135deg,_#1bbfbf_0%,_#1bbfbf_0%,_#18181c_100%)] rounded-2xl
+}
+
+.h-number-format {
+    @apply bg-[linear-gradient(135deg,_#1bbfbf_0%,_#1bbfbf_0%,_#18181c_100%)] rounded-full text-lg absolute top-0 left-0 w-10 h-10 justify-center flex items-center z-10
+}

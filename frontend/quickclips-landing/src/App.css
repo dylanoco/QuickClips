@@ -1,3 +1,14 @@
+@import 'tailwindcss';
+
+.cta_btn {
+  @apply bg-[linear-gradient(135deg,_#1bbfbf_10%,_#1bbfbf_50%,_#18181c_100%)]
+           w-fit rounded-lg px-7 py-2 font-bold ease-in-out duration-300 transition-all
+}
+
+.cta_btn:hover {
+  @apply ease-in-out duration-300 transition-all shadow-[0_0px_25px_rgba(52,92,235,0.50)]
+}
+
 #root {
   padding: 0;
   margin: 0;
@@ -33,9 +44,7 @@
   }
 }
 
-.card {
-  padding: 2em;
-}
+
 
 .read-the-docs {
   color: #888;
