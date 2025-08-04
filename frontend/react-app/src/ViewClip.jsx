@@ -50,7 +50,8 @@ function ViewClip(){
         body: JSON.stringify(slug)
       })
       .then((response) => response.json())
-      .then((link) => window.open(link[0], '_blank', 'location=yes'))
+      // .then((link) => window.open(link[0], '_blank', 'location=yes'))
+      .then((link) => window.open("/editor", '_blank', 'location=yes'))
       .then((link) => console.log("Success:", link[0]))
       .catch((error) => console.error("Error:", error))
     }
