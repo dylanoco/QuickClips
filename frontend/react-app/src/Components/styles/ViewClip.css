@@ -1,9 +1,5 @@
 @import "tailwindcss";
 
-.button-format {
-  @apply border-2 border-blue-500 rounded-2xl shadow-md shadow-blue-500/50 p-4 font-medium ease-in-out duration-300 transition-transform transition-shadow hover:scale-105  bg-transparent
-}
-
 .viewclip-bg{
   background: linear-gradient(135deg, #1bbfbf 0%, #23243a 60%, #18181c 100%);
 }

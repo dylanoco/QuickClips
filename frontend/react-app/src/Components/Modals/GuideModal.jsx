@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './GuideModal.module.css';
+import styles from '../styles/GuideModal.module.css';
 
 const GuideModal = ({ isOpen, toggleModal }) => {
     if (!isOpen) return null;

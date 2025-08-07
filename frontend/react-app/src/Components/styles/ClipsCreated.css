@@ -17,6 +17,3 @@ header{
     justify-content: center;
 }
 
-.button-format {
-  @apply border-2 border-blue-500 rounded-2xl shadow-md shadow-blue-500/50 p-4 font-medium ease-in-out duration-300 transition-transform hover:scale-105  bg-transparent
-}

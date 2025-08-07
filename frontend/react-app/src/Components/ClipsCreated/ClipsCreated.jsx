@@ -1,8 +1,8 @@
-import { useContext,useState,useEffect } from 'react'
+import { useContext, useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
-import './ClipsCreated.css'
-import ClipsList from './ClipsList'
-import { DataContext } from './DataContext';
+import '../styles/ClipsCreated.css';
+import ClipsList from '../ClipsList/ClipsList';
+import { DataContext } from '../../DataContext';
 //Displays the clips that have been created. Uses ClipsList for formatting each clip
 function ClipsCreated(){
     const {clips} = useContext(DataContext);

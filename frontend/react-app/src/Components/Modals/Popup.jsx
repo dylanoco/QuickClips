@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { IoClose } from "react-icons/io5"; // Import close icon
-import "./Popup.css"; // Import CSS for styling
+import '../styles/Popup.css';
 
 const Popup = ({ message, onClose }) => {
   const [isVisible, setIsVisible] = useState(true);

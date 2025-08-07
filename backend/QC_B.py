@@ -5,14 +5,12 @@ import twitchio
 import twitchio.ext
 from twitchio.ext import commands
 from dotenv import load_dotenv
-from winotify import Notification, audio
 from urllib import request
 import requests
 import threading
 from flask import Flask, request, redirect, session, url_for, render_template, jsonify, send_from_directory
 from flask_socketio import SocketIO, emit
 from urllib.parse import urlparse, parse_qs #need to find out how to get the url to parse it !
-from twitchio.errors import HTTPException
 import dbmethods
 from flask_cors import CORS
 import logging
@@ -28,6 +26,7 @@ import psutil
 import signal
 import sys
 from supabase import create_client, Client
+import yt_dlp
 
 from config import (
     SUPABASE_URL,
@@ -101,8 +100,15 @@ authHTML = ""
 # Initializes the 'Bot' to create clips, etc.
 class Bot(commands.Bot):
     def __init__(self):
-        global twitch_name,acc_token
-        super().__init__(token=acc_token, prefix='', initial_channels=[twitch_name])
+        global twitch_name, acc_token, auth_cid, client_secret, twitch_id
+        super().__init__(
+            token=acc_token, 
+            prefix='', 
+            initial_channels=[twitch_name],
+            client_id=auth_cid,
+            client_secret=client_secret,
+            bot_id=int(twitch_id) if twitch_id else None 
+        )
     async def event_ready(self):
         print(f'Logged in as | {self.nick}')
         print(f'User id is | {self.user_id}')  
@@ -135,65 +141,70 @@ print("test2")
 
     # Necessary for creating a new access token incase it expires.
 def refreshAccessToken():
-        global acc_token, refr_token, expires_in, bot ,loop
-        token_url = "https://id.twitch.tv/oauth2/token"
-        data = {
-            "client_id": auth_cid,
-            "client_secret": client_secret,
-            "grant_type": "refresh_token",
-            "refresh_token": refr_token
-        }
-        print("Sending POST request to exchange code for token")
-        try:
-            response = requests.post(token_url, data=data)
-            print(f"Response status code: {response.status_code}")
-            print(f"Response content: {response.text}")
-            if response.status_code == 200:
-                print("Token exchange successful")
-                token_info = response.json()
-                acc_token = token_info['access_token']
-                refr_token = token_info['refresh_token']
-                expires_in = token_info['expires_in']
-                grabUserDetails()
-                loop = asyncio.new_event_loop()
-                asyncio.set_event_loop(loop)
+    global acc_token, refr_token, expires_in, bot, loop, twitch_id
+    token_url = "https://id.twitch.tv/oauth2/token"
+    data = {
+        "client_id": auth_cid,
+        "client_secret": client_secret,
+        "grant_type": "refresh_token",
+        "refresh_token": refr_token
+    }
+    print("Sending POST request to exchange code for token")
+    try:
+        response = requests.post(token_url, data=data)
+        print(f"Response status code: {response.status_code}")
+        print(f"Response content: {response.text}")
+        if response.status_code == 200:
+            print("Token exchange successful")
+            token_info = response.json()
+            acc_token = token_info['access_token']
+            refr_token = token_info['refresh_token']
+            expires_in = token_info['expires_in']
+            grabUserDetails()  # This sets twitch_id
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            # Only create bot AFTER we have twitch_id
+            if twitch_id:
                 bot = Bot()
-
-            else:
-                print("Failed to exchange token")
-                return "Failed"
-        except:
-            pass
+            return "Success"
+        else:
+            print("Failed to exchange token")
+            return "Failed"
+    except Exception as e:
+        print(f"Error in refreshAccessToken: {e}")
+        return "Failed"
 
 def validateToken():
-        global acc_token, bot, loop
-        token_url = "https://id.twitch.tv/oauth2/validate"
-        headers = {
-            'Authorization': f'Bearer {acc_token}'
-        }
-        print("Sending GET request to validate access token")
-        response = requests.get(token_url, headers=headers)
-        print("Response status code: {response.status_code}")
-        print("Response content: {response.text} ")
-        if response.status_code == 200:
-            print("Token validated.")
-            grabUserDetails()
-            if loop == None:
-                loop = asyncio.new_event_loop()
-                asyncio.set_event_loop(loop)
-            if bot == None:
-                bot = Bot()
-            return response.status_code
-        else:
-            print("Failed to validate token. Using Refresh Token ...")
-            try:
-                if (refreshAccessToken() == "Failed"):
-                    print("Refresh Token Failed.")
-                    return "Failed"
-                else:
-                    return response.status_code
-            except:
-                pass
+    global acc_token, bot, loop, twitch_id
+    token_url = "https://id.twitch.tv/oauth2/validate"
+    headers = {
+        'Authorization': f'Bearer {acc_token}'
+    }
+    print("Sending GET request to validate access token")
+    response = requests.get(token_url, headers=headers)
+    print(f"Response status code: {response.status_code}")
+    print(f"Response content: {response.text}")
+    if response.status_code == 200:
+        print("Token validated.")
+        grabUserDetails()  # This sets twitch_id
+        if loop == None:
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+        # Only create bot AFTER we have twitch_id AND if bot doesn't exist
+        if bot == None and twitch_id:
+            bot = Bot()
+        return response.status_code
+    else:
+        print("Failed to validate token. Using Refresh Token ...")
+        try:
+            if (refreshAccessToken() == "Failed"):
+                print("Refresh Token Failed.")
+                return "Failed"
+            else:
+                return response.status_code
+        except Exception as e:
+            print(f"Error in validateToken: {e}")
+            return "Failed"
 
         
 
@@ -363,6 +374,22 @@ def get_link():
     slug = request.get_json()
     link = dbmethods.get_link(slug)
     return jsonify(link)
+
+#Route to get the MP4 link of the clip
+@app.route('/getLinkMP4', methods=['POST'])
+def get_link_mp4():
+    slug = request.get_json()
+    link = dbmethods.get_link(slug)
+    print(f"Link: {link[0]}")
+    ydl_opts = {
+        'quiet': True,
+        'skip_download': True
+    }
+
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        info = ydl.extract_info(link[0], download=False)
+        print(f"Info: {info.get('url')}")
+        return jsonify({"link": info.get('url')})
 
 # Request from Client to remove clip from database.
 @app.route('/removeClip', methods=['POST'])

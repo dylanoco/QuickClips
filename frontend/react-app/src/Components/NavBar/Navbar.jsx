@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import './Navbar.css';
-import GuideModal from './GuideModal.jsx';
-import BugReport from './BugReport.jsx';
+import '../styles/NavBar.css';
+import GuideModal from '../Modals/GuideModal.jsx';
+import BugReport from '../BugReport/BugReport.jsx';
 import { io } from 'socket.io-client';
 
 import { FaBug } from "react-icons/fa";

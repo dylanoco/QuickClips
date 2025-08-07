@@ -1,6 +1,6 @@
 import { useContext, useEffect } from 'react';
-import './ClipsList.css'
-import { DataContext } from './DataContext';
+import '../styles/ClipsList.css'
+import { DataContext } from '../../DataContext';
 
 //ClipsList which formats the clips and displays them.
 function ClipsList(props){ //Props will be the clips from ClipsCreated.jsx

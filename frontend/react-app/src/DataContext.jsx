@@ -1,9 +1,8 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
-import Popup from "./Popup";
-import AppVersion from '../version.json'
-
-import {Toaster, toast} from 'sonner';
+import Popup from './Components/Modals/Popup';
+import AppVersion from '../version.json';
+import { Toaster, toast } from 'sonner';
 
 //DataContext / DataProvider used to help the two components communicate with clips.
 export const DataContext = createContext();
